@@ -1,0 +1,16 @@
+[package]
+name = "result-transformer-core"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+result-transformer-dependencies = { path = "../result-transformer-dependencies" ,optional = true, default-features = false}
+
+[features]
+
+default = ["sync"]
+sync = []
+async = ["result-transformer-dependencies/async-trait"]

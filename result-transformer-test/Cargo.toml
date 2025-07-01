@@ -1,0 +1,23 @@
+[package]
+name = "result-transformer-test"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = ["result-transformer/default"]
+full = ["result-transformer/full"]
+
+sync = ["result-transformer/sync"]
+async = ["result-transformer/async"]
+
+sync-macros = ["result-transformer/sync-macros"]
+async-macros = ["result-transformer/async-macros"]
+
+sync-derive = ["result-transformer/sync-derive"]
+async-derive = ["result-transformer/async-derive"]
+
+[dependencies]
+result-transformer = { path = "../result-transformer" , default-features = false }

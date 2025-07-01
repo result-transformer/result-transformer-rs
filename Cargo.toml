@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "result-transformer",    
+    "result-transformer-dependencies",
+    "result-transformer-core",
+    "result-transformer-macros",
+    "result-transformer-derive",
+    "result-transformer-test",
+]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+license = "MIT"
+authors = ["Mikou"]
+repository = "https://github.com/Mikou-2A"

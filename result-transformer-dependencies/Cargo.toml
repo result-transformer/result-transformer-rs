@@ -1,0 +1,19 @@
+[package]
+name = "result-transformer-dependencies"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+tokio = { version = "1", optional = true, default-features = false }
+async-trait = { version = "0.1", optional = true }
+
+log = { version = "0.4", optional = true }
+
+[features]
+tokio-rt = ["tokio/rt"]
+tokio-macros = ["tokio/macros"]
+async-trait = ["dep:async-trait"]
+log = ["dep:log"]

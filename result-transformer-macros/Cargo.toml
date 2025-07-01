@@ -1,0 +1,19 @@
+[package]
+name = "result-transformer-macros"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+result-transformer-dependencies = { path = "../result-transformer-dependencies" , default-features = false }
+
+result-transformer-core = { path = "../result-transformer-core" }
+
+[features]
+sync = ["result-transformer-core/sync"]
+async = ["result-transformer-core/async"]
+
+logging = ["result-transformer-dependencies/log"] 
+
