@@ -1,0 +1,17 @@
+[package]
+name = "result-transformer-flow"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+result-transformer-dependencies = { path = "../result-transformer-dependencies" ,optional = true, default-features = false}
+
+[features]
+
+sync = []
+async = ["result-transformer-dependencies/async-trait"]
+
+logging = ["result-transformer-dependencies/log"]

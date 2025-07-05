@@ -12,8 +12,9 @@ result-transformer-dependencies = { path = "../result-transformer-dependencies" 
 result-transformer-core = { path = "../result-transformer-core" }
 
 [features]
-sync = ["result-transformer-core/sync"]
-async = ["result-transformer-core/async"]
 
-logging = ["result-transformer-dependencies/log"] 
+core-sync = ["result-transformer-core/sync"]
+core-async = ["result-transformer-core/async"]
 
+core-sync-log = ["result-transformer-dependencies/log", "core-sync"] 
+core-async-log = ["result-transformer-dependencies/log", "core-async"] 

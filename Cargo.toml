@@ -3,9 +3,10 @@ members = [
     "result-transformer",    
     "result-transformer-dependencies",
     "result-transformer-core",
+    "result-transformer-flow",
     "result-transformer-macros",
     "result-transformer-derive",
-    "result-transformer-test",
+    "result-transformer-test", 
 ]
 
 [workspace.package]

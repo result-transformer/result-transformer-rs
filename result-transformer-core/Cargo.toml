@@ -10,7 +10,5 @@ repository.workspace = true
 result-transformer-dependencies = { path = "../result-transformer-dependencies" ,optional = true, default-features = false}
 
 [features]
-
-default = ["sync"]
 sync = []
 async = ["result-transformer-dependencies/async-trait"]

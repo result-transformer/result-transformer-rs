@@ -1,0 +1,4 @@
+mod define_result_transformer_from_err;
+mod define_result_transformer;
+mod impl_result_transformer_from_parts;
+mod define_result_transformer_from_ok;

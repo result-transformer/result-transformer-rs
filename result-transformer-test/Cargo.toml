@@ -7,17 +7,37 @@ authors.workspace = true
 repository.workspace = true
 
 [features]
-default = ["result-transformer/default"]
-full = ["result-transformer/full"]
+async-deps = ["result-transformer-dependencies/tokio-macros", "result-transformer-dependencies/tokio-rt"]
 
-sync = ["result-transformer/sync"]
-async = ["result-transformer/async"]
+all = ["core-all", "flow-all"]
 
-sync-macros = ["result-transformer/sync-macros"]
-async-macros = ["result-transformer/async-macros"]
+# Core
+core-all = ["core-sync-all", "core-async-all"]
 
-sync-derive = ["result-transformer/sync-derive"]
-async-derive = ["result-transformer/async-derive"]
+core-sync-all = ["core-sync", "core-sync-macros"]
+core-async-all = ["core-async", "core-async-macros"]
+
+core-sync = ["result-transformer/core-sync"]
+core-async = ["result-transformer/core-async", "async-deps"]
+
+core-sync-macros = ["result-transformer/core-sync-macros"]
+core-async-macros = ["result-transformer/core-async-macros" , "async-deps"]
+
+# Flow
+flow-all = ["flow-sync-all", "flow-async-all"]
+
+flow-sync-all = ["flow-sync", "flow-sync-log-step"]
+flow-async-all = ["flow-async", "flow-async-log-step" , "async-deps"]
+
+flow-sync = ["result-transformer/flow-sync"]
+flow-async = ["result-transformer/flow-async" , "async-deps"]
+
+flow-sync-log-step = ["result-transformer/flow-sync-log-step", "flow-sync", "logtest"]
+flow-async-log-step = ["result-transformer/flow-async-log-step", "flow-async", "async-deps", "logtest"]
 
 [dependencies]
-result-transformer = { path = "../result-transformer" , default-features = false }
+result-transformer-dependencies = { path = "../result-transformer-dependencies", optional = true}
+
+result-transformer = { path = "../result-transformer", optional = true , default-features = false }
+
+logtest  = { version = "2", optional = true }

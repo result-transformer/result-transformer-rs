@@ -7,21 +7,50 @@ authors.workspace = true
 repository.workspace = true
 
 [features]
-default = ["sync"]
-full = ["sync", "async", "sync-macros", "async-macros", "sync-derive", "async-derive"]
 
-sync = ["result-transformer-core/sync"]
-async = ["result-transformer-core/async"]
+default = ["core-sync"]
 
-sync-macros = ["result-transformer-macros/sync", "sync"]
-async-macros = ["result-transformer-macros/async", "async"]
+all = ["core-all", "flow-all", "derive-all"]
 
-sync-derive = ["result-transformer-derive/sync", "sync"]
-async-derive = ["result-transformer-derive/async", "async"]
+# Core
+core-all = ["core-sync-all", "core-async-all"]
+
+core-sync-all = ["core-sync", "core-sync-macros-all"]
+core-async-all = ["core-async", "core-async-macros-all"]
+
+core-sync = ["result-transformer-core/sync"]
+core-async = ["result-transformer-core/async"]
+
+core-sync-macros-all = ["core-sync-macros", "core-sync-log-macros"]
+core-async-macros-all = ["core-async-macros", "core-async-log-macros"]
+
+core-sync-macros = ["result-transformer-macros/core-sync", "core-sync"]
+core-async-macros = ["result-transformer-macros/core-async", "core-async"]
+
+core-sync-log-macros = ["result-transformer-macros/core-sync-log", "core-sync-macros"]
+core-async-log-macros = ["result-transformer-macros/core-async-log", "core-async-macros"]
+
+# Flow
+flow-all = ["flow-sync-all", "flow-async-all"]
+
+flow-sync-all = ["flow-sync", "flow-sync-log-step"]
+flow-async-all = ["flow-async", "flow-async-log-step"]
+
+flow-sync = ["result-transformer-flow/sync", "core-sync"]
+flow-async = ["result-transformer-flow/async", "core-async"]
+
+flow-sync-log-step = ["result-transformer-flow/logging", "flow-sync"]
+flow-async-log-step = ["result-transformer-flow/logging", "flow-async"]
+
+# Derive
+derive-all = ["derive-sync", "derive-async"]
+derive-sync = ["result-transformer-derive/sync", "core-sync"]
+derive-async = ["result-transformer-derive/async", "core-async"]
 
 [dependencies]
 result-transformer-dependencies = { path = "../result-transformer-dependencies"}
 
 result-transformer-core = { path = "../result-transformer-core" }
+result-transformer-flow = { path = "../result-transformer-flow", optional = true  }
 result-transformer-macros = { path = "../result-transformer-macros", optional = true }
 result-transformer-derive = { path = "../result-transformer-derive", optional = true }
