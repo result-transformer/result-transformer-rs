@@ -11,12 +11,12 @@ pub trait ResultFlow<InputOk, InputErr> {
 
     /// Chains this flow with another `ResultFlow`, passing the result of this flow
     /// as input to the next.
-    fn then_result<NextFlow>(self, next: NextFlow) -> ResultFlowThen<Self, NextFlow, InputOk, InputErr>
+    fn then_result<NextFlow>(self, next: NextFlow) -> ResultFlowChain<Self, NextFlow, InputOk, InputErr>
     where
         Self: Sized,
         NextFlow: ResultFlow<Self::OutputOk, Self::OutputErr>,
     {
-        ResultFlowThen {
+        ResultFlowChain {
             head: self,
             next,
             _phantom: PhantomData,
@@ -26,7 +26,7 @@ pub trait ResultFlow<InputOk, InputErr> {
 
 /// A chained composition of two `ResultFlow`s.
 /// The output of `head` becomes the input of `next`.
-pub struct ResultFlowThen<Head, Next, InputOk, InputErr>
+pub struct ResultFlowChain<Head, Next, InputOk, InputErr>
 where
     Head: ResultFlow<InputOk, InputErr>,
     Next: ResultFlow<Head::OutputOk, Head::OutputErr>,
@@ -37,7 +37,7 @@ where
 }
 
 impl<Head, Next, InputOk, InputErr> ResultFlow<InputOk, InputErr>
-    for ResultFlowThen<Head, Next, InputOk, InputErr>
+    for ResultFlowChain<Head, Next, InputOk, InputErr>
 where
     Head: ResultFlow<InputOk, InputErr>,
     Next: ResultFlow<Head::OutputOk, Head::OutputErr>,

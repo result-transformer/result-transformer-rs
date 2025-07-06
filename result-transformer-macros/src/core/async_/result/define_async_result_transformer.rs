@@ -3,10 +3,10 @@ macro_rules! define_async_result_transformer {
     (
         impl_for = $ty:ty,
         input_ok = $input_ok:ty,
-        output_ok = $output_ok:ty,
         input_err = $input_err:ty,
+        output_ok = $output_ok:ty,
         output_err = $output_err:ty,
-        transform_result = $transform_result:expr
+        transform_result = $transform_result:expr $(,)?
     ) => {
         const _: fn() = || {
             fn _type_check(transform_result: fn(Result<$input_ok, $input_err>) -> Result<$output_ok, $output_err>) {}

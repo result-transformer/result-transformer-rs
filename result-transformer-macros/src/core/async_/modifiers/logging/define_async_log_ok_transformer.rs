@@ -6,7 +6,7 @@ macro_rules! define_async_log_ok_transformer {
         output_ok = $output_ok:ty,
         transform_ok = $transform_ok:expr,
         log_level = $log_level:ident,
-        log_expr = $log_expr:expr
+        log_expr = $log_expr:expr $(,)?
     ) => {
         const _: fn() = || {
             fn _check_display<T: std::fmt::Display>(_f: fn($input_ok) -> T) {}

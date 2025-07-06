@@ -42,6 +42,9 @@ flow-async = ["result-transformer-flow/async", "core-async"]
 flow-sync-log-step = ["result-transformer-flow/logging", "flow-sync"]
 flow-async-log-step = ["result-transformer-flow/logging", "flow-async"]
 
+flow-sync-macros = ["result-transformer-macros/flow-sync", "flow-sync"]
+flow-async-macros = ["result-transformer-macros/flow-async", "flow-async"]
+
 # Derive
 derive-all = ["derive-sync", "derive-async"]
 derive-sync = ["result-transformer-derive/sync", "core-sync"]

@@ -1,6 +1,10 @@
 #[macro_export]
 macro_rules! impl_result_transformer_from_parts {
-    (impl_for = $ty:ty, input_ok = $ok:ty, input_err = $err:ty) => {
+    (
+        impl_for = $ty:ty,
+        input_ok = $ok:ty,
+        input_err = $err:ty $(,)?
+    ) => {
         const _: fn() = || {
             fn assert_bounds<
                 T: result_transformer::sync::OkTransformer<$ok>

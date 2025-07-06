@@ -5,12 +5,12 @@ pub trait OkFlow<InputOk> {
 
     fn apply_ok(&self, input: InputOk) -> Self::OutputOk;
 
-    fn then_ok<NextFlow>(self, next: NextFlow) -> OkFlowThen<Self, NextFlow, InputOk>
+    fn then_ok<NextFlow>(self, next: NextFlow) -> OkFlowChain<Self, NextFlow, InputOk>
     where
         Self: Sized,
         NextFlow: OkFlow<Self::OutputOk>,
     {
-        OkFlowThen {
+        OkFlowChain {
             head: self,
             next,
             _phantom: PhantomData,
@@ -18,7 +18,7 @@ pub trait OkFlow<InputOk> {
     }
 }
 
-pub struct OkFlowThen<FirstFlow, NextFlow, InputOk>
+pub struct OkFlowChain<FirstFlow, NextFlow, InputOk>
 where
     FirstFlow: OkFlow<InputOk>,
     NextFlow: OkFlow<FirstFlow::OutputOk>,
@@ -28,7 +28,7 @@ where
     _phantom: PhantomData<InputOk>,
 }
 
-impl<FirstFlow, NextFlow, InputOk> OkFlow<InputOk> for OkFlowThen<FirstFlow, NextFlow, InputOk>
+impl<FirstFlow, NextFlow, InputOk> OkFlow<InputOk> for OkFlowChain<FirstFlow, NextFlow, InputOk>
 where
     FirstFlow: OkFlow<InputOk>,
     NextFlow: OkFlow<FirstFlow::OutputOk>,

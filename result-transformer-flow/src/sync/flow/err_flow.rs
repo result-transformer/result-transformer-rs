@@ -5,12 +5,12 @@ pub trait ErrFlow<InputErr> {
 
     fn apply_err(&self, input: InputErr) -> Self::OutputErr;
 
-    fn then_err<NextFlow>(self, next: NextFlow) -> ErrFlowThen<Self, NextFlow, InputErr>
+    fn then_err<NextFlow>(self, next: NextFlow) -> ErrFlowChain<Self, NextFlow, InputErr>
     where
         Self: Sized,
         NextFlow: ErrFlow<Self::OutputErr>,
     {
-        ErrFlowThen {
+        ErrFlowChain {
             head: self,
             next,
             _phantom: PhantomData,
@@ -18,7 +18,7 @@ pub trait ErrFlow<InputErr> {
     }
 }
 
-pub struct ErrFlowThen<FirstFlow, NextFlow, InputErr>
+pub struct ErrFlowChain<FirstFlow, NextFlow, InputErr>
 where
     FirstFlow: ErrFlow<InputErr>,
     NextFlow: ErrFlow<FirstFlow::OutputErr>,
@@ -28,7 +28,7 @@ where
     _phantom: PhantomData<InputErr>,
 }
 
-impl<FirstFlow, NextFlow, InputErr> ErrFlow<InputErr> for ErrFlowThen<FirstFlow, NextFlow, InputErr>
+impl<FirstFlow, NextFlow, InputErr> ErrFlow<InputErr> for ErrFlowChain<FirstFlow, NextFlow, InputErr>
 where
     FirstFlow: ErrFlow<InputErr>,
     NextFlow: ErrFlow<FirstFlow::OutputErr>,

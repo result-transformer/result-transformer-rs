@@ -6,7 +6,7 @@ macro_rules! define_log_err_transformer {
         output_err = $output_err:ty,
         transform_err = $transform_err:expr,
         log_level = $log_level:ident,
-        log_expr = $log_expr:expr
+        log_expr = $log_expr:expr $(,)?
     ) => {
         const _: fn() = || {
             fn _check_display<T: std::fmt::Display>(_f: fn($input_err) -> T) {}

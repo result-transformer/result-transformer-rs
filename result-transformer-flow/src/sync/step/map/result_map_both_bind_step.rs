@@ -2,10 +2,10 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
-pub struct ResultBothMapStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
 where
-    OkMapperFn: Fn(InputOk) -> OutputOk,
-    ErrMapperFn: Fn(InputErr) -> OutputErr,
+    OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
+    ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,
 {
     ok_mapper: OkMapperFn,
     err_mapper: ErrMapperFn,
@@ -13,10 +13,10 @@ where
 }
 
 impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultBothMapStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+    ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
 where
-    OkMapperFn: Fn(InputOk) -> OutputOk,
-    ErrMapperFn: Fn(InputErr) -> OutputErr,
+    OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
+    ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,
 {
     pub fn new(ok_fn: OkMapperFn, err_fn: ErrMapperFn) -> Self {
         Self {
@@ -28,18 +28,18 @@ where
 }
 
 impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr> ResultFlow<InputOk, InputErr>
-    for ResultBothMapStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+    for ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
 where
-    OkMapperFn: Fn(InputOk) -> OutputOk,
-    ErrMapperFn: Fn(InputErr) -> OutputErr,
+    OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
+    ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
     fn apply_result(&self, input: Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> {
         match input {
-            Ok(v) => Ok((self.ok_mapper)(v)),
-            Err(e) => Err((self.err_mapper)(e)),
+            Ok(v) => (self.ok_mapper)(v),
+            Err(e) => (self.err_mapper)(e),
         }
     }
 }

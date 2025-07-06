@@ -4,7 +4,7 @@ macro_rules! define_ok_transformer {
         impl_for = $ty:ty,
         input_ok = $input_ok:ty,
         output_ok = $output_ok:ty,
-        transform_ok = $transform_ok:expr
+        transform_ok = $transform_ok:expr $(,)?
     ) => {
         const _: fn() = || {
             fn _type_check(transform_ok: fn($input_ok) -> $output_ok) {}

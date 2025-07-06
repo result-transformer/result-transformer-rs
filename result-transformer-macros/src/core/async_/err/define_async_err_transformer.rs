@@ -4,7 +4,7 @@ macro_rules! define_async_err_transformer {
         impl_for = $ty:ty,
         input_err = $input_err:ty,
         output_err = $output_err:ty,
-        transform_err = $transform_err:expr
+        transform_err = $transform_err:expr $(,)?
     ) => {
         const _: fn() = || {
             fn _type_check(transform_err: fn($input_err) -> $output_err) {}

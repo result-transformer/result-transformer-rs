@@ -2,6 +2,7 @@ use result_transformer_dependencies::*;
 
 use std::marker::PhantomData;
 
+use super::LogConfig;
 use crate::sync::flow::ResultFlow;
 
 pub struct ResultLogTapStep<OkType, ErrType> {
@@ -68,26 +69,15 @@ impl<OkType, ErrType> ResultFlow<OkType, ErrType> for ResultLogTapStep<OkType, E
         match &input_result {
             Ok(ok) => {
                 if let Some(ok_log) = &self.ok_log {
-                    log::log!(ok_log.level, "{}", (ok_log.format)(ok));
+                    log::log!(*ok_log.log_level(), "{}", (ok_log.log_format())(ok));
                 }
             }
             Err(err) => {
                 if let Some(err_log) = &self.err_log {
-                    log::log!(err_log.level, "{}", (err_log.format)(err));
+                    log::log!(*err_log.log_level(), "{}", (err_log.log_format())(err));
                 }
             }
         }
         input_result
-    }
-}
-
-pub struct LogConfig<T> {
-    pub level: log::Level,
-    pub format: fn(&T) -> String,
-}
-
-impl<T> LogConfig<T> {
-    pub fn new(level: log::Level, format: fn(&T) -> String) -> Self {
-        Self { level, format }
     }
 }

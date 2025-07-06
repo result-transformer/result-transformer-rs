@@ -5,7 +5,7 @@ macro_rules! define_log_err_transformer_simple {
         input_err = $input_err:ty,
         output_err = $output_err:ty,
         transform_err = $transform_err:expr,
-        log_level = $log_level:ident
+        log_level = $log_level:ident $(,)?
     ) => {
         result_transformer::macros::define_log_err_transformer! {
             impl_for = $ty,

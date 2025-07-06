@@ -1,6 +1,10 @@
 #[macro_export]
 macro_rules! impl_async_result_transformer_from_parts {
-    (impl_for = $ty:ty, input_ok = $ok:ty, input_err = $err:ty) => {
+    (
+        impl_for = $ty:ty,
+        input_ok = $ok:ty,
+        input_err = $err:ty $(,)?
+    ) => {
         const _: fn() = || {
             fn assert_bounds<
                 T: result_transformer::async_::AsyncOkTransformer<$ok>
@@ -24,14 +28,14 @@ macro_rules! impl_async_result_transformer_from_parts {
                 result: Result<$ok, $err>,
             ) -> Result<Self::OutputOk, Self::OutputErr> {
                 match result {
-                    Ok(o) => Ok(
+                    Ok(ok) => Ok(
                         <Self as result_transformer::async_::AsyncOkTransformer<$ok>>::transform_ok_async(
-                            self, o,
+                            self, ok,
                         ).await,
                     ),
-                    Err(e) => Err(
+                    Err(err) => Err(
                         <Self as result_transformer::async_::AsyncErrTransformer<$err>>::transform_err_async(
-                            self, e,
+                            self, err,
                         ).await,
                     ),
                 }
