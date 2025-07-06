@@ -19,6 +19,7 @@ define_err_transformer_from_err_flow!(
 
 impl_result_transformer_from_parts!(impl_for = FlowPartsTransformer, input_ok = i32, input_err = &'static str);
 
+#[allow(unused)]
 struct ResultFlowTransformer;
 
 define_result_transformer_from_result_flow!(

@@ -7,7 +7,11 @@ authors.workspace = true
 repository.workspace = true
 
 [features]
-async-deps = ["result-transformer-dependencies/tokio-macros", "result-transformer-dependencies/tokio-rt"]
+async-deps = [
+    "result-transformer-dependencies/tokio-macros",
+    "result-transformer-dependencies/tokio-rt",
+    "result-transformer-dependencies/async-trait",
+]
 
 all = ["core-all", "flow-all"]
 

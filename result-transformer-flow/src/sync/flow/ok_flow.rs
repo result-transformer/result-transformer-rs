@@ -40,3 +40,7 @@ where
         self.next.apply_ok(result)
     }
 }
+pub enum StepKind<Sync, Async> {
+    Sync(Sync),
+    Async(Async),
+}
