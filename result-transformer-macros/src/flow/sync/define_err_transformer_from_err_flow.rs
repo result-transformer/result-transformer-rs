@@ -1,3 +1,10 @@
+/// Generates an [`ErrTransformer`] implementation from an [`ErrFlow`].
+///
+/// # Parameters
+/// - `impl_for` - Type that will implement the trait.
+/// - `input_err` - Error type accepted by the flow.
+/// - `output_err` - Error type produced by the flow.
+/// - `flow` - Expression evaluating to the flow instance.
 #[macro_export]
 macro_rules! define_err_transformer_from_err_flow {
     (

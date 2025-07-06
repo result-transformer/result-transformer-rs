@@ -1,3 +1,10 @@
+//! Steps that log values using the `log` crate.
+//!
+//! These steps record messages through the `log` facade while forwarding the
+//! value to the next step. They are available when the `logging` feature is
+//! enabled and use [`LogConfig`] to determine the logging behavior.
+
+
 mod err_log_tap_step;
 mod log_config;
 mod ok_log_tap_step;

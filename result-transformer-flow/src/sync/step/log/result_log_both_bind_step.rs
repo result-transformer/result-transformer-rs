@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 use super::LogConfig;
 use crate::sync::flow::ResultFlow;
 
+/// Logs both values and produces new `Result`s from the provided closures.
 pub struct ResultLogBothBindStep<OkType, ErrType, OutputOk, OutputErr, OkFn, ErrFn>
 where
     OkFn: Fn(OkType) -> Result<OutputOk, OutputErr>,

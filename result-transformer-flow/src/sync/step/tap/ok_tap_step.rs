@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
+/// Executes a closure with the success value and returns its result.
 pub struct OkTapStep<TapFn, InputOk, OutputOk>
 where
     TapFn: Fn(InputOk) -> OutputOk,

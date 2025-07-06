@@ -1,3 +1,10 @@
+/// Defines an asynchronous [`AsyncOkTransformer`] implementation.
+///
+/// # Parameters
+/// - `impl_for` - Type on which to implement the trait.
+/// - `input_ok` - The incoming success type.
+/// - `output_ok` - The resulting success type.
+/// - `transform_ok` - Function performing the conversion.
 #[macro_export]
 macro_rules! define_async_ok_transformer {
     (

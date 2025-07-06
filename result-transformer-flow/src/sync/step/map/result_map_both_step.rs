@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
+/// Maps both success and error values separately.
 pub struct ResultMapBothStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
 where
     OkMapperFn: Fn(InputOk) -> OutputOk,

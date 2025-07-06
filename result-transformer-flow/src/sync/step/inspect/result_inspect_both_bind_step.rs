@@ -2,8 +2,15 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
-pub struct ResultInspectBothBindStep<OkInspectorFn, ErrInspectorFn, OkType, ErrType, OutputOk, OutputErr>
-where
+/// Inspects success and error values and returns new `Result`s.
+pub struct ResultInspectBothBindStep<
+    OkInspectorFn,
+    ErrInspectorFn,
+    OkType,
+    ErrType,
+    OutputOk,
+    OutputErr,
+> where
     OkInspectorFn: Fn(&OkType) -> Result<OutputOk, OutputErr>,
     ErrInspectorFn: Fn(&ErrType) -> Result<OutputOk, OutputErr>,
 {
@@ -27,8 +34,16 @@ where
     }
 }
 
-impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType, OutputOk, OutputErr> ResultFlow<OkType, ErrType>
-    for ResultInspectBothBindStep<OkInspectorFn, ErrInspectorFn, OkType, ErrType, OutputOk, OutputErr>
+impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType, OutputOk, OutputErr>
+    ResultFlow<OkType, ErrType>
+    for ResultInspectBothBindStep<
+        OkInspectorFn,
+        ErrInspectorFn,
+        OkType,
+        ErrType,
+        OutputOk,
+        OutputErr,
+    >
 where
     OkInspectorFn: Fn(&OkType) -> Result<OutputOk, OutputErr>,
     ErrInspectorFn: Fn(&ErrType) -> Result<OutputOk, OutputErr>,

@@ -1,3 +1,5 @@
+//! Async implementation of result inspect both bind step.
+
 use crate::async_::AsyncResultFlow;
 use result_transformer_dependencies::*;
 

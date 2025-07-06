@@ -1,3 +1,9 @@
+//! Collection of synchronous transformation steps.
+//!
+//! A *step* is a small, reusable unit that operates on a value. Steps are
+//! typically chained together using the flow traits to build up complex
+//! processing pipelines.
+
 mod if_;
 mod inspect;
 mod map;

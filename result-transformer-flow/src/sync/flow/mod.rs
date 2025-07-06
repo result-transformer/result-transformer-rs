@@ -1,3 +1,5 @@
+//! Definitions for composing synchronous flows.
+
 mod err_flow;
 mod ok_flow;
 mod result_flow;

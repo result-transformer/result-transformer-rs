@@ -1,3 +1,5 @@
+//! Async implementation of err noop step.
+
 use crate::async_::AsyncErrFlow;
 use result_transformer_dependencies::*;
 

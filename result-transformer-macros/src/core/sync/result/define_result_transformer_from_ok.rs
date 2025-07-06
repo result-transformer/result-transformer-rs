@@ -1,3 +1,11 @@
+/// Helper macro for implementing [`ResultTransformer`] when only the success
+/// value requires mapping.
+///
+/// # Parameters
+/// - `impl_for` - Type on which to implement the trait.
+/// - `input_ok` / `input_err` - Input types of the original result.
+/// - `output_ok` / `output_err` - Output types to produce.
+/// - `transform_ok` - Function applied when the input result is `Ok`.
 #[macro_export]
 macro_rules! define_result_transformer_from_ok {
     (

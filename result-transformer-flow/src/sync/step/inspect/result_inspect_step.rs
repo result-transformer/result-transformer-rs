@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
+/// Inspects the entire [`Result`] without altering it.
 pub struct ResultInspectStep<InspectorFn, InputOk, InputErr>
 where
     InspectorFn: Fn(&Result<InputOk, InputErr>),

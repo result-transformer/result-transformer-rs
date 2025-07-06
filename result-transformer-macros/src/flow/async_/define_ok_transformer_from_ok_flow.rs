@@ -1,3 +1,10 @@
+/// Creates an [`AsyncOkTransformer`] from an [`AsyncOkFlow`].
+///
+/// # Parameters
+/// - `impl_for` - Target type for the implementation.
+/// - `input_ok` - Success type accepted by the flow.
+/// - `output_ok` - Success type produced by the flow and transformer.
+/// - `flow` - Expression evaluating to the flow instance.
 #[macro_export]
 macro_rules! define_async_ok_transformer_from_ok_flow {
     (

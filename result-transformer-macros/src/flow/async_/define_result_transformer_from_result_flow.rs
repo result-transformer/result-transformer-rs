@@ -1,3 +1,10 @@
+/// Creates an [`AsyncResultTransformer`] from an [`AsyncResultFlow`].
+///
+/// # Parameters
+/// - `impl_for` - Target type for the implementation.
+/// - `input_ok` / `input_err` - Input types accepted by the flow.
+/// - `output_ok` / `output_err` - Output types produced by the flow.
+/// - `flow` - Expression yielding the flow instance.
 #[macro_export]
 macro_rules! define_async_result_transformer_from_result_flow {
     (

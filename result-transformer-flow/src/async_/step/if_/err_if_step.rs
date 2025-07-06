@@ -1,3 +1,5 @@
+//! Async implementation of err if step.
+
 use crate::async_::AsyncErrFlow;
 use result_transformer_dependencies::*;
 

@@ -1,6 +1,8 @@
 use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
+
+/// Conditionally applies one of two [`ResultFlow`]s.
 pub struct ResultIfStep<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow> {
     condition: ConditionFn,
     then_flow: ThenFlow,

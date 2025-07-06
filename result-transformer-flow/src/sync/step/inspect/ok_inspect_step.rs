@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
+/// Calls an inspector function with the success value and returns it unchanged.
 pub struct OkInspectStep<InspectorFn, OkType>
 where
     InspectorFn: Fn(&OkType),

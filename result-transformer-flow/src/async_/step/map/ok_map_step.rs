@@ -1,3 +1,5 @@
+//! Async implementation of [`OkMapStep`].
+
 use crate::async_::AsyncOkFlow;
 use result_transformer_dependencies::*;
 

@@ -1,3 +1,3 @@
-extern crate proc_macro;
+//! Procedural derive macros for `result-transformer` (currently empty).
 
-//use proc_macro::TokenStream;
+extern crate proc_macro;

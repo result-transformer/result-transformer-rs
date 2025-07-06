@@ -1,3 +1,5 @@
+/// Helper macro for implementing [`AsyncResultTransformer`] when only the error
+/// branch requires mapping.
 #[macro_export]
 macro_rules! define_async_result_transformer_from_err {
     (
@@ -9,9 +11,7 @@ macro_rules! define_async_result_transformer_from_err {
         transform_err = $transform_err:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _type_check(
-                f: fn($input_err) -> Result<$output_ok, $output_err>
-            ) {}
+            fn _type_check(f: fn($input_err) -> Result<$output_ok, $output_err>) {}
             _type_check($transform_err);
         };
 

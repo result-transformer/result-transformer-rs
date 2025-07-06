@@ -1,3 +1,8 @@
+//! Steps that simply forward the input value.
+//!
+//! These identity steps are handy when a flow requires a placeholder
+//! transformation but the original value should be returned unchanged.
+
 mod err_noop_step;
 mod ok_noop_step;
 mod result_noop_step;

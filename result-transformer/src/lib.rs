@@ -1,3 +1,14 @@
+//! Reexports the core transformer traits along with optional helper crates.
+//!
+//! Enable the desired features in your `Cargo.toml` to bring the various
+//! synchronous or asynchronous APIs into scope.  Consumers typically depend on
+//! this crate and activate the features they need:
+//!
+//! ```toml
+//! [dependencies]
+//! result-transformer = { version = "0.0.1", features = ["core-sync", "result-transformer-macros"] }
+//! ```
+
 #[doc(hidden)]
 pub mod __internal;
 

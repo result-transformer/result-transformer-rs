@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
+/// Calls an inspector function with the error value and returns it unchanged.
 pub struct ErrInspectStep<InspectorFn, ErrType>
 where
     InspectorFn: Fn(&ErrType),

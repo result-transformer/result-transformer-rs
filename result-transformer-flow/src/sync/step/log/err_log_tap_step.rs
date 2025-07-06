@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
+/// Logs error values at the configured level.
 pub struct ErrLogTapStep<ErrType> {
     log_level: log::Level,
     log_format: fn(&ErrType) -> String,

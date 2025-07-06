@@ -1,3 +1,5 @@
+/// Implements [`ResultTransformer`] when `OkTransformer` and `ErrTransformer`
+/// are already implemented for the target type.
 #[macro_export]
 macro_rules! impl_result_transformer_from_parts {
     (

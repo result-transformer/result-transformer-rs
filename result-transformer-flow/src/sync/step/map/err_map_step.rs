@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
+/// Maps the error value using the provided function.
 pub struct ErrMapStep<MapperFn, InputErr, OutputErr>
 where
     MapperFn: Fn(InputErr) -> OutputErr,

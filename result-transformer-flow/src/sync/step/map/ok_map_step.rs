@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
+/// Maps the successful value using the provided function.
 pub struct OkMapStep<MapperFn, InputOk, OutputOk>
 where
     MapperFn: Fn(InputOk) -> OutputOk,

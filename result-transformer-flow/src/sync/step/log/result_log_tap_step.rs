@@ -5,6 +5,7 @@ use std::marker::PhantomData;
 use super::LogConfig;
 use crate::sync::flow::ResultFlow;
 
+/// Logs both success and error values using [`LogConfig`].
 pub struct ResultLogTapStep<OkType, ErrType> {
     ok_log: Option<LogConfig<OkType>>,
     err_log: Option<LogConfig<ErrType>>,

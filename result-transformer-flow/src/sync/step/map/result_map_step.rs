@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
+/// Maps the entire [`Result`] using the provided function.
 pub struct ResultMapStep<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
 where
     MapperFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,

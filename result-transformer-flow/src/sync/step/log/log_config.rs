@@ -1,5 +1,6 @@
 use result_transformer_dependencies::*;
 
+/// Configuration used by logging steps.
 pub struct LogConfig<T> {
     log_level: log::Level,
     log_format: fn(&T) -> String,

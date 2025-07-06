@@ -1,3 +1,5 @@
+//! Async implementation of result log tap step.
+
 use crate::async_::AsyncResultFlow;
 use result_transformer_dependencies::*;
 

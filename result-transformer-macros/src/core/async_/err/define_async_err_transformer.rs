@@ -1,3 +1,10 @@
+/// Defines an asynchronous [`AsyncErrTransformer`] implementation.
+///
+/// # Parameters
+/// - `impl_for` - Type on which to implement the trait.
+/// - `input_err` - The incoming error type.
+/// - `output_err` - The resulting error type.
+/// - `transform_err` - Function performing the conversion.
 #[macro_export]
 macro_rules! define_async_err_transformer {
     (

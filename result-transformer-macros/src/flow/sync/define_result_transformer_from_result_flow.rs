@@ -1,3 +1,10 @@
+/// Generates a [`ResultTransformer`] from a [`ResultFlow`].
+///
+/// # Parameters
+/// - `impl_for` - Type on which to implement the trait.
+/// - `input_ok` / `input_err` - Input types accepted by the flow.
+/// - `output_ok` / `output_err` - Output types produced by the flow.
+/// - `flow` - Expression evaluating to the flow instance.
 #[macro_export]
 macro_rules! define_result_transformer_from_result_flow {
     (

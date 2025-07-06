@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
+/// Inspects success and error values separately without modification.
 pub struct ResultInspectBothStep<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
 where
     OkInspectorFn: Fn(&OkType),

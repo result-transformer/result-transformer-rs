@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 use super::LogConfig;
 use crate::sync::flow::ResultFlow;
 
+/// Logs both success and error values and returns them unchanged.
 pub struct ResultLogBothStep<OkType, ErrType> {
     ok_log: LogConfig<OkType>,
     err_log: LogConfig<ErrType>,

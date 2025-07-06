@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
+/// Applies a closure to the entire [`Result`] and returns its outcome.
 pub struct ResultTapStep<TapFn, InputOk, InputErr, OutputOk, OutputErr>
 where
     TapFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,

@@ -1,3 +1,9 @@
+//! Collection of synchronous transformer traits.
+//!
+//! These traits are intended for lightweight conversions that do not require
+//! asynchronous operations. They form the foundation of the higher level flow
+//! utilities provided by other crates in this workspace.
+
 mod err_transformer;
 mod ok_transformer;
 mod result_transformer;

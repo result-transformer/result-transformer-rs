@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
+/// Logs successful values at the configured level.
 pub struct OkLogTapStep<OkType> {
     log_level: log::Level,
     log_format: fn(&OkType) -> String,

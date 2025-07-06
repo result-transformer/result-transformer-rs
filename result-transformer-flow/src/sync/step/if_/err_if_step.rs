@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
-/// 条件によって2つのErrFlowのどちらかを選んで適用するステップ
+/// Selects between two [`ErrFlow`]s based on a predicate.
 pub struct ErrIfStep<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow> {
     condition: ConditionFn,
     then_flow: ThenFlow,

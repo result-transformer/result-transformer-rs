@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
+/// Executes a closure with the error value and returns its result.
 pub struct ErrTapStep<TapFn, InputErr, OutputErr>
 where
     TapFn: Fn(InputErr) -> OutputErr,

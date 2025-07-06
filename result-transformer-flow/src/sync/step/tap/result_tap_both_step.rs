@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
+/// Applies different closures to success and error values.
 pub struct ResultTapBothStep<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
 where
     OkTapFn: Fn(InputOk) -> OutputOk,

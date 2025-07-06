@@ -1,3 +1,10 @@
+/// Generates an [`OkTransformer`] implementation from an [`OkFlow`].
+///
+/// # Parameters
+/// - `impl_for` - Type on which to implement the trait.
+/// - `input_ok` - Success type accepted by the flow.
+/// - `output_ok` - Success type produced by the flow.
+/// - `flow` - Expression evaluating to the flow instance.
 #[macro_export]
 macro_rules! define_ok_transformer_from_ok_flow {
     (

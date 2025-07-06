@@ -1,3 +1,11 @@
+/// Defines a synchronous [`ResultTransformer`] implementation from a custom
+/// function.
+///
+/// # Parameters
+/// - `impl_for` - Type on which to implement the trait.
+/// - `input_ok` / `input_err` - Input types for the transformation function.
+/// - `output_ok` / `output_err` - Output types produced by the function.
+/// - `transform_result` - Function performing the conversion.
 #[macro_export]
 macro_rules! define_result_transformer {
     (
@@ -6,7 +14,7 @@ macro_rules! define_result_transformer {
         input_err = $input_err:ty,
         output_ok = $output_ok:ty,
         output_err = $output_err:ty,
-        transform_result = $transform_result:expr
+        transform_result = $transform_result:expr $(,)?
     ) => {
         const _: fn() = || {
             fn _type_check(

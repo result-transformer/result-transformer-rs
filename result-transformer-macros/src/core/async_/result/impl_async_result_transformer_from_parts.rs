@@ -1,3 +1,5 @@
+/// Implements [`AsyncResultTransformer`] when `AsyncOkTransformer` and
+/// `AsyncErrTransformer` are already implemented for the target type.
 #[macro_export]
 macro_rules! impl_async_result_transformer_from_parts {
     (

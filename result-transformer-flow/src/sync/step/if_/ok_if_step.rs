@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
+/// Chooses between two [`OkFlow`]s based on a predicate.
 pub struct OkIfStep<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow> {
     condition: ConditionFn,
     then_flow: ThenFlow,
