@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
-/// Maps success and error values, returning a `Result` for each mapping.
+/// Step that maps success and error values using functions returning a `Result`.
 pub struct ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
 where
     OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
@@ -19,6 +19,10 @@ where
     OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
     ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,
 {
+    /// Creates a new [`ResultMapBothBindStep`].
+    ///
+    /// * `ok_fn` - function to transform the success value
+    /// * `err_fn` - function to transform the error value
     pub fn new(ok_fn: OkMapperFn, err_fn: ErrMapperFn) -> Self {
         Self {
             ok_mapper: ok_fn,
@@ -37,6 +41,7 @@ where
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
+    /// Implementation of [`ResultFlow::apply_result`].
     fn apply_result(&self, input: Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> {
         match input {
             Ok(v) => (self.ok_mapper)(v),

@@ -2,7 +2,9 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
-/// Selects between two [`ErrFlow`]s based on a predicate.
+/// Executes one of two [`ErrFlow`]s depending on the condition.
+///
+/// `InputErr` denotes the input error type, and `OutputErr` the output error type.
 pub struct ErrIfStep<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow> {
     condition: ConditionFn,
     then_flow: ThenFlow,
@@ -17,6 +19,11 @@ where
     ThenFlow: ErrFlow<InputErr, OutputErr = OutputErr>,
     ElseFlow: ErrFlow<InputErr, OutputErr = OutputErr>,
 {
+    /// Creates a new [`ErrIfStep`].
+    ///
+    /// * `condition` - predicate that evaluates the error value
+    /// * `then_flow` - flow executed when the predicate is `true`
+    /// * `else_flow` - flow executed when the predicate is `false`
     pub fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
         Self {
             condition,
@@ -36,6 +43,8 @@ where
 {
     type OutputErr = OutputErr;
 
+    /// Implementation of [`ErrFlow::apply_err`].
+    /// Evaluates the condition and passes the error to the selected flow.
     fn apply_err(&self, input_err: InputErr) -> Self::OutputErr {
         if (self.condition)(&input_err) {
             self.then_flow.apply_err(input_err)

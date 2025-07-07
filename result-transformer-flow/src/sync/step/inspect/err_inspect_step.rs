@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ErrFlow;
 
-/// Calls an inspector function with the error value and returns it unchanged.
+/// Step that passes the error to an inspector and returns it unchanged.
 pub struct ErrInspectStep<InspectorFn, ErrType>
 where
     InspectorFn: Fn(&ErrType),
@@ -15,6 +15,9 @@ impl<InspectorFn, ErrType> ErrInspectStep<InspectorFn, ErrType>
 where
     InspectorFn: Fn(&ErrType),
 {
+    /// Creates a new [`ErrInspectStep`].
+    ///
+    /// * `inspector` - function that receives a reference to the error value
     pub fn new(inspector: InspectorFn) -> Self {
         Self {
             inspector,
@@ -29,6 +32,8 @@ where
 {
     type OutputErr = ErrType;
 
+    /// Implementation of [`ErrFlow::apply_err`].
+    /// Passes the error to the inspector and then returns it.
     fn apply_err(&self, input_err: ErrType) -> Self::OutputErr {
         (self.inspector)(&input_err);
         input_err

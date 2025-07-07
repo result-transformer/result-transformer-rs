@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 use super::LogConfig;
 use crate::sync::flow::ResultFlow;
 
-/// Logs both success and error values using [`LogConfig`].
+/// Step that logs both success and error values according to [`LogConfig`].
 pub struct ResultLogTapStep<OkType, ErrType> {
     ok_log: Option<LogConfig<OkType>>,
     err_log: Option<LogConfig<ErrType>>,
@@ -13,6 +13,7 @@ pub struct ResultLogTapStep<OkType, ErrType> {
 }
 
 impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
+    /// Creates a new [`ResultLogTapStep`] with optional log settings.
     pub fn new(ok_log: Option<LogConfig<OkType>>, err_log: Option<LogConfig<ErrType>>) -> Self {
         Self {
             ok_log,
@@ -21,6 +22,10 @@ impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
         }
     }
 
+    /// Creates a step that logs only the success value.
+    ///
+    /// * `level` - log level to use
+    /// * `format` - formatter for the success value
     pub fn with_ok_log(level: log::Level, format: fn(&OkType) -> String) -> Self {
         Self {
             ok_log: Some(LogConfig::new(level, format)),
@@ -29,6 +34,7 @@ impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
         }
     }
 
+    /// Creates a step that logs only the error value.
     pub fn with_err_log(level: log::Level, format: fn(&ErrType) -> String) -> Self {
         Self {
             ok_log: None,
@@ -37,6 +43,7 @@ impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
         }
     }
 
+    /// Creates a step that logs both success and error values.
     pub fn with_both_logs(
         ok_level: log::Level,
         ok_format: fn(&OkType) -> String,
@@ -50,6 +57,7 @@ impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
         }
     }
 
+    /// Creates a step that performs no logging.
     pub fn silent() -> Self {
         Self {
             ok_log: None,
@@ -63,6 +71,8 @@ impl<OkType, ErrType> ResultFlow<OkType, ErrType> for ResultLogTapStep<OkType, E
     type OutputOk = OkType;
     type OutputErr = ErrType;
 
+    /// Implementation of [`ResultFlow::apply_result`].
+    /// Logs according to the configuration and then returns the original value.
     fn apply_result(
         &self,
         input_result: Result<OkType, ErrType>,

@@ -1,8 +1,8 @@
-//! Conditional branching steps.
+//! Steps that branch the execution flow based on a condition.
 //!
-//! Each step in this module evaluates a predicate and then selects one of two
-//! flows to continue execution. Different variants target the `Ok`, `Err`, or
-//! entire `Result` value.
+//! Each step evaluates a predicate and delegates to different flows for the
+//! `true` and `false` cases. Variants exist for branching on `Ok` values,
+//! `Err` values or the entire `Result`.
 
 mod err_if_step;
 mod ok_if_step;

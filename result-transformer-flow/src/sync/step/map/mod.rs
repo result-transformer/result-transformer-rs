@@ -1,8 +1,8 @@
-//! Steps that map values to new ones.
+//! Mapping steps that convert a value into another value.
 //!
-//! Each mapping step applies a closure to the incoming value and produces a
-//! new one. Specific implementations operate on the success value, error
-//! value, or both sides of a `Result`.
+//! Each step applies a closure to the input to produce a new value. Variants
+//! exist for mapping only the success variant, only the error variant or both
+//! sides of a `Result`.
 
 mod err_map_step;
 mod ok_map_step;

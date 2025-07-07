@@ -1,12 +1,22 @@
+//! Flow utilities for transforming only the `Err` variant asynchronously.
+//!
+//! These helpers are built on top of [`async-trait`](https://docs.rs/async-trait)
+//! and therefore carry a small runtime penalty. When possible, define your own
+//! `AsyncErrTransformer` instead of composing these flows.
+
 use result_transformer_dependencies::*;
 use std::marker::PhantomData;
 
+/// A transformation that only manipulates the error value of an asynchronous computation.
 #[async_trait::async_trait]
 pub trait AsyncErrFlow<InputErr> {
+    /// Resulting error type after the flow is applied.
     type OutputErr;
 
+    /// Apply the transformation to the given error value.
     async fn apply_err(&self, input: InputErr) -> Self::OutputErr;
 
+    /// Chain another [`AsyncErrFlow`] to process the output of this one.
     fn then_err<NextFlow>(self, next: NextFlow) -> AsyncErrFlowChain<Self, NextFlow, InputErr>
     where
         Self: Sized,
@@ -20,6 +30,7 @@ pub trait AsyncErrFlow<InputErr> {
     }
 }
 
+/// Composition of two [`AsyncErrFlow`] implementations.
 pub struct AsyncErrFlowChain<Head, Next, InputErr>
 where
     Head: AsyncErrFlow<InputErr>,

@@ -1,12 +1,22 @@
+//! Flow utilities for transforming only the `Ok` variant asynchronously.
+//!
+//! These helpers depend on [`async-trait`](https://docs.rs/async-trait) and may
+//! introduce runtime overhead. When possible, implement an `AsyncOkTransformer`
+//! yourself instead of composing flows.
+
 use result_transformer_dependencies::*;
 use std::marker::PhantomData;
 
+/// A transformation that operates on the success value of an asynchronous computation.
 #[async_trait::async_trait]
 pub trait AsyncOkFlow<InputOk> {
+    /// Resulting success type after the flow is applied.
     type OutputOk;
 
+    /// Apply the transformation to the provided value.
     async fn apply_ok(&self, input: InputOk) -> Self::OutputOk;
 
+    /// Chain another [`AsyncOkFlow`] to be executed after this one.
     fn then_ok<NextFlow>(self, next: NextFlow) -> AsyncOkFlowChain<Self, NextFlow, InputOk>
     where
         Self: Sized,
@@ -20,6 +30,7 @@ pub trait AsyncOkFlow<InputOk> {
     }
 }
 
+/// Composition of two [`AsyncOkFlow`] implementations.
 pub struct AsyncOkFlowChain<Head, Next, InputOk>
 where
     Head: AsyncOkFlow<InputOk>,

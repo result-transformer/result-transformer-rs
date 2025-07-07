@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
-/// Chooses between two [`OkFlow`]s based on a predicate.
+/// Step that executes one of two [`OkFlow`] branches depending on a condition.
 pub struct OkIfStep<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow> {
     condition: ConditionFn,
     then_flow: ThenFlow,
@@ -17,6 +17,11 @@ where
     ThenFlow: OkFlow<InputOk, OutputOk = OutputOk>,
     ElseFlow: OkFlow<InputOk, OutputOk = OutputOk>,
 {
+    /// Creates a new [`OkIfStep`].
+    ///
+    /// * `condition` - predicate that evaluates the successful value
+    /// * `then_flow` - flow run when the predicate returns `true`
+    /// * `else_flow` - flow run when the predicate returns `false`
     pub fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
         Self {
             condition,
@@ -36,6 +41,8 @@ where
 {
     type OutputOk = OutputOk;
 
+    /// Implementation of [`OkFlow::apply_ok`].
+    /// Evaluates the condition and forwards the value to the chosen flow.
     fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
         if (self.condition)(&input_ok) {
             self.then_flow.apply_ok(input_ok)

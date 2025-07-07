@@ -4,7 +4,7 @@ use std::marker::PhantomData;
 use super::LogConfig;
 use crate::sync::flow::ResultFlow;
 
-/// Logs both success and error values and returns them unchanged.
+/// Step that logs both success and error values without modifying them.
 pub struct ResultLogBothStep<OkType, ErrType> {
     ok_log: LogConfig<OkType>,
     err_log: LogConfig<ErrType>,
@@ -12,6 +12,7 @@ pub struct ResultLogBothStep<OkType, ErrType> {
 }
 
 impl<OkType, ErrType> ResultLogBothStep<OkType, ErrType> {
+    /// Creates the step using complete log settings.
     pub fn new(ok_log: LogConfig<OkType>, err_log: LogConfig<ErrType>) -> Self {
         Self {
             ok_log,
@@ -20,6 +21,7 @@ impl<OkType, ErrType> ResultLogBothStep<OkType, ErrType> {
         }
     }
 
+    /// Creates the step with separate log levels and format functions.
     pub fn new_levels(
         ok_level: log::Level,
         ok_format: fn(&OkType) -> String,
@@ -38,6 +40,8 @@ impl<OkType, ErrType> ResultFlow<OkType, ErrType> for ResultLogBothStep<OkType, 
     type OutputOk = OkType;
     type OutputErr = ErrType;
 
+    /// Implementation of [`ResultFlow::apply_result`].
+    /// Logs the `Result` and then returns the original value.
     fn apply_result(
         &self,
         input_result: Result<OkType, ErrType>,

@@ -1,9 +1,9 @@
-//! Steps that log values using the `log` crate.
+//! Steps that record values using the [`log`] crate.
 //!
-//! These steps record messages through the `log` facade while forwarding the
-//! value to the next step. They are available when the `logging` feature is
-//! enabled and use [`LogConfig`] to determine the logging behavior.
-
+//! Each step logs the received value through the `log` facade and forwards it
+//! unchanged to the next step. They are available only when the `logging`
+//! feature is enabled. Output level and formatting are configured via
+//! [`LogConfig`].
 
 mod err_log_tap_step;
 mod log_config;

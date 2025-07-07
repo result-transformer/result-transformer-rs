@@ -1,16 +1,27 @@
+//! Flow utilities for transforming an entire [`Result`] asynchronously.
+//!
+//! These APIs leverage [`async-trait`](https://docs.rs/async-trait) which
+//! introduces a small amount of overhead. For the best performance, prefer
+//! implementing `AsyncResultTransformer` directly instead of chaining flows.
+
 use result_transformer_dependencies::*;
 use std::marker::PhantomData;
 
+/// A transformation working on `Result` values in an asynchronous context.
 #[async_trait::async_trait]
 pub trait AsyncResultFlow<InputOk, InputErr> {
+    /// Success type produced by the flow.
     type OutputOk;
+    /// Error type produced by the flow.
     type OutputErr;
 
+    /// Apply the transformation to the given [`Result`].
     async fn apply_result(
         &self,
         input: Result<InputOk, InputErr>,
     ) -> Result<Self::OutputOk, Self::OutputErr>;
 
+    /// Chain another [`AsyncResultFlow`] after this one.
     fn then_result<NextFlow>(
         self,
         next: NextFlow,
@@ -27,6 +38,7 @@ pub trait AsyncResultFlow<InputOk, InputErr> {
     }
 }
 
+/// Composition of two [`AsyncResultFlow`] implementations.
 pub struct AsyncResultFlowChain<Head, Next, InputOk, InputErr>
 where
     Head: AsyncResultFlow<InputOk, InputErr>,

@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
-/// Executes a closure with the success value and returns its result.
+/// Step that passes the success value to a closure and returns its result.
 pub struct OkTapStep<TapFn, InputOk, OutputOk>
 where
     TapFn: Fn(InputOk) -> OutputOk,
@@ -15,6 +15,9 @@ impl<TapFn, InputOk, OutputOk> OkTapStep<TapFn, InputOk, OutputOk>
 where
     TapFn: Fn(InputOk) -> OutputOk,
 {
+    /// Creates a new [`OkTapStep`].
+    ///
+    /// * `tap` - closure that processes the success value
     pub fn new(tap: TapFn) -> Self {
         Self {
             tap,
@@ -29,6 +32,7 @@ where
 {
     type OutputOk = OutputOk;
 
+    /// Implementation of [`OkFlow::apply_ok`].
     fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
         (self.tap)(input_ok)
     }

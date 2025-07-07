@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
-/// Inspects the entire [`Result`] without altering it.
+/// Step that inspects the entire `Result` without modifying it.
 pub struct ResultInspectStep<InspectorFn, InputOk, InputErr>
 where
     InspectorFn: Fn(&Result<InputOk, InputErr>),
@@ -15,6 +15,9 @@ impl<InspectorFn, InputOk, InputErr> ResultInspectStep<InspectorFn, InputOk, Inp
 where
     InspectorFn: Fn(&Result<InputOk, InputErr>),
 {
+    /// Creates a new [`ResultInspectStep`].
+    ///
+    /// * `inspector` - function receiving a reference to the `Result`
     pub fn new(inspector: InspectorFn) -> Self {
         Self {
             inspector,
@@ -31,6 +34,9 @@ where
     type OutputOk = InputOk;
     type OutputErr = InputErr;
 
+    /// Implementation of [`ResultFlow::apply_result`].
+    ///
+    /// Passes the `Result` to the inspector and returns the original value.
     fn apply_result(
         &self,
         input_result: Result<InputOk, InputErr>,

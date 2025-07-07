@@ -1,8 +1,7 @@
-//! Steps that execute side effects while forwarding the value.
+//! Steps that perform side effects while forwarding the value.
 //!
-//! Tap steps allow a closure to run for its side effects using the current
-//! value. After the closure completes, the value (or a mapped version) is
-//! forwarded to the next step unmodified.
+//! Tap steps pass the current value to a closure to run side effects and then
+//! forward the value (or a transformed value) to the next step.
 
 mod err_tap_step;
 mod ok_tap_step;

@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::ResultFlow;
 
-/// Conditionally applies one of two [`ResultFlow`]s.
+/// Step that applies one of two [`ResultFlow`]s depending on a predicate.
 pub struct ResultIfStep<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow> {
     condition: ConditionFn,
     then_flow: ThenFlow,
@@ -17,6 +17,11 @@ where
     ThenFlow: ResultFlow<InputOk, InputErr, OutputOk = OutputOk, OutputErr = OutputErr>,
     ElseFlow: ResultFlow<InputOk, InputErr, OutputOk = OutputOk, OutputErr = OutputErr>,
 {
+    /// Creates a new [`ResultIfStep`].
+    ///
+    /// * `condition` - function that inspects the entire `Result`
+    /// * `then_flow` - flow executed when the predicate returns `true`
+    /// * `else_flow` - flow executed when the predicate returns `false`
     pub fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
         Self {
             condition,
@@ -38,6 +43,9 @@ where
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
+    /// Implementation of [`ResultFlow::apply_result`].
+    ///
+    /// Delegates processing to `then_flow` or `else_flow` based on the predicate.
     fn apply_result(
         &self,
         input_result: Result<InputOk, InputErr>,

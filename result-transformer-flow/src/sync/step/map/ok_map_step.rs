@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::sync::flow::OkFlow;
 
-/// Maps the successful value using the provided function.
+/// Step that maps the success value using a provided function.
 pub struct OkMapStep<MapperFn, InputOk, OutputOk>
 where
     MapperFn: Fn(InputOk) -> OutputOk,
@@ -15,6 +15,9 @@ impl<MapperFn, InputOk, OutputOk> OkMapStep<MapperFn, InputOk, OutputOk>
 where
     MapperFn: Fn(InputOk) -> OutputOk,
 {
+    /// Creates a new [`OkMapStep`].
+    ///
+    /// * `mapper` - function converting the success value to another type
     pub fn new(mapper: MapperFn) -> Self {
         Self {
             mapper,
@@ -29,6 +32,7 @@ where
 {
     type OutputOk = OutputOk;
 
+    /// Implementation of [`OkFlow::apply_ok`].
     fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
         (self.mapper)(input_ok)
     }

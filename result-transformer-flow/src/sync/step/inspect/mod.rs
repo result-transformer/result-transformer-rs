@@ -1,8 +1,8 @@
 //! Steps that inspect values without modifying them.
 //!
-//! These steps are useful for debugging or logging purposes. They run a
-//! user-provided closure with a reference to the current value and then pass
-//! the value through without alteration.
+//! They are primarily useful for debugging or logging. A user-provided
+//! closure receives a reference to the current value, performs side effects
+//! and then forwards the original value to the next step.
 
 mod err_inspect_step;
 mod ok_inspect_step;
