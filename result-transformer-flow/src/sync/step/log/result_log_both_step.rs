@@ -49,7 +49,7 @@ impl<OkType, ErrType> ResultFlow<OkType, ErrType> for ResultLogBothStep<OkType, 
                 (self.ok_log.log_format())(ok)
             ),
             Err(err) => log::log!(
-                *self.ok_log.log_level(),
+                *self.err_log.log_level(),
                 "{}",
                 (self.err_log.log_format())(err)
             ),
