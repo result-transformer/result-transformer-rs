@@ -1,4 +1,3 @@
-mod ok;
-
 mod err;
+mod ok;
 mod result;

@@ -7,7 +7,6 @@
 //!  $ cargo test --package result-transformer-test --lib --features flow-sync-log-step -- flow::sync::ok::ok_sync_log_flow_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
-
 #[allow(unused_imports)]
 use logtest::*;
 #[allow(unused_imports)]

@@ -1,7 +1,7 @@
 use result_transformer_dependencies::*;
 
-use result_transformer::async_::{AsyncOkTransformer, AsyncErrTransformer, AsyncResultTransformer};
 use async_trait::async_trait;
+use result_transformer::async_::{AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer};
 
 struct AsyncTransformer;
 
@@ -20,7 +20,6 @@ impl AsyncErrTransformer<&'static str> for AsyncTransformer {
         format!("AE:{}", err)
     }
 }
-
 
 #[async_trait]
 impl AsyncResultTransformer<i32, &'static str> for AsyncTransformer {
