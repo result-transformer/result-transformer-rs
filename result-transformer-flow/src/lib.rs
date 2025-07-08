@@ -13,6 +13,8 @@
 //! behavior, consider implementing the `Async*Transformer` traits directly
 //! instead of relying on these flow utilities.
 
+mod __internal;
+
 #[cfg(feature = "sync")]
 pub mod sync;
 
