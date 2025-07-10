@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncResultFlow;
@@ -39,7 +37,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType> AsyncResultFlow<OkType, ErrType>
     for ResultInspectBothStepAsync<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
 where
@@ -51,14 +48,16 @@ where
     type OutputOk = OkType;
     type OutputErr = ErrType;
 
-    async fn apply_result(
-        &self,
+    fn apply_result_async<'a>(
+        &'a self,
         input_result: Result<OkType, ErrType>,
-    ) -> Result<Self::OutputOk, Self::OutputErr> {
-        match &input_result {
-            Ok(ok) => (self.ok_inspector)(ok).await,
-            Err(err) => (self.err_inspector)(err).await,
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
+        async {
+            match &input_result {
+                Ok(ok) => (self.ok_inspector)(ok).await,
+                Err(err) => (self.err_inspector)(err).await,
+            }
+            input_result
         }
-        input_result
     }
 }

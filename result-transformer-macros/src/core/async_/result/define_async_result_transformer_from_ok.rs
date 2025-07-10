@@ -11,8 +11,13 @@ macro_rules! define_async_result_transformer_from_ok {
         transform_ok = $transform_ok:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _type_check(f: fn($input_ok) -> Result<$output_ok, $output_err>) {}
-            _type_check($transform_ok);
+            fn _type_check<F, Fut>(_f: &F)
+            where
+                F: Fn($input_ok) -> Fut,
+                Fut: ::core::future::Future<Output = Result<$output_ok, $output_err>> + Send,
+            {
+            }
+            _type_check(&$transform_ok);
         };
 
         result_transformer::macros::define_async_result_transformer! {
@@ -22,9 +27,11 @@ macro_rules! define_async_result_transformer_from_ok {
             output_ok = $output_ok,
             output_err = $output_err,
             transform_result = |result: Result<$input_ok, $input_err>| {
-                match result {
-                    Ok(ok) => ($transform_ok)(ok),
-                    Err(err) => Err(err),
+                async move{
+                    match result {
+                        Ok(ok) => ($transform_ok)(ok).await,
+                        Err(err) => Err(err),
+                    }
                 }
             }
         }

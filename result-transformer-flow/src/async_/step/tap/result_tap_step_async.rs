@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncResultFlow;
@@ -46,7 +44,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<TapFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
     for ResultTapStepAsync<TapFn, InputOk, InputErr, OutputOk, OutputErr>
 where
@@ -63,10 +60,10 @@ where
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
-    async fn apply_result(
-        &self,
+    fn apply_result_async<'a>(
+        &'a self,
         input_result: Result<InputOk, InputErr>,
-    ) -> Result<Self::OutputOk, Self::OutputErr> {
-        (self.tap)(input_result).await
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
+        (self.tap)(input_result)
     }
 }

@@ -1,10 +1,9 @@
-//! ok_sync_log_flow_test.rs – Unit tests for **OkFlow** steps involving log output
 //!
-//! This file is located under `result-transformer-test/src/flow/sync/ok/`.
-//! All tests validate the logging behavior of log-capable OkFlow steps using the public API of **result-transformer**.
+//! Located under `result-transformer-test/src/flow/sync/ok/`.
+//! These tests validate logging behavior of log-capable OkStep implementations using the public API of **result-transformer**.
 //! ────────────────────────────────────────────────────────────────
 //!  HOW TO RUN
-//!  $ cargo test --package result-transformer-test --lib --features flow-sync-log-step -- flow::sync::ok::ok_sync_log_flow_test --show-output
+//!  $ cargo test --package result-transformer-test --lib --features flow-sync-log-step -- flow::sync::ok::ok_sync_log_step_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
 #[allow(unused_imports)]
@@ -16,6 +15,13 @@ use result_transformer::flow::sync::*;
 
 /// `TapLogOkStep` should emit exactly one log record containing the
 /// user-formatted message at the requested log level.
+/// 
+/// ⚠ WARNING ⚠
+/// This test module uses `logtest::Logger`, which internally calls `log::set_logger()`.
+/// The `log` crate only allows setting the logger once globally; any subsequent call will panic.
+///
+/// Therefore, if multiple test functions call `Logger::start()`, tests may fail
+/// regardless of whether they are run sequentially or in parallel.
 #[test]
 fn tap_log_ok_step_emits_log() {
     let mut logger = logtest::Logger::start();

@@ -36,7 +36,9 @@ macro_rules! define_async_result_transformer_from_result_flow {
             output_ok = $output_ok,
             output_err = $output_err,
             transform_result = |result: Result<$input_ok, $input_err>| {
-                result_transformer::flow::async_::AsyncResultFlow::apply_result(&$flow, result)
+                async move{
+                    result_transformer::flow::async_::AsyncResultFlow::apply_result_async(&$flow, result).await
+                }
             }
         }
     };

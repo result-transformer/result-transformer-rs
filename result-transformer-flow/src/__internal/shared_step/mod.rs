@@ -14,13 +14,11 @@
 //! - [`tap`]: run side effects while forwarding values
 //! - [`log`] *(requires the `logging` feature)*: log output via the `log` crate
 
-mod if_;
 mod inspect;
 mod map;
 mod noop;
 mod tap;
 
-pub use if_::*;
 pub use inspect::*;
 pub use map::*;
 pub use noop::*;

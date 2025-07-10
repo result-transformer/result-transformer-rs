@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncOkFlow;
@@ -33,8 +31,8 @@ where
     }
 }
 
-#[async_trait::async_trait]
-impl<MapperFn, InputOk, OutputOk> AsyncOkFlow<InputOk> for OkMapStepAsync<MapperFn, InputOk, OutputOk>
+impl<MapperFn, InputOk, OutputOk> AsyncOkFlow<InputOk>
+    for OkMapStepAsync<MapperFn, InputOk, OutputOk>
 where
     MapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
@@ -42,7 +40,10 @@ where
 {
     type OutputOk = OutputOk;
 
-    async fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
-        (self.mapper)(input_ok).await
+    fn apply_ok_async<'a>(
+        &'a self,
+        input_ok: InputOk,
+    ) -> impl Future<Output = Self::OutputOk> + Send + 'a {
+        (self.mapper)(input_ok)
     }
 }

@@ -7,14 +7,14 @@ define_async_ok_transformer!(
     impl_for = AsyncTransformer,
     input_ok = i32,
     output_ok = i32,
-    transform_ok = |ok| ok * 2
+    transform_ok = |ok| async move { ok * 2 }
 );
 
 define_async_err_transformer!(
     impl_for = AsyncTransformer,
     input_err = &'static str,
     output_err = String,
-    transform_err = |err| format!("E:{}", err)
+    transform_err = |err| async move { format!("E:{}", err) }
 );
 
 impl_async_result_transformer_from_parts!(impl_for = AsyncTransformer, input_ok = i32, input_err = &'static str);

@@ -14,12 +14,12 @@ macro_rules! define_ok_transformer_from_ok_flow {
         flow = $flow:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _assert<F>(_: &F)
+            fn _flow_type_check<F>(_: &F)
             where
                 F: result_transformer::flow::sync::OkFlow<$input_ok, OutputOk = $output_ok>,
             {
             }
-            _assert(&$flow);
+            _flow_type_check(&$flow);
         };
 
         result_transformer::macros::define_ok_transformer! {

@@ -1,12 +1,9 @@
-use result_transformer_dependencies::*;
-
 /// Asynchronously transforms an entire `Result<InputOk, InputErr>` into
 /// `Result<OutputOk, OutputErr>`.
 ///
 /// This is the asynchronous analogue to [`crate::sync::ResultTransformer`].
 /// Implementations may perform any async operations required to create the new
 /// `Result`.
-#[async_trait::async_trait]
 pub trait AsyncResultTransformer<InputOk, InputErr> {
     /// Output type for successful results.
     type OutputOk;
@@ -21,8 +18,8 @@ pub trait AsyncResultTransformer<InputOk, InputErr> {
     /// # Returns
     /// A future resolving to a new `Result` with transformed `Ok` and `Err`
     /// values.
-    async fn transform_async(
-        &self,
+    fn transform_async<'a>(
+        &'a self,
         result: Result<InputOk, InputErr>,
-    ) -> Result<Self::OutputOk, Self::OutputErr>;
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a;
 }

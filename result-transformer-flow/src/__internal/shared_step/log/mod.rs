@@ -14,5 +14,5 @@ mod result_log_tap_step;
 pub use err_log_tap_step::ErrLogTapStep;
 pub use log_config::LogConfig;
 pub use ok_log_tap_step::OkLogTapStep;
-pub use result_log_both_step::ResultLogBothStep;
+pub use result_log_both_step::ResultLogTapBothStep;
 pub use result_log_tap_step::ResultLogTapStep;

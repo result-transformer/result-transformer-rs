@@ -1,4 +1,3 @@
-mod if_;
 mod inspect;
 mod map;
 mod noop;

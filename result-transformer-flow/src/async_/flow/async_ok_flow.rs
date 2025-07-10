@@ -4,20 +4,21 @@
 //! introduce runtime overhead. When possible, implement an `AsyncOkTransformer`
 //! yourself instead of composing flows.
 
-use result_transformer_dependencies::*;
 use std::marker::PhantomData;
 
 /// A transformation that operates on the success value of an asynchronous computation.
-#[async_trait::async_trait]
 pub trait AsyncOkFlow<InputOk> {
     /// Resulting success type after the flow is applied.
     type OutputOk;
 
     /// Apply the transformation to the provided value.
-    async fn apply_ok(&self, input: InputOk) -> Self::OutputOk;
+    fn apply_ok_async<'a>(
+        &'a self,
+        input: InputOk,
+    ) -> impl Future<Output = Self::OutputOk> + Send + 'a;
 
     /// Chain another [`AsyncOkFlow`] to be executed after this one.
-    fn then_ok<NextFlow>(self, next: NextFlow) -> AsyncOkFlowChain<Self, NextFlow, InputOk>
+    fn then_async_ok<NextFlow>(self, next: NextFlow) -> AsyncOkFlowChain<Self, NextFlow, InputOk>
     where
         Self: Sized,
         NextFlow: AsyncOkFlow<Self::OutputOk>,
@@ -41,7 +42,6 @@ where
     _phantom: PhantomData<InputOk>,
 }
 
-#[async_trait::async_trait]
 impl<Head, Next, InputOk> AsyncOkFlow<InputOk> for AsyncOkFlowChain<Head, Next, InputOk>
 where
     Head: AsyncOkFlow<InputOk> + Send + Sync,
@@ -50,8 +50,13 @@ where
 {
     type OutputOk = Next::OutputOk;
 
-    async fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
-        let intermediate = self.head.apply_ok(input_ok).await;
-        self.next.apply_ok(intermediate).await
+    fn apply_ok_async<'a>(
+        &'a self,
+        input_ok: InputOk,
+    ) -> impl Future<Output = Self::OutputOk> + Send + 'a {
+        async {
+            let intermediate = self.head.apply_ok_async(input_ok).await;
+            self.next.apply_ok_async(intermediate).await
+        }
     }
 }

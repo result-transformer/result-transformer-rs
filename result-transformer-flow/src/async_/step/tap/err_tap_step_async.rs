@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncErrFlow;
@@ -33,8 +31,8 @@ where
     }
 }
 
-#[async_trait::async_trait]
-impl<TapFn, InputErr, OutputErr> AsyncErrFlow<InputErr> for ErrTapStepAsync<TapFn, InputErr, OutputErr>
+impl<TapFn, InputErr, OutputErr> AsyncErrFlow<InputErr>
+    for ErrTapStepAsync<TapFn, InputErr, OutputErr>
 where
     TapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
@@ -42,7 +40,10 @@ where
 {
     type OutputErr = OutputErr;
 
-    async fn apply_err(&self, input_err: InputErr) -> Self::OutputErr {
-        (self.tap)(input_err).await
+    fn apply_err_async<'a>(
+        &'a self,
+        input_err: InputErr,
+    ) -> impl Future<Output = Self::OutputErr> + Send + 'a {
+        (self.tap)(input_err)
     }
 }

@@ -16,7 +16,10 @@ macro_rules! define_async_err_transformer_from_err_flow {
         const _: fn() = || {
             fn _flow_type_check<F>(_: &F)
             where
-                F: result_transformer::flow::async_::AsyncErrFlow<$input_err, OutputErr = $output_err>,
+                F: result_transformer::flow::async_::AsyncErrFlow<
+                        $input_err,
+                        OutputErr = $output_err,
+                    > + Send,
             {
             }
             _flow_type_check(&$flow);
@@ -27,7 +30,9 @@ macro_rules! define_async_err_transformer_from_err_flow {
             input_err = $input_err,
             output_err = $output_err,
             transform_err = |err: $input_err| {
-                result_transformer::flow::async_::AsyncErrFlow::apply_err(&$flow, err)
+                async move{
+                    result_transformer::flow::async_::AsyncErrFlow::apply_err_async(&$flow, err).await
+                }
             }
         }
     };

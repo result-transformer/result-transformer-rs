@@ -14,12 +14,13 @@ macro_rules! define_async_ok_transformer_from_ok_flow {
         flow = $flow:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _assert<F>(_: &F)
+            fn _flow_type_check<F>(_: &F)
             where
-                F: result_transformer::flow::async_::AsyncOkFlow<$input_ok, OutputOk = $output_ok>,
+                F: result_transformer::flow::async_::AsyncOkFlow<$input_ok, OutputOk = $output_ok>
+                    + Send,
             {
             }
-            _assert(&$flow);
+            _flow_type_check(&$flow);
         };
 
         result_transformer::macros::define_async_ok_transformer! {
@@ -27,7 +28,9 @@ macro_rules! define_async_ok_transformer_from_ok_flow {
             input_ok = $input_ok,
             output_ok = $output_ok,
             transform_ok = |ok: $input_ok| {
-                result_transformer::flow::async_::AsyncOkFlow::apply_ok(&$flow, ok)
+                async move{
+                    result_transformer::flow::async_::AsyncOkFlow::apply_ok_async(&$flow, ok).await
+                }
             }
         }
     };

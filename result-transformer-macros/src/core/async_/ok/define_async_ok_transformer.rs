@@ -14,14 +14,21 @@ macro_rules! define_async_ok_transformer {
         transform_ok = $transform_ok:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _type_check(transform_ok: fn($input_ok) -> $output_ok) {}
-            _type_check($transform_ok);
+            fn _type_check<F, Fut>(_f: &F)
+            where
+                F: Fn($input_ok) -> Fut,
+                Fut: ::core::future::Future<Output = $output_ok> + Send,
+            {
+            }
+            _type_check(&$transform_ok);
         };
 
-        #[result_transformer::__internal::async_trait::async_trait]
         impl result_transformer::async_::AsyncOkTransformer<$input_ok> for $ty {
             type OutputOk = $output_ok;
-            async fn transform_ok_async(&self, ok: $input_ok) -> Self::OutputOk {
+            fn transform_ok_async<'a>(
+                &'a self,
+                ok: $input_ok,
+            ) -> impl Future<Output = Self::OutputOk> + Send + 'a {
                 ($transform_ok)(ok)
             }
         }

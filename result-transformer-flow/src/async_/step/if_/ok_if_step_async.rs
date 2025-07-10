@@ -1,8 +1,6 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
-use crate::{async_::AsyncOkFlow};
+use crate::async_::AsyncOkFlow;
 
 /// Step that executes one of two [`AsyncOkFlow`] branches depending on a condition.
 #[derive(Debug, Clone, Copy)]
@@ -37,7 +35,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow> AsyncOkFlow<InputOk>
     for OkIfStepAsync<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow>
 where
@@ -51,11 +48,16 @@ where
 
     /// Implementation of [`AsyncOkFlow::apply_ok`].
     /// Evaluates the condition and forwards the value to the chosen flow.
-    async fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
-        if (self.condition)(&input_ok).await {
-            self.then_flow.apply_ok(input_ok).await
-        } else {
-            self.else_flow.apply_ok(input_ok).await
+    fn apply_ok_async<'a>(
+        &'a self,
+        input_ok: InputOk,
+    ) -> impl Future<Output = Self::OutputOk> + Send + 'a {
+        async {
+            if (self.condition)(&input_ok).await {
+                self.then_flow.apply_ok_async(input_ok).await
+            } else {
+                self.else_flow.apply_ok_async(input_ok).await
+            }
         }
     }
 }

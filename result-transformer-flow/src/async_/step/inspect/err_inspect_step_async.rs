@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncErrFlow;
@@ -31,7 +29,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<InspectorFn, ErrType> AsyncErrFlow<ErrType> for ErrInspectStepAsync<InspectorFn, ErrType>
 where
     InspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
@@ -39,8 +36,13 @@ where
 {
     type OutputErr = ErrType;
 
-    async fn apply_err(&self, input_err: ErrType) -> Self::OutputErr {
-        (self.inspector)(&input_err).await;
-        input_err
+    fn apply_err_async<'a>(
+        &'a self,
+        input_err: ErrType,
+    ) -> impl Future<Output = Self::OutputErr> + Send + 'a {
+        async {
+            (self.inspector)(&input_err).await;
+            input_err
+        }
     }
 }

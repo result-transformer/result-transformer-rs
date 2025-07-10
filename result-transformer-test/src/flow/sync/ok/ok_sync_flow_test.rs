@@ -1,7 +1,7 @@
-//! ok_sync_flow_test.rs – Comprehensive unit-tests for every **OkFlow / OkStep**
+//! ok_sync_flow_test.rs – OkFlow specific tests
 //!
-//! This file is meant to live under `result-transformer-test/src/flow/sync/ok/`.
-//! All tests rely only on the public API of **result-transformer**.
+//! This file lives under `result-transformer-test/src/flow/sync/ok/`.
+//! It contains tests focusing on flow composition using the public API of **result-transformer**.
 //!
 //! ────────────────────────────────────────────────────────────────
 //!  HOW TO RUN
@@ -12,55 +12,6 @@
 use result_transformer::flow::sync::*;
 #[allow(unused_imports)]
 use std::sync::atomic::{AtomicUsize, Ordering};
-
-/// `MapOkStep` must perform a pure *value* transformation.
-#[test]
-fn map_ok_step_transforms() {
-    let step = OkMapStep::new(|x: i32| x * 2);
-    assert_eq!(step.apply_ok(21), 42);
-}
-
-/// `TapOkStep` can mutate the value **and** perform side-effects.
-#[test]
-fn tap_ok_step_works() {
-    let step = OkTapStep::new(|x: &str| format!("Hello, {x}!"));
-    assert_eq!(step.apply_ok("Rust"), "Hello, Rust!");
-}
-
-/// `InspectOkStep` should run side-effects only; the value is
-/// returned unchanged.
-#[test]
-fn inspect_ok_step_side_effect_only() {
-    static CALLS: AtomicUsize = AtomicUsize::new(0);
-
-    let step = OkInspectStep::new(|_: &i32| {
-        CALLS.fetch_add(1, Ordering::SeqCst);
-    });
-
-    let out = step.apply_ok(7);
-    assert_eq!(out, 7);
-    assert_eq!(CALLS.load(Ordering::SeqCst), 1);
-}
-
-/// `NoopOkStep` must be the identity function.
-#[test]
-fn noop_ok_step_identity() {
-    let step = OkNoopStep::<u8>::new();
-    assert_eq!(step.apply_ok(255), 255);
-}
-
-/// `IfOkStep` chooses the correct branch (`then_flow` vs `else_flow`)
-/// based on the user-supplied predicate.
-#[test]
-fn if_ok_step_branches() {
-    let even_flow = OkMapStep::new(|x: i32| x / 2); // even  → half
-    let odd_flow = OkMapStep::new(|x: i32| x * 3 + 1); // odd   → 3n+1
-
-    let branch = OkIfStep::new(|x: &i32| x % 2 == 0, even_flow, odd_flow);
-
-    assert_eq!(branch.apply_ok(10), 5); // even
-    assert_eq!(branch.apply_ok(11), 34); // odd
-}
 
 /// `then_ok` must chain two `OkFlow`s in sequence.
 #[test]

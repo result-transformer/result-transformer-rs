@@ -1,10 +1,10 @@
 //! Async implementation of err if step.
 
-use result_transformer_dependencies::*;
+use crate::{
+    async_::AsyncOkFlow,
+    sync::{flow::OkFlow, step::OkIfStep},
+};
 
-use crate::{__internal::shared_step::OkIfStep, async_::AsyncOkFlow, sync::OkFlow};
-
-#[async_trait::async_trait]
 impl<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow> AsyncOkFlow<InputOk>
     for OkIfStep<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow>
 where
@@ -16,7 +16,10 @@ where
 {
     type OutputOk = OutputOk;
 
-    async fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
-        self.apply(input_ok)
+    fn apply_ok_async<'a>(
+        &'a self,
+        input_ok: InputOk,
+    ) -> impl Future<Output = Self::OutputOk> + Send + 'a {
+        async { self.apply(input_ok) }
     }
 }

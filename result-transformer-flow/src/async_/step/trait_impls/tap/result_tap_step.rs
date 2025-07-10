@@ -1,11 +1,8 @@
 //! Async implementation of result tap step.
 
-use result_transformer_dependencies::*;
-
 use crate::__internal::shared_step::ResultTapStep;
 use crate::async_::AsyncResultFlow;
 
-#[async_trait::async_trait]
 impl<TapFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
     for ResultTapStep<TapFn, InputOk, InputErr, OutputOk, OutputErr>
 where
@@ -18,10 +15,10 @@ where
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
-    async fn apply_result(
-        &self,
+    fn apply_result_async<'a>(
+        &'a self,
         input_result: Result<InputOk, InputErr>,
-    ) -> Result<Self::OutputOk, Self::OutputErr> {
-        self.apply(input_result)
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
+        async { self.apply(input_result) }
     }
 }

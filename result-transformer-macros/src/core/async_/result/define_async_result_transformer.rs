@@ -22,23 +22,22 @@ macro_rules! define_async_result_transformer {
         transform_result = $transform_result:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _type_check(
-                transform_result: fn(
-                    Result<$input_ok, $input_err>,
-                ) -> Result<$output_ok, $output_err>,
-            ) {
+            fn _type_check<F, Fut>(_f: &F)
+            where
+                F: Fn(Result<$input_ok, $input_err>) -> Fut,
+                Fut: ::core::future::Future<Output = Result<$output_ok, $output_err>> + Send,
+            {
             }
-            _type_check($transform_result);
+            _type_check(&$transform_result);
         };
 
-        #[result_transformer::__internal::async_trait::async_trait]
         impl result_transformer::async_::AsyncResultTransformer<$input_ok, $input_err> for $ty {
             type OutputOk = $output_ok;
             type OutputErr = $output_err;
-            async fn transform_async(
-                &self,
+            fn transform_async<'a>(
+                &'a self,
                 result: Result<$input_ok, $input_err>,
-            ) -> Result<Self::OutputOk, Self::OutputErr> {
+            ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
                 ($transform_result)(result)
             }
         }

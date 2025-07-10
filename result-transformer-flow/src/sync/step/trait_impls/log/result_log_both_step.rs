@@ -1,8 +1,8 @@
 use crate::sync::flow::ResultFlow;
 
-use crate::__internal::shared_step::ResultLogBothStep;
+use crate::__internal::shared_step::ResultLogTapBothStep;
 
-impl<OkType, ErrType> ResultFlow<OkType, ErrType> for ResultLogBothStep<OkType, ErrType> {
+impl<OkType, ErrType> ResultFlow<OkType, ErrType> for ResultLogTapBothStep<OkType, ErrType> {
     type OutputOk = OkType;
     type OutputErr = ErrType;
 

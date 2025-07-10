@@ -1,3 +1,11 @@
+//! define_transformer_test.rs – Tests for synchronous transformer macros
+//!
+//! Located at `result-transformer-test/src/core_macros/sync/`.
+//! ────────────────────────────────────────────────────────────────
+//!  HOW TO RUN
+//!  $ cargo test --package result-transformer-test --lib --features core-sync-macros -- core_macros::sync::define_transformer_test --show-output
+//! ────────────────────────────────────────────────────────────────
+
 use result_transformer::macros::*;
 
 struct SyncTransformer;

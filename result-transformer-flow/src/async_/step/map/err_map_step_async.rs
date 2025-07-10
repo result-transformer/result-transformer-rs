@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncErrFlow;
@@ -8,7 +6,7 @@ use crate::async_::AsyncErrFlow;
 #[derive(Debug, Clone, Copy)]
 pub struct ErrMapStepAsync<MapperFn, InputErr, OutputErr>
 where
-    MapperFn: Fn(InputErr)  -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
+    MapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
 {
@@ -18,7 +16,7 @@ where
 
 impl<MapperFn, InputErr, OutputErr> ErrMapStepAsync<MapperFn, InputErr, OutputErr>
 where
-    MapperFn: Fn(InputErr)  -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
+    MapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
 {
@@ -33,16 +31,19 @@ where
     }
 }
 
-#[async_trait::async_trait]
-impl<MapperFn, InputErr, OutputErr> AsyncErrFlow<InputErr> for ErrMapStepAsync<MapperFn, InputErr, OutputErr>
+impl<MapperFn, InputErr, OutputErr> AsyncErrFlow<InputErr>
+    for ErrMapStepAsync<MapperFn, InputErr, OutputErr>
 where
-    MapperFn: Fn(InputErr)  -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
+    MapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
 {
     type OutputErr = OutputErr;
 
-    async fn apply_err(&self, input_err: InputErr) -> Self::OutputErr {
-        (self.mapper)(input_err).await
+    fn apply_err_async<'a>(
+        &'a self,
+        input_err: InputErr,
+    ) -> impl Future<Output = Self::OutputErr> + Send + 'a {
+        (self.mapper)(input_err)
     }
 }

@@ -1,11 +1,9 @@
 use result_transformer_dependencies::*;
 
-use async_trait::async_trait;
 use result_transformer::async_::{AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer};
 
 struct AsyncTransformer;
 
-#[async_trait]
 impl AsyncOkTransformer<i32> for AsyncTransformer {
     type OutputOk = i64;
     async fn transform_ok_async(&self, ok: i32) -> Self::OutputOk {
@@ -13,7 +11,6 @@ impl AsyncOkTransformer<i32> for AsyncTransformer {
     }
 }
 
-#[async_trait]
 impl AsyncErrTransformer<&'static str> for AsyncTransformer {
     type OutputErr = String;
     async fn transform_err_async(&self, err: &'static str) -> Self::OutputErr {
@@ -21,7 +18,6 @@ impl AsyncErrTransformer<&'static str> for AsyncTransformer {
     }
 }
 
-#[async_trait]
 impl AsyncResultTransformer<i32, &'static str> for AsyncTransformer {
     type OutputOk = <Self as AsyncOkTransformer<i32>>::OutputOk;
     type OutputErr = <Self as AsyncErrTransformer<&'static str>>::OutputErr;

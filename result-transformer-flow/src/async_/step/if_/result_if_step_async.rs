@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncResultFlow;
@@ -53,7 +51,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
     AsyncResultFlow<InputOk, InputErr>
     for ResultIfStepAsync<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
@@ -78,14 +75,16 @@ where
     /// Implementation of [`AsyncResultFlow::apply_result`].
     ///
     /// Delegates processing to `then_flow` or `else_flow` based on the predicate.
-    async fn apply_result(
-        &self,
+    fn apply_result_async<'a>(
+        &'a self,
         input_result: Result<InputOk, InputErr>,
-    ) -> Result<Self::OutputOk, Self::OutputErr> {
-        if (self.condition)(&input_result).await {
-            self.then_flow.apply_result(input_result).await
-        } else {
-            self.else_flow.apply_result(input_result).await
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
+        async {
+            if (self.condition)(&input_result).await {
+                self.then_flow.apply_result_async(input_result).await
+            } else {
+                self.else_flow.apply_result_async(input_result).await
+            }
         }
     }
 }

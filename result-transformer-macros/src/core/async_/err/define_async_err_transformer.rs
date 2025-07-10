@@ -14,14 +14,21 @@ macro_rules! define_async_err_transformer {
         transform_err = $transform_err:expr $(,)?
     ) => {
         const _: fn() = || {
-            fn _type_check(transform_err: fn($input_err) -> $output_err) {}
-            _type_check($transform_err);
+            fn _type_check<F, Fut>(_f: &F)
+            where
+                F: Fn($input_err) -> Fut,
+                Fut: ::core::future::Future<Output = $output_err> + Send,
+            {
+            }
+            _type_check(&$transform_err);
         };
 
-        #[result_transformer::__internal::async_trait::async_trait]
         impl result_transformer::async_::AsyncErrTransformer<$input_err> for $ty {
             type OutputErr = $output_err;
-            async fn transform_err_async(&self, err: $input_err) -> Self::OutputErr {
+            fn transform_err_async<'a>(
+                &'a self,
+                err: $input_err,
+            ) -> impl Future<Output = Self::OutputErr> + Send + 'a {
                 ($transform_err)(err)
             }
         }

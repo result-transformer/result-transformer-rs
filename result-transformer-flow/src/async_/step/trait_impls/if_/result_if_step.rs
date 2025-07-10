@@ -1,10 +1,10 @@
 //! Async implementation of result if step.
 
-use result_transformer_dependencies::*;
+use crate::{
+    async_::AsyncResultFlow,
+    sync::{flow::ResultFlow, step::ResultIfStep},
+};
 
-use crate::{__internal::shared_step::ResultIfStep, async_::AsyncResultFlow, sync::ResultFlow};
-
-#[async_trait::async_trait]
 impl<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
     AsyncResultFlow<InputOk, InputErr>
     for ResultIfStep<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
@@ -22,10 +22,10 @@ where
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
-    async fn apply_result(
-        &self,
+    fn apply_result_async<'a>(
+        &'a self,
         input_result: Result<InputOk, InputErr>,
-    ) -> Result<Self::OutputOk, Self::OutputErr> {
-        self.apply(input_result)
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
+        async { self.apply(input_result) }
     }
 }

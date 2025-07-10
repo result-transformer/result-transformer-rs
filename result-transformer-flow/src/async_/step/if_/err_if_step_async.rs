@@ -1,5 +1,3 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncErrFlow;
@@ -39,7 +37,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow> AsyncErrFlow<InputErr>
     for ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow>
 where
@@ -53,11 +50,16 @@ where
 
     /// Implementation of [`AsyncErrFlow::apply_err`].
     /// Evaluates the condition and passes the error to the selected flow.
-    async fn apply_err(&self, input_err: InputErr) -> Self::OutputErr {
-        if (self.condition)(&input_err).await {
-            self.then_flow.apply_err(input_err).await
-        } else {
-            self.else_flow.apply_err(input_err).await
+    fn apply_err_async<'a>(
+        &'a self,
+        input_err: InputErr,
+    ) -> impl Future<Output = Self::OutputErr> + Send + 'a {
+        async {
+            if (self.condition)(&input_err).await {
+                self.then_flow.apply_err_async(input_err).await
+            } else {
+                self.else_flow.apply_err_async(input_err).await
+            }
         }
     }
 }

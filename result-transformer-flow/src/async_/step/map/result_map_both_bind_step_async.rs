@@ -1,13 +1,17 @@
-use result_transformer_dependencies::*;
-
 use std::{marker::PhantomData, pin::Pin};
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that maps success and error values using functions returning a `Result`.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultMapBothBindStepAsync<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
-where
+pub struct ResultMapBothBindStepAsync<
+    OkMapperFn,
+    ErrMapperFn,
+    InputOk,
+    InputErr,
+    OutputOk,
+    OutputErr,
+> where
     OkMapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
         + Send
         + Sync,
@@ -51,7 +55,6 @@ where
     }
 }
 
-#[async_trait::async_trait]
 impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
     AsyncResultFlow<InputOk, InputErr>
     for ResultMapBothBindStepAsync<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
@@ -70,13 +73,13 @@ where
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
 
-    async fn apply_result(
-        &self,
+    fn apply_result_async<'a>(
+        &'a self,
         input_result: Result<InputOk, InputErr>,
-    ) -> Result<Self::OutputOk, Self::OutputErr> {
+    ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
         match input_result {
-            Ok(ok) => (self.ok_mapper)(ok).await,
-            Err(err) => (self.err_mapper)(err).await,
+            Ok(ok) => (self.ok_mapper)(ok),
+            Err(err) => (self.err_mapper)(err),
         }
     }
 }

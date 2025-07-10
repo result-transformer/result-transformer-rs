@@ -7,78 +7,36 @@ use super::LogConfig;
 /// Step that logs both success and error values according to [`LogConfig`].
 #[derive(Debug, Clone, Copy)]
 pub struct ResultLogTapStep<OkType, ErrType> {
-    ok_log: Option<LogConfig<OkType>>,
-    err_log: Option<LogConfig<ErrType>>,
+    log_config: LogConfig<Result<OkType, ErrType>>,
     _phantom: PhantomData<(OkType, ErrType)>,
 }
 
 impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
-    /// Creates a new [`ResultLogTapStep`] with optional log settings.
-    pub fn new(ok_log: Option<LogConfig<OkType>>, err_log: Option<LogConfig<ErrType>>) -> Self {
-        Self {
-            ok_log,
-            err_log,
-            _phantom: PhantomData,
-        }
-    }
-
-    /// Creates a step that logs only the success value.
+    /// Creates a new [`ResultLogTapStep`].
     ///
-    /// * `level` - log level to use
-    /// * `format` - formatter for the success value
-    pub fn with_ok_log(level: log::Level, format: fn(&OkType) -> String) -> Self {
-        Self {
-            ok_log: Some(LogConfig::new(level, format)),
-            err_log: None,
-            _phantom: PhantomData,
-        }
+    /// * `log_level` - log level used for output
+    /// * `log_format` - function that converts the `Result` value into a log message
+    pub fn new(log_level: log::Level, log_format: fn(&Result<OkType, ErrType>) -> String) -> Self {
+        Self::with_log_config(LogConfig::new(log_level, log_format))
     }
 
-    /// Creates a step that logs only the error value.
-    pub fn with_err_log(level: log::Level, format: fn(&ErrType) -> String) -> Self {
+    /// Creates a new [`ResultLogTapStep`] using the provided [`LogConfig`].
+    ///
+    /// * `log_config` - Holds the log level for output and the function
+    ///   that converts the `Result` value into a log message
+    pub fn with_log_config(log_config: LogConfig<Result<OkType, ErrType>>) -> Self {
         Self {
-            ok_log: None,
-            err_log: Some(LogConfig::new(level, format)),
-            _phantom: PhantomData,
-        }
-    }
-
-    /// Creates a step that logs both success and error values.
-    pub fn with_both_logs(
-        ok_level: log::Level,
-        ok_format: fn(&OkType) -> String,
-        err_level: log::Level,
-        err_format: fn(&ErrType) -> String,
-    ) -> Self {
-        Self {
-            ok_log: Some(LogConfig::new(ok_level, ok_format)),
-            err_log: Some(LogConfig::new(err_level, err_format)),
-            _phantom: PhantomData,
-        }
-    }
-
-    /// Creates a step that performs no logging.
-    pub fn silent() -> Self {
-        Self {
-            ok_log: None,
-            err_log: None,
+            log_config,
             _phantom: PhantomData,
         }
     }
 
     pub(crate) fn apply(&self, input_result: Result<OkType, ErrType>) -> Result<OkType, ErrType> {
-        match &input_result {
-            Ok(ok) => {
-                if let Some(ok_log) = &self.ok_log {
-                    log::log!(*ok_log.log_level(), "{}", (ok_log.log_format())(ok));
-                }
-            }
-            Err(err) => {
-                if let Some(err_log) = &self.err_log {
-                    log::log!(*err_log.log_level(), "{}", (err_log.log_format())(err));
-                }
-            }
-        }
+        log::log!(
+            *self.log_config.log_level(),
+            "{}",
+            (self.log_config.log_format())(&input_result)
+        );
         input_result
     }
 }

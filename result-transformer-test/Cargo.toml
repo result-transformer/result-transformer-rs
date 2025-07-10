@@ -36,11 +36,11 @@ flow-async-all = ["flow-async", "flow-async-log-step", "flow-async-macros"]
 flow-sync = ["result-transformer/flow-sync"]
 flow-async = ["result-transformer/flow-async" , "async-deps"]
 
-flow-sync-macros = ["result-transformer/flow-sync-macros"]
-flow-async-macros = ["result-transformer/flow-async-macros" , "async-deps"]
-
 flow-sync-log-step = ["result-transformer/flow-sync-log-step", "flow-sync", "logtest"]
 flow-async-log-step = ["result-transformer/flow-async-log-step", "flow-async", "async-deps", "logtest"]
+
+flow-sync-macros = ["result-transformer/flow-sync-macros", "result-transformer/core-sync-macros"]
+flow-async-macros = ["result-transformer/flow-async-macros", "result-transformer/core-async-macros", "async-deps"]
 
 [dependencies]
 result-transformer-dependencies = { path = "../result-transformer-dependencies", optional = true}
