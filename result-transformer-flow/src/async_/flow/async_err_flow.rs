@@ -1,8 +1,7 @@
 //! Flow utilities for transforming only the `Err` variant asynchronously.
 //!
-//! These helpers are built on top of [`async-trait`](https://docs.rs/async-trait)
-//! and therefore carry a small runtime penalty. When possible, define your own
-//! `AsyncErrTransformer` instead of composing these flows.
+//! These helpers use standard `async fn` and are lightweight. When possible,
+//! define your own `AsyncErrTransformer` instead of composing these flows.
 
 use std::marker::PhantomData;
 

@@ -11,4 +11,4 @@ result-transformer-dependencies = { path = "../result-transformer-dependencies" 
 
 [features]
 sync = []
-async = ["result-transformer-dependencies/async-trait"]
+async = []

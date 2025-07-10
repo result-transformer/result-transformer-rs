@@ -10,7 +10,6 @@ repository.workspace = true
 async-deps = [
     "result-transformer-dependencies/tokio-macros",
     "result-transformer-dependencies/tokio-rt",
-    "result-transformer-dependencies/async-trait",
 ]
 
 all = ["core-all", "flow-all"]

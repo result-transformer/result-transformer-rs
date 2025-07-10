@@ -8,10 +8,9 @@
 //! versions that operate with `async`/`await`.
 //!
 //! The synchronous flows are zero-cost abstractions built purely from trait
-//! bounds.  The async versions rely on the [`async-trait`](https://docs.rs/async-trait)
-//! crate and therefore have extra runtime overhead. When you need asynchronous
-//! behavior, consider implementing the `Async*Transformer` traits directly
-//! instead of relying on these flow utilities.
+//! bounds.  The async versions are implemented with `async fn` and remain
+//! lightweight. If you require maximum performance, implementing the
+//! `Async*Transformer` traits directly may still be preferable.
 
 mod __internal;
 

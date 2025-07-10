@@ -1,8 +1,7 @@
 //! Flow utilities for transforming only the `Ok` variant asynchronously.
 //!
-//! These helpers depend on [`async-trait`](https://docs.rs/async-trait) and may
-//! introduce runtime overhead. When possible, implement an `AsyncOkTransformer`
-//! yourself instead of composing flows.
+//! These helpers are built using `async fn` and are lightweight. When possible,
+//! implement an `AsyncOkTransformer` yourself instead of composing flows.
 
 use std::marker::PhantomData;
 

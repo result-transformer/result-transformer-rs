@@ -1,8 +1,8 @@
 //! Flow utilities for transforming an entire [`Result`] asynchronously.
 //!
-//! These APIs leverage [`async-trait`](https://docs.rs/async-trait) which
-//! introduces a small amount of overhead. For the best performance, prefer
-//! implementing `AsyncResultTransformer` directly instead of chaining flows.
+//! These APIs are implemented with `async fn` and keep overhead low. For the
+//! best performance, prefer implementing `AsyncResultTransformer` directly
+//! instead of chaining flows.
 
 use std::marker::PhantomData;
 
