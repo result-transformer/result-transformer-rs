@@ -1,4 +1,5 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
@@ -10,25 +11,47 @@ pub struct ResultIfStepAsync<
     OutputOk,
     OutputErr,
     ConditionFn,
+    ConditionFut,
     ThenFlow,
     ElseFlow,
-> {
+> where
+    InputOk: Send + Sync,
+    InputErr: Send + Sync,
+    OutputOk: Send + Sync,
+    OutputErr: Send + Sync,
+    ConditionFn: Fn(&Result<InputOk, InputErr>) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
+    ThenFlow: AsyncResultFlow<InputOk, InputErr, OutputOk = OutputOk, OutputErr = OutputErr>
+        + Send
+        + Sync,
+    ElseFlow: AsyncResultFlow<InputOk, InputErr, OutputOk = OutputOk, OutputErr = OutputErr>
+        + Send
+        + Sync,
+{
     condition: ConditionFn,
     then_flow: ThenFlow,
     else_flow: ElseFlow,
-    _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
+    _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
-    ResultIfStepAsync<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
+impl<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
+    ResultIfStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        ConditionFn,
+        ConditionFut,
+        ThenFlow,
+        ElseFlow,
+    >
 where
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
-    ConditionFn: Fn(&Result<InputOk, InputErr>) -> Pin<Box<dyn Future<Output = bool> + Send + Sync>>
-        + Send
-        + Sync,
+    ConditionFn: Fn(&Result<InputOk, InputErr>) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
     ThenFlow: AsyncResultFlow<InputOk, InputErr, OutputOk = OutputOk, OutputErr = OutputErr>
         + Send
         + Sync,
@@ -51,17 +74,25 @@ where
     }
 }
 
-impl<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
+impl<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
     AsyncResultFlow<InputOk, InputErr>
-    for ResultIfStepAsync<InputOk, InputErr, OutputOk, OutputErr, ConditionFn, ThenFlow, ElseFlow>
+    for ResultIfStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        ConditionFn,
+        ConditionFut,
+        ThenFlow,
+        ElseFlow,
+    >
 where
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
-    ConditionFn: Fn(&Result<InputOk, InputErr>) -> Pin<Box<dyn Future<Output = bool> + Send + Sync>>
-        + Send
-        + Sync,
+    ConditionFn: Fn(&Result<InputOk, InputErr>) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
     ThenFlow: AsyncResultFlow<InputOk, InputErr, OutputOk = OutputOk, OutputErr = OutputErr>
         + Send
         + Sync,

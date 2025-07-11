@@ -1,20 +1,25 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncOkFlow;
 
 /// Step that passes the success value to an inspector and returns it.
 #[derive(Debug, Clone, Copy)]
-pub struct OkInspectStepAsync<InspectorFn, OkType>
+pub struct OkInspectStepAsync<OkType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&OkType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
+    OkType: Send + Sync,
+    InspectorFn: Fn(&OkType) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     inspector: InspectorFn,
     _phantom: PhantomData<OkType>,
 }
 
-impl<InspectorFn, OkType> OkInspectStepAsync<InspectorFn, OkType>
+impl<OkType, InspectorFn, InspectorFut> OkInspectStepAsync<OkType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&OkType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
+    OkType: Send + Sync,
+    InspectorFn: Fn(&OkType) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     /// Creates a new [`OkInspectStepAsync`].
     ///
@@ -27,10 +32,12 @@ where
     }
 }
 
-impl<InspectorFn, OkType> AsyncOkFlow<OkType> for OkInspectStepAsync<InspectorFn, OkType>
+impl<OkType, InspectorFn, InspectorFut> AsyncOkFlow<OkType>
+    for OkInspectStepAsync<OkType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&OkType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
     OkType: Send + Sync,
+    InspectorFn: Fn(&OkType) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     type OutputOk = OkType;
 

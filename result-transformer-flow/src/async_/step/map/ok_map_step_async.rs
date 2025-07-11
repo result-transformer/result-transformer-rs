@@ -1,24 +1,27 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncOkFlow;
 
 /// Step that maps the success value using a provided function.
 #[derive(Debug, Clone, Copy)]
-pub struct OkMapStepAsync<MapperFn, InputOk, OutputOk>
+pub struct OkMapStepAsync<InputOk, OutputOk, MapperFn, MapperFut>
 where
-    MapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    MapperFn: Fn(InputOk) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = OutputOk> + Send,
 {
     mapper: MapperFn,
-    _phantom: PhantomData<(InputOk, OutputOk)>,
+    _phantom: PhantomData<InputOk>,
 }
 
-impl<MapperFn, InputOk, OutputOk> OkMapStepAsync<MapperFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, MapperFn, MapperFut> OkMapStepAsync<InputOk, OutputOk, MapperFn, MapperFut>
 where
-    MapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    MapperFn: Fn(InputOk) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = OutputOk> + Send,
 {
     /// Creates a new [`OkMapStepAsync`].
     ///
@@ -31,12 +34,13 @@ where
     }
 }
 
-impl<MapperFn, InputOk, OutputOk> AsyncOkFlow<InputOk>
-    for OkMapStepAsync<MapperFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, MapperFn, MapperFut> AsyncOkFlow<InputOk>
+    for OkMapStepAsync<InputOk, OutputOk, MapperFn, MapperFut>
 where
-    MapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    MapperFn: Fn(InputOk) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = OutputOk> + Send,
 {
     type OutputOk = OutputOk;
 

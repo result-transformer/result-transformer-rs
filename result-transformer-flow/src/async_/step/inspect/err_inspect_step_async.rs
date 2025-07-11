@@ -1,22 +1,25 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncErrFlow;
 
 /// Step that passes the error to an inspector and returns it unchanged.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrInspectStepAsync<InspectorFn, ErrType>
+pub struct ErrInspectStepAsync<ErrType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
     ErrType: Send + Sync,
+    InspectorFn: Fn(&ErrType) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     inspector: InspectorFn,
     _phantom: PhantomData<ErrType>,
 }
 
-impl<InspectorFn, ErrType> ErrInspectStepAsync<InspectorFn, ErrType>
+impl<ErrType, InspectorFn, InspectorFut> ErrInspectStepAsync<ErrType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
     ErrType: Send + Sync,
+    InspectorFn: Fn(&ErrType) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     /// Creates a new [`ErrInspectStepAsync`].
     ///
@@ -29,10 +32,12 @@ where
     }
 }
 
-impl<InspectorFn, ErrType> AsyncErrFlow<ErrType> for ErrInspectStepAsync<InspectorFn, ErrType>
+impl<ErrType, InspectorFn, InspectorFut> AsyncErrFlow<ErrType>
+    for ErrInspectStepAsync<ErrType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
     ErrType: Send + Sync,
+    InspectorFn: Fn(&ErrType) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     type OutputErr = ErrType;
 

@@ -1,46 +1,54 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that maps success and error values using functions returning a `Result`.
 #[derive(Debug, Clone, Copy)]
 pub struct ResultMapBothBindStepAsync<
-    OkMapperFn,
-    ErrMapperFn,
     InputOk,
     InputErr,
     OutputOk,
     OutputErr,
+    OkMapperFn,
+    ErrMapperFn,
+    OkMapperFut,
+    ErrMapperFut,
 > where
-    OkMapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
-    ErrMapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkMapperFn: Fn(InputOk) -> OkMapperFut + Send + Sync,
+    ErrMapperFn: Fn(InputErr) -> ErrMapperFut + Send + Sync,
+    OkMapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
+    ErrMapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     ok_mapper: OkMapperFn,
     err_mapper: ErrMapperFn,
-    _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
+    _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultMapBothBindStepAsync<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn, OkMapperFut, ErrMapperFut>
+    ResultMapBothBindStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        OkMapperFn,
+        ErrMapperFn,
+        OkMapperFut,
+        ErrMapperFut,
+    >
 where
-    OkMapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
-    ErrMapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkMapperFn: Fn(InputOk) -> OkMapperFut + Send + Sync,
+    ErrMapperFn: Fn(InputErr) -> ErrMapperFut + Send + Sync,
+    OkMapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
+    ErrMapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     /// Creates a new [`ResultMapBothBindStepAsync`].
     ///
@@ -55,20 +63,27 @@ where
     }
 }
 
-impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn, OkMapperFut, ErrMapperFut>
     AsyncResultFlow<InputOk, InputErr>
-    for ResultMapBothBindStepAsync<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+    for ResultMapBothBindStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        OkMapperFn,
+        ErrMapperFn,
+        OkMapperFut,
+        ErrMapperFut,
+    >
 where
-    OkMapperFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
-    ErrMapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkMapperFn: Fn(InputOk) -> OkMapperFut + Send + Sync,
+    ErrMapperFn: Fn(InputErr) -> ErrMapperFut + Send + Sync,
+    OkMapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
+    ErrMapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
@@ -77,9 +92,11 @@ where
         &'a self,
         input_result: Result<InputOk, InputErr>,
     ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
-        match input_result {
-            Ok(ok) => (self.ok_mapper)(ok),
-            Err(err) => (self.err_mapper)(err),
+        async {
+            match input_result {
+                Ok(ok) => (self.ok_mapper)(ok).await,
+                Err(err) => (self.err_mapper)(err).await,
+            }
         }
     }
 }

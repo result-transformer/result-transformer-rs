@@ -1,24 +1,27 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncOkFlow;
 
 /// Step that passes the success value to a closure and returns its result.
 #[derive(Debug, Clone, Copy)]
-pub struct OkTapStepAsync<TapFn, InputOk, OutputOk>
+pub struct OkTapStepAsync<InputOk, OutputOk, TapFn, TapFut>
 where
-    TapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    TapFn: Fn(InputOk) -> TapFut + Send + Sync,
+    TapFut: Future<Output = OutputOk> + Send,
 {
     tap: TapFn,
     _phantom: PhantomData<(InputOk, OutputOk)>,
 }
 
-impl<TapFn, InputOk, OutputOk> OkTapStepAsync<TapFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, TapFn, TapFut> OkTapStepAsync<InputOk, OutputOk, TapFn, TapFut>
 where
-    TapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    TapFn: Fn(InputOk) -> TapFut + Send + Sync,
+    TapFut: Future<Output = OutputOk> + Send,
 {
     /// Creates a new [`OkTapStepAsync`].
     ///
@@ -31,11 +34,13 @@ where
     }
 }
 
-impl<TapFn, InputOk, OutputOk> AsyncOkFlow<InputOk> for OkTapStepAsync<TapFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, TapFn, TapFut> AsyncOkFlow<InputOk>
+    for OkTapStepAsync<InputOk, OutputOk, TapFn, TapFut>
 where
-    TapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    TapFn: Fn(InputOk) -> TapFut + Send + Sync,
+    TapFut: Future<Output = OutputOk> + Send,
 {
     type OutputOk = OutputOk;
 

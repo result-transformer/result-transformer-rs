@@ -1,22 +1,32 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncOkFlow;
 
 /// Step that executes one of two [`AsyncOkFlow`] branches depending on a condition.
 #[derive(Debug, Clone, Copy)]
-pub struct OkIfStepAsync<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow> {
-    condition: ConditionFn,
-    then_flow: ThenFlow,
-    else_flow: ElseFlow,
-    _phantom: PhantomData<(InputOk, OutputOk)>,
-}
-
-impl<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow>
-    OkIfStepAsync<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow>
+pub struct OkIfStepAsync<InputOk, OutputOk, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
 where
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
-    ConditionFn: Fn(&InputOk) -> Pin<Box<dyn Future<Output = bool> + Send + Sync>> + Send + Sync,
+    ConditionFn: Fn(&InputOk) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
+    ThenFlow: AsyncOkFlow<InputOk, OutputOk = OutputOk> + Send + Sync,
+    ElseFlow: AsyncOkFlow<InputOk, OutputOk = OutputOk> + Send + Sync,
+{
+    condition: ConditionFn,
+    then_flow: ThenFlow,
+    else_flow: ElseFlow,
+    _phantom: PhantomData<InputOk>,
+}
+
+impl<InputOk, OutputOk, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
+    OkIfStepAsync<InputOk, OutputOk, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
+where
+    InputOk: Send + Sync,
+    OutputOk: Send + Sync,
+    ConditionFn: Fn(&InputOk) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
     ThenFlow: AsyncOkFlow<InputOk, OutputOk = OutputOk> + Send + Sync,
     ElseFlow: AsyncOkFlow<InputOk, OutputOk = OutputOk> + Send + Sync,
 {
@@ -35,12 +45,13 @@ where
     }
 }
 
-impl<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow> AsyncOkFlow<InputOk>
-    for OkIfStepAsync<InputOk, OutputOk, ConditionFn, ThenFlow, ElseFlow>
+impl<InputOk, OutputOk, ConditionFn, ConditionFut, ThenFlow, ElseFlow> AsyncOkFlow<InputOk>
+    for OkIfStepAsync<InputOk, OutputOk, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
 where
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
-    ConditionFn: Fn(&InputOk) -> Pin<Box<dyn Future<Output = bool> + Send + Sync>> + Send + Sync,
+    ConditionFn: Fn(&InputOk) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
     ThenFlow: AsyncOkFlow<InputOk, OutputOk = OutputOk> + Send + Sync,
     ElseFlow: AsyncOkFlow<InputOk, OutputOk = OutputOk> + Send + Sync,
 {

@@ -1,32 +1,54 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that applies separate closures to the success and error values.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultTapBothStepAsync<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
-where
-    OkTapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
-    ErrTapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
+pub struct ResultTapBothStepAsync<
+    InputOk,
+    InputErr,
+    OutputOk,
+    OutputErr,
+    OkTapFn,
+    ErrTapFn,
+    OkTapFut,
+    ErrTapFut,
+> where
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkTapFn: Fn(InputOk) -> OkTapFut + Send + Sync,
+    ErrTapFn: Fn(InputErr) -> ErrTapFut + Send + Sync,
+    OkTapFut: Future<Output = OutputOk> + Send,
+    ErrTapFut: Future<Output = OutputErr> + Send,
 {
     ok_tap: OkTapFn,
     err_tap: ErrTapFn,
-    _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
+    _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultTapBothStepAsync<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn, OkTapFut, ErrTapFut>
+    ResultTapBothStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        OkTapFn,
+        ErrTapFn,
+        OkTapFut,
+        ErrTapFut,
+    >
 where
-    OkTapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
-    ErrTapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkTapFn: Fn(InputOk) -> OkTapFut + Send + Sync,
+    ErrTapFn: Fn(InputErr) -> ErrTapFut + Send + Sync,
+    OkTapFut: Future<Output = OutputOk> + Send,
+    ErrTapFut: Future<Output = OutputErr> + Send,
 {
     /// Creates a new [`ResultTapBothStepAsync`].
     ///
@@ -41,15 +63,27 @@ where
     }
 }
 
-impl<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
-    for ResultTapBothStepAsync<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn, OkTapFut, ErrTapFut>
+    AsyncResultFlow<InputOk, InputErr>
+    for ResultTapBothStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        OkTapFn,
+        ErrTapFn,
+        OkTapFut,
+        ErrTapFut,
+    >
 where
-    OkTapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = OutputOk> + Send + Sync>> + Send + Sync,
-    ErrTapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkTapFn: Fn(InputOk) -> OkTapFut + Send + Sync,
+    ErrTapFn: Fn(InputErr) -> ErrTapFut + Send + Sync,
+    OkTapFut: Future<Output = OutputOk> + Send,
+    ErrTapFut: Future<Output = OutputErr> + Send,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;

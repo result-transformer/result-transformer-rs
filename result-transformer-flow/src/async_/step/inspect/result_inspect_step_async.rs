@@ -1,24 +1,28 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that inspects the entire `Result` without modifying it.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultInspectStepAsync<InspectorFn, OkType, ErrType>
+pub struct ResultInspectStepAsync<OkType, ErrType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&Result<OkType, ErrType>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>
-        + Send
-        + Sync,
+    OkType: Send + Sync,
+    ErrType: Send + Sync,
+    InspectorFn: Fn(&Result<OkType, ErrType>) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     inspector: InspectorFn,
     _phantom: PhantomData<(OkType, ErrType)>,
 }
 
-impl<InspectorFn, OkType, ErrType> ResultInspectStepAsync<InspectorFn, OkType, ErrType>
+impl<OkType, ErrType, InspectorFn, InspectorFut>
+    ResultInspectStepAsync<OkType, ErrType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&Result<OkType, ErrType>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>
-        + Send
-        + Sync,
+    OkType: Send + Sync,
+    ErrType: Send + Sync,
+    InspectorFn: Fn(&Result<OkType, ErrType>) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     /// Creates a new [`ResultInspectStepAsync`].
     ///
@@ -31,14 +35,13 @@ where
     }
 }
 
-impl<InspectorFn, OkType, ErrType> AsyncResultFlow<OkType, ErrType>
-    for ResultInspectStepAsync<InspectorFn, OkType, ErrType>
+impl<OkType, ErrType, InspectorFn, InspectorFut> AsyncResultFlow<OkType, ErrType>
+    for ResultInspectStepAsync<OkType, ErrType, InspectorFn, InspectorFut>
 where
-    InspectorFn: Fn(&Result<OkType, ErrType>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>
-        + Send
-        + Sync,
     OkType: Send + Sync,
     ErrType: Send + Sync,
+    InspectorFn: Fn(&Result<OkType, ErrType>) -> InspectorFut + Send + Sync,
+    InspectorFut: Future<Output = ()> + Send,
 {
     type OutputOk = OkType;
     type OutputErr = ErrType;

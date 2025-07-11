@@ -1,37 +1,32 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that maps the entire `Result` using a single function.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultMapStepAsync<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultMapStepAsync<InputOk, InputErr, OutputOk, OutputErr, MapperFn, MapperFut>
 where
-    MapperFn: Fn(
-            Result<InputOk, InputErr>,
-        ) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(Result<InputOk, InputErr>) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     mapper: MapperFn,
-    _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
+    _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultMapStepAsync<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, MapperFn, MapperFut>
+    ResultMapStepAsync<InputOk, InputErr, OutputOk, OutputErr, MapperFn, MapperFut>
 where
-    MapperFn: Fn(
-            Result<InputOk, InputErr>,
-        ) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(Result<InputOk, InputErr>) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     /// Creates a new [`ResultMapStepAsync`].
     ///
@@ -44,18 +39,15 @@ where
     }
 }
 
-impl<MapperFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
-    for ResultMapStepAsync<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, MapperFn, MapperFut> AsyncResultFlow<InputOk, InputErr>
+    for ResultMapStepAsync<InputOk, InputErr, OutputOk, OutputErr, MapperFn, MapperFut>
 where
-    MapperFn: Fn(
-            Result<InputOk, InputErr>,
-        ) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(Result<InputOk, InputErr>) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;

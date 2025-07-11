@@ -14,23 +14,21 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 #[tokio::test]
 async fn map_err_step_async_transforms() {
-    let step = ErrMapStepAsync::new(|x: i32| Box::pin(async move { x * 2 }));
+    let step = ErrMapStepAsync::new(|x: i32| async move { x * 2 });
     assert_eq!(step.apply_err_async(21).await, 42);
 }
 
 #[tokio::test]
 async fn tap_err_step_async_works() {
-    let step = ErrTapStepAsync::new(|x: &str| Box::pin(async move { format!("Hello, {x}!") }));
+    let step = ErrTapStepAsync::new(|x: &str| async move { format!("Hello, {x}!") });
     assert_eq!(step.apply_err_async("Rust").await, "Hello, Rust!");
 }
 
 #[tokio::test]
 async fn inspect_err_step_async_side_effect_only() {
     static CALLS: AtomicUsize = AtomicUsize::new(0);
-    let step = ErrInspectStepAsync::new(|_: &i32| {
-        Box::pin(async move {
-            CALLS.fetch_add(1, Ordering::SeqCst);
-        })
+    let step = ErrInspectStepAsync::new(|_: &i32| async move {
+        CALLS.fetch_add(1, Ordering::SeqCst);
     });
     let out = step.apply_err_async(7).await;
     assert_eq!(out, 7);
@@ -39,12 +37,12 @@ async fn inspect_err_step_async_side_effect_only() {
 
 #[tokio::test]
 async fn if_err_step_async_branches() {
-    let even_flow = ErrMapStepAsync::new(|x: i32| Box::pin(async move { x / 2 }));
-    let odd_flow = ErrMapStepAsync::new(|x: i32| Box::pin(async move { x * 3 + 1 }));
+    let even_flow = ErrMapStepAsync::new(|x: i32| async move { x / 2 });
+    let odd_flow = ErrMapStepAsync::new(|x: i32| async move { x * 3 + 1 });
     let branch = ErrIfStepAsync::new(
         |x: &i32| {
             let val = *x;
-            Box::pin(async move { val % 2 == 0 })
+            async move { val % 2 == 0 }
         },
         even_flow,
         odd_flow,

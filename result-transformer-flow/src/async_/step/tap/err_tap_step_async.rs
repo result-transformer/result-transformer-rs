@@ -1,24 +1,27 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncErrFlow;
 
 /// Step that passes the error value to a closure and returns its result.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrTapStepAsync<TapFn, InputErr, OutputErr>
+pub struct ErrTapStepAsync<InputErr, OutputErr, TapFn, TapFut>
 where
-    TapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(InputErr) -> TapFut + Send + Sync,
+    TapFut: Future<Output = OutputErr> + Send,
 {
     tap: TapFn,
-    _phantom: PhantomData<(InputErr, OutputErr)>,
+    _phantom: PhantomData<InputErr>,
 }
 
-impl<TapFn, InputErr, OutputErr> ErrTapStepAsync<TapFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, TapFn, TapFut> ErrTapStepAsync<InputErr, OutputErr, TapFn, TapFut>
 where
-    TapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(InputErr) -> TapFut + Send + Sync,
+    TapFut: Future<Output = OutputErr> + Send,
 {
     /// Creates a new [`ErrTapStepAsync`].
     ///
@@ -31,12 +34,13 @@ where
     }
 }
 
-impl<TapFn, InputErr, OutputErr> AsyncErrFlow<InputErr>
-    for ErrTapStepAsync<TapFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, TapFn, TapFut> AsyncErrFlow<InputErr>
+    for ErrTapStepAsync<InputErr, OutputErr, TapFn, TapFut>
 where
-    TapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(InputErr) -> TapFut + Send + Sync,
+    TapFut: Future<Output = OutputErr> + Send,
 {
     type OutputErr = OutputErr;
 

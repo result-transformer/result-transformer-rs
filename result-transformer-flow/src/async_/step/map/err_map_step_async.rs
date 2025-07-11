@@ -1,24 +1,28 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncErrFlow;
 
 /// Step that maps the error value using a provided function.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrMapStepAsync<MapperFn, InputErr, OutputErr>
+pub struct ErrMapStepAsync<InputErr, OutputErr, MapperFn, MapperFut>
 where
-    MapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(InputErr) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = OutputErr> + Send,
 {
     mapper: MapperFn,
-    _phantom: PhantomData<(InputErr, OutputErr)>,
+    _phantom: PhantomData<InputErr>,
 }
 
-impl<MapperFn, InputErr, OutputErr> ErrMapStepAsync<MapperFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, MapperFn, MapperFut>
+    ErrMapStepAsync<InputErr, OutputErr, MapperFn, MapperFut>
 where
-    MapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(InputErr) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = OutputErr> + Send,
 {
     /// Creates a new [`ErrMapStepAsync`].
     ///
@@ -31,12 +35,13 @@ where
     }
 }
 
-impl<MapperFn, InputErr, OutputErr> AsyncErrFlow<InputErr>
-    for ErrMapStepAsync<MapperFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, MapperFn, MapperFut> AsyncErrFlow<InputErr>
+    for ErrMapStepAsync<InputErr, OutputErr, MapperFn, MapperFut>
 where
-    MapperFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = OutputErr> + Send + Sync>> + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(InputErr) -> MapperFut + Send + Sync,
+    MapperFut: Future<Output = OutputErr> + Send,
 {
     type OutputErr = OutputErr;
 

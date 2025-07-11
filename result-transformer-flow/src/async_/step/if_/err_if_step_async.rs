@@ -1,4 +1,5 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncErrFlow;
 
@@ -6,19 +7,28 @@ use crate::async_::AsyncErrFlow;
 ///
 /// `InputErr` denotes the input error type, and `OutputErr` the output error type.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow> {
-    condition: ConditionFn,
-    then_flow: ThenFlow,
-    else_flow: ElseFlow,
-    _phantom: PhantomData<(InputErr, OutputErr)>,
-}
-
-impl<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow>
-    ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow>
+pub struct ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
 where
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
-    ConditionFn: Fn(&InputErr) -> Pin<Box<dyn Future<Output = bool> + Send + Sync>> + Send + Sync,
+    ConditionFn: Fn(&InputErr) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
+    ThenFlow: AsyncErrFlow<InputErr, OutputErr = OutputErr> + Send + Sync,
+    ElseFlow: AsyncErrFlow<InputErr, OutputErr = OutputErr> + Send + Sync,
+{
+    condition: ConditionFn,
+    then_flow: ThenFlow,
+    else_flow: ElseFlow,
+    _phantom: PhantomData<InputErr>,
+}
+
+impl<InputErr, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
+    ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
+where
+    InputErr: Send + Sync,
+    OutputErr: Send + Sync,
+    ConditionFn: Fn(&InputErr) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
     ThenFlow: AsyncErrFlow<InputErr, OutputErr = OutputErr> + Send + Sync,
     ElseFlow: AsyncErrFlow<InputErr, OutputErr = OutputErr> + Send + Sync,
 {
@@ -37,12 +47,13 @@ where
     }
 }
 
-impl<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow> AsyncErrFlow<InputErr>
-    for ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ThenFlow, ElseFlow>
+impl<InputErr, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow> AsyncErrFlow<InputErr>
+    for ErrIfStepAsync<InputErr, OutputErr, ConditionFn, ConditionFut, ThenFlow, ElseFlow>
 where
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
-    ConditionFn: Fn(&InputErr) -> Pin<Box<dyn Future<Output = bool> + Send + Sync>> + Send + Sync,
+    ConditionFn: Fn(&InputErr) -> ConditionFut + Send + Sync,
+    ConditionFut: Future<Output = bool> + Send,
     ThenFlow: AsyncErrFlow<InputErr, OutputErr = OutputErr> + Send + Sync,
     ElseFlow: AsyncErrFlow<InputErr, OutputErr = OutputErr> + Send + Sync,
 {

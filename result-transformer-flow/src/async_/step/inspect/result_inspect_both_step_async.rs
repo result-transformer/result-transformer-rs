@@ -1,28 +1,46 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that inspects both the success and error values without modifying them.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultInspectBothStepAsync<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
-where
-    OkInspectorFn: Fn(&OkType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
-    ErrInspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
+pub struct ResultInspectBothStepAsync<
+    OkType,
+    ErrType,
+    OkInspectorFn,
+    ErrInspectorFn,
+    OkInspectorFut,
+    ErrInspectorFut,
+> where
     OkType: Send + Sync,
     ErrType: Send + Sync,
+    OkInspectorFn: Fn(&OkType) -> OkInspectorFut + Send + Sync,
+    ErrInspectorFn: Fn(&ErrType) -> ErrInspectorFut + Send + Sync,
+    OkInspectorFut: Future<Output = ()> + Send,
+    ErrInspectorFut: Future<Output = ()> + Send,
 {
     ok_inspector: OkInspectorFn,
     err_inspector: ErrInspectorFn,
     _phantom: PhantomData<(OkType, ErrType)>,
 }
 
-impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
-    ResultInspectBothStepAsync<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
+impl<OkType, ErrType, OkInspectorFn, ErrInspectorFn, OkInspectorFut, ErrInspectorFut>
+    ResultInspectBothStepAsync<
+        OkType,
+        ErrType,
+        OkInspectorFn,
+        ErrInspectorFn,
+        OkInspectorFut,
+        ErrInspectorFut,
+    >
 where
-    OkInspectorFn: Fn(&OkType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
-    ErrInspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
     OkType: Send + Sync,
     ErrType: Send + Sync,
+    OkInspectorFn: Fn(&OkType) -> OkInspectorFut + Send + Sync,
+    ErrInspectorFn: Fn(&ErrType) -> ErrInspectorFut + Send + Sync,
+    OkInspectorFut: Future<Output = ()> + Send,
+    ErrInspectorFut: Future<Output = ()> + Send,
 {
     /// Creates a new [`ResultInspectBothStepAsync`].
     ///
@@ -37,13 +55,23 @@ where
     }
 }
 
-impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType> AsyncResultFlow<OkType, ErrType>
-    for ResultInspectBothStepAsync<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
+impl<OkType, ErrType, OkInspectorFn, ErrInspectorFn, OkInspectorFut, ErrInspectorFut>
+    AsyncResultFlow<OkType, ErrType>
+    for ResultInspectBothStepAsync<
+        OkType,
+        ErrType,
+        OkInspectorFn,
+        ErrInspectorFn,
+        OkInspectorFut,
+        ErrInspectorFut,
+    >
 where
-    OkInspectorFn: Fn(&OkType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
-    ErrInspectorFn: Fn(&ErrType) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync,
     OkType: Send + Sync,
     ErrType: Send + Sync,
+    OkInspectorFn: Fn(&OkType) -> OkInspectorFut + Send + Sync,
+    ErrInspectorFn: Fn(&ErrType) -> ErrInspectorFut + Send + Sync,
+    OkInspectorFut: Future<Output = ()> + Send,
+    ErrInspectorFut: Future<Output = ()> + Send,
 {
     type OutputOk = OkType;
     type OutputErr = ErrType;

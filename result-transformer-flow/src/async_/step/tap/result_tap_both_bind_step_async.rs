@@ -1,41 +1,55 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that applies separate closures to success and error values,
 /// each returning a `Result`.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultTapBothBindStepAsync<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
-where
-    OkTapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
-    ErrTapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
+pub struct ResultTapBothBindStepAsync<
+    InputOk,
+    InputErr,
+    OutputOk,
+    OutputErr,
+    OkTapFn,
+    ErrTapFn,
+    OkTapFut,
+    ErrTapFut,
+> where
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkTapFn: Fn(InputOk) -> OkTapFut + Send + Sync,
+    ErrTapFn: Fn(InputErr) -> ErrTapFut + Send + Sync,
+    OkTapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
+    ErrTapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     ok_tap: OkTapFn,
     err_tap: ErrTapFn,
-    _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
+    _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultTapBothBindStepAsync<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn, OkTapFut, ErrTapFut>
+    ResultTapBothBindStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        OkTapFn,
+        ErrTapFn,
+        OkTapFut,
+        ErrTapFut,
+    >
 where
-    OkTapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
-    ErrTapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkTapFn: Fn(InputOk) -> OkTapFut + Send + Sync,
+    ErrTapFn: Fn(InputErr) -> ErrTapFut + Send + Sync,
+    OkTapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
+    ErrTapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     /// Creates a new [`ResultTapBothBindStepAsync`].
     ///
@@ -50,19 +64,27 @@ where
     }
 }
 
-impl<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
-    for ResultTapBothBindStepAsync<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn, OkTapFut, ErrTapFut>
+    AsyncResultFlow<InputOk, InputErr>
+    for ResultTapBothBindStepAsync<
+        InputOk,
+        InputErr,
+        OutputOk,
+        OutputErr,
+        OkTapFn,
+        ErrTapFn,
+        OkTapFut,
+        ErrTapFut,
+    >
 where
-    OkTapFn: Fn(InputOk) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
-    ErrTapFn: Fn(InputErr) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkTapFn: Fn(InputOk) -> OkTapFut + Send + Sync,
+    ErrTapFn: Fn(InputErr) -> ErrTapFut + Send + Sync,
+    OkTapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
+    ErrTapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
@@ -71,9 +93,11 @@ where
         &'a self,
         input_result: Result<InputOk, InputErr>,
     ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a {
-        match input_result {
-            Ok(ok) => (self.ok_tap)(ok),
-            Err(err) => (self.err_tap)(err),
+        async {
+            match input_result {
+                Ok(ok) => (self.ok_tap)(ok).await,
+                Err(err) => (self.err_tap)(err).await,
+            }
         }
     }
 }

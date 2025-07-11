@@ -1,37 +1,32 @@
-use std::{marker::PhantomData, pin::Pin};
+use core::future::Future;
+use std::marker::PhantomData;
 
 use crate::async_::AsyncResultFlow;
 
 /// Step that passes the entire `Result` to a closure and returns its result.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultTapStepAsync<TapFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultTapStepAsync<InputOk, InputErr, OutputOk, OutputErr, TapFn, TapFut>
 where
-    TapFn: Fn(
-            Result<InputOk, InputErr>,
-        ) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(Result<InputOk, InputErr>) -> TapFut + Send + Sync,
+    TapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     tap: TapFn,
-    _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
+    _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<TapFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultTapStepAsync<TapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, TapFn, TapFut>
+    ResultTapStepAsync<InputOk, InputErr, OutputOk, OutputErr, TapFn, TapFut>
 where
-    TapFn: Fn(
-            Result<InputOk, InputErr>,
-        ) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(Result<InputOk, InputErr>) -> TapFut + Send + Sync,
+    TapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     /// Creates a new [`ResultTapStepAsync`].
     ///
@@ -44,18 +39,15 @@ where
     }
 }
 
-impl<TapFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
-    for ResultTapStepAsync<TapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, TapFn, TapFut> AsyncResultFlow<InputOk, InputErr>
+    for ResultTapStepAsync<InputOk, InputErr, OutputOk, OutputErr, TapFn, TapFut>
 where
-    TapFn: Fn(
-            Result<InputOk, InputErr>,
-        ) -> Pin<Box<dyn Future<Output = Result<OutputOk, OutputErr>> + Send + Sync>>
-        + Send
-        + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(Result<InputOk, InputErr>) -> TapFut + Send + Sync,
+    TapFut: Future<Output = Result<OutputOk, OutputErr>> + Send,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;
