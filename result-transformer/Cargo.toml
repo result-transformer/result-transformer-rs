@@ -5,6 +5,16 @@ version.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
+description.workspace = true
+readme.workspace = true
+
+[dependencies]
+result-transformer-dependencies = { path = "../result-transformer-dependencies"}
+
+result-transformer-core = { path = "../result-transformer-core" }
+result-transformer-flow = { path = "../result-transformer-flow", optional = true  }
+result-transformer-macros = { path = "../result-transformer-macros", optional = true }
+result-transformer-derive = { path = "../result-transformer-derive", optional = true }
 
 [features]
 
@@ -49,11 +59,3 @@ flow-async-macros = ["result-transformer-macros/flow-async", "flow-async"]
 derive-all = ["derive-sync", "derive-async"]
 derive-sync = ["result-transformer-derive/sync", "core-sync"]
 derive-async = ["result-transformer-derive/async", "core-async"]
-
-[dependencies]
-result-transformer-dependencies = { path = "../result-transformer-dependencies"}
-
-result-transformer-core = { path = "../result-transformer-core" }
-result-transformer-flow = { path = "../result-transformer-flow", optional = true  }
-result-transformer-macros = { path = "../result-transformer-macros", optional = true }
-result-transformer-derive = { path = "../result-transformer-derive", optional = true }

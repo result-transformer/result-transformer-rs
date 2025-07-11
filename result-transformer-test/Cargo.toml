@@ -5,45 +5,9 @@ version.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
-
-[features]
-async-deps = [
-    "result-transformer-dependencies/tokio-macros",
-    "result-transformer-dependencies/tokio-rt",
-]
-
-all = ["core-all", "flow-all"]
-
-# Core
-core-all = ["core-sync-all", "core-async-all"]
-
-core-sync-all = ["core-sync", "core-sync-macros"]
-core-async-all = ["core-async", "core-async-macros"]
-
-core-sync = ["result-transformer/core-sync"]
-core-async = ["result-transformer/core-async", "async-deps"]
-
-core-sync-macros = ["result-transformer/core-sync-macros"]
-core-async-macros = ["result-transformer/core-async-macros" , "async-deps"]
-
-# Flow
-flow-all = ["flow-sync-all", "flow-async-all"]
-
-flow-sync-all = ["flow-sync", "flow-sync-log-step", "flow-sync-macros"]
-flow-async-all = ["flow-async", "flow-async-log-step", "flow-async-macros"]
-
-flow-sync = ["result-transformer/flow-sync"]
-flow-async = ["result-transformer/flow-async" , "async-deps"]
-
-flow-sync-log-step = ["result-transformer/flow-sync-log-step", "flow-sync", "internal-log-test-helper"]
-flow-async-log-step = ["result-transformer/flow-async-log-step", "flow-async", "async-deps", "internal-log-test-helper"]
-
-flow-sync-macros = ["result-transformer/flow-sync-macros", "result-transformer/core-sync-macros"]
-flow-async-macros = ["result-transformer/flow-async-macros", "result-transformer/core-async-macros", "async-deps"]
-
-
-#internal
-internal-log-test-helper = ["logtest", "serial_test", "once_cell"]
+description.workspace = true
+readme.workspace = true
+publish = false
 
 [dependencies]
 result-transformer-dependencies = { path = "../result-transformer-dependencies", optional = true}
@@ -53,3 +17,42 @@ result-transformer = { path = "../result-transformer", optional = true , default
 logtest  = { version = "2", optional = true, default-features = false}
 serial_test = { version = "3", optional = true, default-features = false}
 once_cell = { version = "1", optional = true, default-features = false}
+
+[features]
+all = ["core-all", "flow-all"]
+
+# Core
+core-all = ["core-sync-all", "core-async-all"]
+
+core-sync-all = ["core-sync", "core-sync-macros"]
+core-async-all = ["core-async", "core-async-macros"]
+
+core-sync = ["result-transformer/core-sync"]
+core-async = ["result-transformer/core-async", "internal-async-deps"]
+
+core-sync-macros = ["result-transformer/core-sync-macros"]
+core-async-macros = ["result-transformer/core-async-macros", "internal-async-deps"]
+
+# Flow
+flow-all = ["flow-sync-all", "flow-async-all"]
+
+flow-sync-all = ["flow-sync", "flow-sync-log-step", "flow-sync-macros"]
+flow-async-all = ["flow-async", "flow-async-log-step", "flow-async-macros"]
+
+flow-sync = ["result-transformer/flow-sync"]
+flow-async = ["result-transformer/flow-async", "internal-async-deps"]
+
+flow-sync-log-step = ["result-transformer/flow-sync-log-step", "flow-sync", "internal-log-test-helper"]
+flow-async-log-step = ["result-transformer/flow-async-log-step", "flow-async", "internal-async-deps", "internal-log-test-helper"]
+
+flow-sync-macros = ["result-transformer/flow-sync-macros", "result-transformer/core-sync-macros"]
+flow-async-macros = ["result-transformer/flow-async-macros", "result-transformer/core-async-macros", "internal-async-deps"]
+
+
+#internal
+internal-log-test-helper = ["logtest", "serial_test", "once_cell"]
+
+internal-async-deps = [
+    "result-transformer-dependencies/tokio-macros",
+    "result-transformer-dependencies/tokio-rt",
+]

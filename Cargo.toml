@@ -11,8 +11,18 @@ members = [
 ]
 
 [workspace.package]
+name = "result-transformer"
 version = "0.0.1"
 edition = "2024"
-license = "MIT"
+
 authors = ["Mikou"]
+license = "MIT OR Apache-2.0"
+
+description = "Traits, macros and utilities for transforming Result values."
+readme = "README.md"
+documentation = "https://docs.rs/result-transformer"
 repository = "https://github.com/Mikou-2A"
+homepage = "https://github.com/Mikou-2A/result-transformer"
+
+keywords = ["result", "transform", "pipeline", "async", "error"]
+categories = ["error-handling", "asynchronous"]

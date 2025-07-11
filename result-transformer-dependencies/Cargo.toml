@@ -5,6 +5,8 @@ version.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
+description.workspace = true
+readme.workspace = true
 
 [dependencies]
 tokio = { version = "1", optional = true, default-features = false }
