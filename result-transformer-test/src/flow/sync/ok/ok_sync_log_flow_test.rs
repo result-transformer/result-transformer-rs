@@ -15,16 +15,10 @@ use result_transformer::flow::sync::*;
 
 /// `TapLogOkStep` should emit exactly one log record containing the
 /// user-formatted message at the requested log level.
-/// 
-/// ⚠ WARNING ⚠
-/// This test module uses `logtest::Logger`, which internally calls `log::set_logger()`.
-/// The `log` crate only allows setting the logger once globally; any subsequent call will panic.
-///
-/// Therefore, if multiple test functions call `Logger::start()`, tests may fail
-/// regardless of whether they are run sequentially or in parallel.
 #[test]
+#[serial_test::serial]
 fn tap_log_ok_step_emits_log() {
-    let mut logger = logtest::Logger::start();
+    let mut logger = crate::helper::logtest_helper::get_logger();
     let fmt: fn(&i32) -> String = |v| format!("val={v}");
 
     let step = OkLogTapStep::new(log::Level::Info, fmt);

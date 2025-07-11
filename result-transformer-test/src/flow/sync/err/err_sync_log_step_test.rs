@@ -13,15 +13,10 @@ use result_transformer::__internal::log;
 #[allow(unused_imports)]
 use result_transformer::flow::sync::*;
 
-/// ⚠ WARNING ⚠
-/// This test module uses `logtest::Logger`, which internally calls `log::set_logger()`.
-/// The `log` crate only allows setting the logger once globally; any subsequent call will panic.
-///
-/// Therefore, if multiple test functions call `Logger::start()`, tests may fail
-/// regardless of whether they are run sequentially or in parallel.
 #[test]
+#[serial_test::serial]
 fn tap_log_err_step_emits_log() {
-    let mut logger = logtest::Logger::start();
+    let mut logger = crate::helper::logtest_helper::get_logger();
     let fmt: fn(&i32) -> String = |v| format!("err={v}");
 
     let step = ErrLogTapStep::new(log::Level::Warn, fmt);

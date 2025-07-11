@@ -2,7 +2,7 @@
 //!
 //! ────────────────────────────────────────────────────────────────
 //!  HOW TO RUN
-//!  $ cargo test --package result-transformer-test --features flow-sync -- --show-output
+//!  $ cargo test --package result-transformer-test --features flow-sync -- flow::sync::result::result_sync_flow_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
 #[allow(unused_imports)]

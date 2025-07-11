@@ -1,4 +1,3 @@
-//!
 //! Located at `result-transformer-test/src/flow/sync/err/` and focuses on flow composition using the public API of **result-transformer**.
 //!
 //! ────────────────────────────────────────────────────────────────

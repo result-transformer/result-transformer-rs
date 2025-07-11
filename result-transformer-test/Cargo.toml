@@ -35,15 +35,21 @@ flow-async-all = ["flow-async", "flow-async-log-step", "flow-async-macros"]
 flow-sync = ["result-transformer/flow-sync"]
 flow-async = ["result-transformer/flow-async" , "async-deps"]
 
-flow-sync-log-step = ["result-transformer/flow-sync-log-step", "flow-sync", "logtest"]
-flow-async-log-step = ["result-transformer/flow-async-log-step", "flow-async", "async-deps", "logtest"]
+flow-sync-log-step = ["result-transformer/flow-sync-log-step", "flow-sync", "internal-log-test-helper"]
+flow-async-log-step = ["result-transformer/flow-async-log-step", "flow-async", "async-deps", "internal-log-test-helper"]
 
 flow-sync-macros = ["result-transformer/flow-sync-macros", "result-transformer/core-sync-macros"]
 flow-async-macros = ["result-transformer/flow-async-macros", "result-transformer/core-async-macros", "async-deps"]
+
+
+#internal
+internal-log-test-helper = ["logtest", "serial_test", "once_cell"]
 
 [dependencies]
 result-transformer-dependencies = { path = "../result-transformer-dependencies", optional = true}
 
 result-transformer = { path = "../result-transformer", optional = true , default-features = false }
 
-logtest  = { version = "2", optional = true }
+logtest  = { version = "2", optional = true, default-features = false}
+serial_test = { version = "3", optional = true, default-features = false}
+once_cell = { version = "1", optional = true, default-features = false}
