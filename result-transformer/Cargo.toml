@@ -11,16 +11,15 @@ readme.workspace = true
 [dependencies]
 result-transformer-dependencies = { path = "../result-transformer-dependencies"}
 
-result-transformer-core = { path = "../result-transformer-core" }
+result-transformer-core = { path = "../result-transformer-core", optional = true }
 result-transformer-flow = { path = "../result-transformer-flow", optional = true  }
 result-transformer-macros = { path = "../result-transformer-macros", optional = true }
-result-transformer-derive = { path = "../result-transformer-derive", optional = true }
 
 [features]
 
 default = ["core-sync"]
 
-all = ["core-all", "flow-all", "derive-all"]
+all = ["core-all", "flow-all"]
 
 # Core
 core-all = ["core-sync-all", "core-async-all"]
@@ -34,11 +33,11 @@ core-async = ["result-transformer-core/async"]
 core-sync-macros-all = ["core-sync-macros", "core-sync-log-macros"]
 core-async-macros-all = ["core-async-macros", "core-async-log-macros"]
 
-core-sync-macros = ["result-transformer-macros/core-sync", "core-sync"]
-core-async-macros = ["result-transformer-macros/core-async", "core-async"]
+core-sync-macros = ["result-transformer-core/sync-macros", "core-sync"]
+core-async-macros = ["result-transformer-core/async-macros", "core-async"]
 
-core-sync-log-macros = ["result-transformer-macros/core-sync-log", "core-sync-macros"]
-core-async-log-macros = ["result-transformer-macros/core-async-log", "core-async-macros"]
+core-sync-log-macros = ["result-transformer-core/sync-log-macros", "core-sync-macros"]
+core-async-log-macros = ["result-transformer-core/async-log-macros", "core-async-macros"]
 
 # Flow
 flow-all = ["flow-sync-all", "flow-async-all"]
@@ -52,10 +51,5 @@ flow-async = ["result-transformer-flow/async", "core-async"]
 flow-sync-log-step = ["result-transformer-flow/logging", "flow-sync"]
 flow-async-log-step = ["result-transformer-flow/logging", "flow-async"]
 
-flow-sync-macros = ["result-transformer-macros/flow-sync", "flow-sync"]
-flow-async-macros = ["result-transformer-macros/flow-async", "flow-async"]
-
-# Derive
-derive-all = ["derive-sync", "derive-async"]
-derive-sync = ["result-transformer-derive/sync", "core-sync"]
-derive-async = ["result-transformer-derive/async", "core-async"]
+flow-sync-macros = ["result-transformer-flow/sync-macros", "flow-sync"]
+flow-async-macros = ["result-transformer-flow/async-macros", "flow-async"]

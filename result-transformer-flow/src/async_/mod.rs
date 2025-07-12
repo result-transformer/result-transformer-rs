@@ -8,6 +8,9 @@
 //! For performance critical code, implementing your own `Async*Transformer`
 //! traits directly may still be preferable.
 
+#[cfg(feature = "async-macros")]
+pub mod macros;
+
 mod flow;
 mod step;
 

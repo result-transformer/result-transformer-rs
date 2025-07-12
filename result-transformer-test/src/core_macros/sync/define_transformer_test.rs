@@ -6,7 +6,7 @@
 //!  $ cargo test --package result-transformer-test --lib --features core-sync-macros -- core_macros::sync::define_transformer_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
-use result_transformer::macros::*;
+use result_transformer::sync::macros::*;
 
 struct SyncTransformer;
 

@@ -1,5 +1,5 @@
 use result_transformer::__internal::*;
-use result_transformer::macros::*;
+use result_transformer::async_::macros::*;
 
 struct AsyncTransformer;
 

@@ -14,3 +14,9 @@ result-transformer-dependencies = { path = "../result-transformer-dependencies" 
 [features]
 sync = []
 async = []
+
+sync-macros = []
+async-macros = []
+
+sync-log-macros = []
+async-log-macros = []

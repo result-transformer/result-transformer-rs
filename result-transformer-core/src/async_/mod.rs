@@ -4,6 +4,9 @@
 //! but expose `async` methods. These traits work on stable Rust using
 //! `async fn` and do not require external crates for emulation.
 
+#[cfg(feature = "async-macros")]
+pub mod macros;
+
 mod async_err_transformer;
 mod async_ok_transformer;
 mod async_result_transformer;

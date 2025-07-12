@@ -1,6 +1,7 @@
 use result_transformer::__internal::*;
+use result_transformer::async_::macros::*;
+use result_transformer::flow::async_::macros::*;
 use result_transformer::flow::async_::{ErrMapStepAsync, OkMapStepAsync, ResultMapStepAsync};
-use result_transformer::macros::*;
 
 struct FlowPartsTransformer;
 

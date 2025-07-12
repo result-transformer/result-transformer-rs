@@ -8,22 +8,10 @@ repository.workspace = true
 description.workspace = true
 readme.workspace = true
 
+[lib]
+proc-macro = true
+
 [dependencies]
-result-transformer-dependencies = { path = "../result-transformer-dependencies" , default-features = false }
-
-result-transformer-core = { path = "../result-transformer-core", optional = true }
-
-result-transformer-flow = { path = "../result-transformer-flow", optional = true }
-
-[features]
-
-#core
-core-sync = ["result-transformer-core/sync"]
-core-async = ["result-transformer-core/async"]
-
-core-sync-log = ["result-transformer-dependencies/log", "core-sync"] 
-core-async-log = ["result-transformer-dependencies/log", "core-async"] 
-
-#flow
-flow-sync = ["result-transformer-flow/sync"]
-flow-async = ["result-transformer-flow/async"]
+syn = "2"
+quote = "1"
+proc-macro2 = "1"

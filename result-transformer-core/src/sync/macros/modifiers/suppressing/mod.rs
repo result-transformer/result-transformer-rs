@@ -1,0 +1,3 @@
+mod define_result_transformer_suppressing_err;
+
+pub use define_result_transformer_suppressing_err::define_result_transformer_suppressing_err;

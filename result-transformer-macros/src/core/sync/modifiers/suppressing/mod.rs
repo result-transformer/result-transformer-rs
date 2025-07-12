@@ -1,1 +1,0 @@
-mod define_result_transformer_suppressing_err;

@@ -6,23 +6,25 @@
 //!
 //! ```toml
 //! [dependencies]
-//! result-transformer = { version = "0.0.1", features = ["core-sync", "result-transformer-macros"] }
+//! result-transformer = { version = "0.0.1", features = ["core-sync", "core-sync-macros"] }
 //! ```
 
 #[doc(hidden)]
 pub mod __internal;
 
+#[cfg(feature = "result-transformer-core")]
+pub use result_transformer_core as core;
+
 #[cfg(feature = "core-sync")]
-pub use result_transformer_core::sync::{self, *};
+pub use core::sync::{self, ErrTransformer, OkTransformer, ResultTransformer};
 
 #[cfg(feature = "core-async")]
-pub use result_transformer_core::async_::{self, *};
+pub use core::async_::{
+    self, AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer,
+};
 
 #[cfg(feature = "result-transformer-flow")]
 pub use result_transformer_flow as flow;
 
 #[cfg(feature = "result-transformer-macros")]
 pub use result_transformer_macros as macros;
-
-#[cfg(feature = "result-transformer-derive")]
-pub use result_transformer_derive as derive;

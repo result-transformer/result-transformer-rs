@@ -4,6 +4,9 @@
 //! asynchronous operations. They form the foundation of the higher level flow
 //! utilities provided by other crates in this workspace.
 
+#[cfg(feature = "sync-macros")]
+pub mod macros;
+
 mod err_transformer;
 mod ok_transformer;
 mod result_transformer;
