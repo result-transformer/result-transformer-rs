@@ -10,21 +10,21 @@ use result_transformer::sync::macros::*;
 
 struct SyncTransformer;
 
-define_ok_transformer!(
+impl_ok_transformer!(
     impl_for = SyncTransformer,
     input_ok = i32,
     output_ok = i32,
     transform_ok = |ok| ok * 2
 );
 
-define_err_transformer!(
+impl_err_transformer!(
     impl_for = SyncTransformer,
     input_err = &'static str,
     output_err = String,
     transform_err = |err| format!("E:{}", err)
 );
 
-impl_result_transformer_from_parts!(impl_for = SyncTransformer, input_ok = i32, input_err = &'static str);
+impl_result_transformer_via_self_parts!(impl_for = SyncTransformer, input_ok = i32, input_err = &'static str);
 
 /// Brings `transform_sync` into scope via trait implementation.
 /// The trait is used implicitly, so we alias it as `_` to avoid unused import warnings.

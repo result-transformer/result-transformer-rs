@@ -1,3 +1,9 @@
-mod define_async_err_transformer;
+mod impl_async_err_transformer;
+mod impl_async_err_transformer_via_input_into;
+mod impl_async_err_transformer_via_output_from;
+mod impl_async_err_transformer_via_self_err_transformer;
 
-pub use define_async_err_transformer::define_async_err_transformer;
+pub use impl_async_err_transformer::impl_async_err_transformer;
+pub use impl_async_err_transformer_via_input_into::impl_async_err_transformer_via_input_into;
+pub use impl_async_err_transformer_via_output_from::impl_async_err_transformer_via_output_from;
+pub use impl_async_err_transformer_via_self_err_transformer::impl_async_err_transformer_via_self_err_transformer;

@@ -5,26 +5,26 @@ use result_transformer::flow::async_::{ErrMapStepAsync, OkMapStepAsync, ResultMa
 
 struct FlowPartsTransformer;
 
-define_async_ok_transformer_from_ok_flow!(
+impl_async_ok_transformer_via_ok_flow!(
     impl_for = FlowPartsTransformer,
     input_ok = i32,
     output_ok = i32,
     flow = OkMapStepAsync::new(|x| Box::pin(async move { x + 1 })),
 );
 
-define_async_err_transformer_from_err_flow!(
+impl_async_err_transformer_via_err_flow!(
     impl_for = FlowPartsTransformer,
     input_err = &'static str,
     output_err = String,
     flow = ErrMapStepAsync::new(|e| Box::pin(async move { format!("E:{e}") })),
 );
 
-impl_async_result_transformer_from_parts!(impl_for = FlowPartsTransformer, input_ok = i32, input_err = &'static str);
+impl_async_result_transformer_via_self_parts!(impl_for = FlowPartsTransformer, input_ok = i32, input_err = &'static str);
 
 #[allow(unused)]
 struct ResultFlowTransformer;
 
-define_async_result_transformer_from_result_flow!(
+impl_async_result_transformer_via_result_flow!(
     impl_for = ResultFlowTransformer,
     input_ok = i32,
     input_err = i32,

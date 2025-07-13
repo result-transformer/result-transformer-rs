@@ -1,7 +1,7 @@
-mod define_err_transformer_from_err_flow;
-mod define_ok_transformer_from_ok_flow;
-mod define_result_transformer_from_result_flow;
+mod impl_err_transformer_via_err_flow;
+mod impl_ok_transformer_via_ok_flow;
+mod impl_result_transformer_via_result_flow;
 
-pub use define_err_transformer_from_err_flow::define_err_transformer_from_err_flow;
-pub use define_ok_transformer_from_ok_flow::define_ok_transformer_from_ok_flow;
-pub use define_result_transformer_from_result_flow::define_result_transformer_from_result_flow;
+pub use impl_err_transformer_via_err_flow::impl_err_transformer_via_err_flow;
+pub use impl_ok_transformer_via_ok_flow::impl_ok_transformer_via_ok_flow;
+pub use impl_result_transformer_via_result_flow::impl_result_transformer_via_result_flow;

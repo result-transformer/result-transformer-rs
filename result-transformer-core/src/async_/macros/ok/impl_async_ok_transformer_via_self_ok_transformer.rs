@@ -1,0 +1,27 @@
+#[macro_export]
+macro_rules! impl_async_ok_transformer_via_self_ok_transformer {
+    (
+        impl_for = $ty:ty,
+        impl_via = $impl_via:ty,
+        input_ok = $input_ok:ty,
+    ) => {
+        const _: fn() = || {
+            fn _trait_check<T: result_transformer::sync::OkTransformer<$input_ok>>() {}
+            _trait_check::<$impl_via>();
+        };
+
+        impl result_transformer::async_::AsyncOkTransformer<$input_ok> for $ty {
+            type OutputOk = <$impl_via as result_transformer::sync::OkTransformer<$input_ok>>::OutputOk;
+
+            fn transform_ok_async<'a>(
+                &'a self,
+                ok: $input_ok,
+            ) -> impl ::core::future::Future<Output = Self::OutputOk> + Send + 'a {
+                async move {
+                    <$impl_via as result_transformer::sync::OkTransformer<$input_ok>>::transform_err(self, ok)
+                }
+            }
+        }
+    };
+}
+pub use impl_async_ok_transformer_via_self_ok_transformer;

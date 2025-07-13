@@ -13,26 +13,26 @@ use result_transformer::sync::macros::*;
 
 struct FlowPartsTransformer;
 
-define_ok_transformer_from_ok_flow!(
+impl_ok_transformer_via_ok_flow!(
     impl_for = FlowPartsTransformer,
     input_ok = i32,
     output_ok = i32,
     flow = OkMapStep::new(|x| x + 1),
 );
 
-define_err_transformer_from_err_flow!(
+impl_err_transformer_via_err_flow!(
     impl_for = FlowPartsTransformer,
     input_err = &'static str,
     output_err = String,
     flow = ErrMapStep::new(|e| format!("E:{e}")),
 );
 
-impl_result_transformer_from_parts!(impl_for = FlowPartsTransformer, input_ok = i32, input_err = &'static str);
+impl_result_transformer_via_self_parts!(impl_for = FlowPartsTransformer, input_ok = i32, input_err = &'static str);
 
 #[allow(unused)]
 struct ResultFlowTransformer;
 
-define_result_transformer_from_result_flow!(
+impl_result_transformer_via_result_flow!(
     impl_for = ResultFlowTransformer,
     input_ok = i32,
     input_err = i32,
