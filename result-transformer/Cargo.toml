@@ -21,23 +21,20 @@ default = ["core-sync"]
 
 all = ["core-all", "flow-all"]
 
+sync-all = ["core-sync-all", "flow-sync-all"]
+async-all = ["core-async-all", "flow-async-all"]
+
 # Core
 core-all = ["core-sync-all", "core-async-all"]
 
-core-sync-all = ["core-sync", "core-sync-macros-all"]
-core-async-all = ["core-async", "core-async-macros-all"]
+core-sync-all = ["core-sync", "core-sync-macros"]
+core-async-all = ["core-async", "core-async-macros"]
 
 core-sync = ["result-transformer-core/sync"]
 core-async = ["result-transformer-core/async"]
 
-core-sync-macros-all = ["core-sync-macros", "core-sync-log-macros"]
-core-async-macros-all = ["core-async-macros", "core-async-log-macros"]
-
 core-sync-macros = ["result-transformer-core/sync-macros", "core-sync"]
 core-async-macros = ["result-transformer-core/async-macros", "core-async"]
-
-core-sync-log-macros = ["result-transformer-core/sync-log-macros", "core-sync-macros"]
-core-async-log-macros = ["result-transformer-core/async-log-macros", "core-async-macros"]
 
 # Flow
 flow-all = ["flow-sync-all", "flow-async-all"]
