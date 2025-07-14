@@ -93,16 +93,23 @@ assert_eq!(DoublePrefix.transform(Ok(21)), Ok(42));
 assert_eq!(DoublePrefix.transform(Err("no")), Err("E:no".into()));
 ```
 
-To use these transformers in an asynchronous context, enable the `core-async` feature and import items from the `async_` module. The examples above will need to be rewritten with `async`/`await` and cannot be copied verbatim.
+To use these transformers in an asynchronous context, enable the `core-async` feature and import items from the `async_` module. The examples above will need to be rewritten with `async`/`await` and cannot be copied verbatim. The following snippet shows how to reuse the synchronous transformer by wrapping it with an asynchronous implementation.
 
 #### Async example
 
 ```rust
 use result_transformer::async_::macros::*;
-# async {
+
+impl_async_result_transformer_via_self_result_transformer! {
+    impl_for  = DoublePrefix,
+    input_ok  = i32,
+    input_err = &'static str
+}
+
+async {
 assert_eq!(DoublePrefix.transform_async(Ok(21)).await, Ok(42));
 assert_eq!(DoublePrefix.transform_async(Err("no")).await, Err("E:no".into()));
-# }
+}
 ```
 
 #### Manual implementation (no macros)
