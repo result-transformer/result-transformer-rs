@@ -31,7 +31,7 @@ core-sync = ["result-transformer/core-sync"]
 core-async = ["result-transformer/core-async", "internal-async-deps"]
 
 core-sync-macros = ["result-transformer/core-sync-macros"]
-core-async-macros = ["result-transformer/core-async-macros", "internal-async-deps"]
+core-async-macros = ["result-transformer/core-async-macros", "result-transformer/core-sync-macros", "internal-async-deps"]
 
 # Flow
 flow-all = ["flow-sync-all", "flow-async-all"]

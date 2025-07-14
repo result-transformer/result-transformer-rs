@@ -1,10 +1,10 @@
 //! define_transformer_from_flow_test.rs – Tests for macros generating
 //! transformers from flows
 //!
-//! Located at `result-transformer-test/src/flow_macros/sync/`.
+//! Located at `result-transformer-test/src/flow/macros/sync/`.
 //! ────────────────────────────────────────────────────────────────
 //!  HOW TO RUN
-//!  $ cargo test --package result-transformer-test --lib --features flow-sync-macros -- flow_macros::sync::define_transformer_from_flow_test --show-output
+//!  $ cargo test --package result-transformer-test --lib --features flow-sync-macros -- flow::macros::sync::define_transformer_from_flow_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
 use result_transformer::flow::sync::macros::*;

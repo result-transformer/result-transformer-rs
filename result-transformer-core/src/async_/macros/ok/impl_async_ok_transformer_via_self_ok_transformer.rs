@@ -11,14 +11,17 @@ macro_rules! impl_async_ok_transformer_via_self_ok_transformer {
         };
 
         impl result_transformer::async_::AsyncOkTransformer<$input_ok> for $ty {
-            type OutputOk = <$impl_via as result_transformer::sync::OkTransformer<$input_ok>>::OutputOk;
+            type OutputOk =
+                <$impl_via as result_transformer::sync::OkTransformer<$input_ok>>::OutputOk;
 
             fn transform_ok_async<'a>(
                 &'a self,
                 ok: $input_ok,
             ) -> impl ::core::future::Future<Output = Self::OutputOk> + Send + 'a {
                 async move {
-                    <$impl_via as result_transformer::sync::OkTransformer<$input_ok>>::transform_err(self, ok)
+                    <$impl_via as result_transformer::sync::OkTransformer<$input_ok>>::transform_ok(
+                        self, ok,
+                    )
                 }
             }
         }
