@@ -45,7 +45,7 @@ Current version is `0.0.1`. The API is not yet stable and may change.
 | **result‑transformer‑core**         | foundational traits & “raw” macros                                             | `sync`, `async`, `*_macros`        |
 | **result‑transformer‑flow**         | *optional* DSL made of *steps* that can be turned into transformers via macros | logging, map / tap / inspect steps |
 | **result‑transformer‑macros**       | reserved placeholder for future procedural macros                              | –                                  |
-| **result‑transformer‑dependencies** | consolidates external crates behind feature‑flags (`tokio`, `log`, …)          | –                                  |
+| **result‑transformer‑dependencies** | consolidates external crates behind feature‑flags (`tokio`, `log`, …)         | –                                  |
 | **result‑transformer‑test**         | integration & doc‑tests you can read as real‑world recipes                     | –                                  |
 
 ---
@@ -87,11 +87,23 @@ impl_result_transformer_via_self_parts! {
     input_err = &'static str
 }
 
+use result_transformer::sync::ResultTransformer; // needed to access the `transform` method
+
 assert_eq!(DoublePrefix.transform(Ok(21)), Ok(42));
 assert_eq!(DoublePrefix.transform(Err("no")), Err("E:no".into()));
 ```
 
-Everything above works exactly the same inside `async` contexts – just enable the `core-async` feature and swap the module path to `async_`.
+To use these transformers in an asynchronous context, enable the `core-async` feature and import items from the `async_` module. The examples above will need to be rewritten with `async`/`await` and cannot be copied verbatim.
+
+#### Async example
+
+```rust
+use result_transformer::async_::macros::*;
+# async {
+assert_eq!(DoublePrefix.transform_async(Ok(21)).await, Ok(42));
+assert_eq!(DoublePrefix.transform_async(Err("no")).await, Err("E:no".into()));
+# }
+```
 
 #### Manual implementation (no macros)
 
@@ -131,8 +143,6 @@ impl ResultTransformer<i32, &'static str> for PlainTransformer {
         }
     }
 }
-
-use result_transformer::sync::ResultTransformer; // needed to access the `transform` method
 
 assert_eq!(PlainTransformer.transform(Ok(21)), Ok(42));
 assert_eq!(PlainTransformer.transform(Err("no")), Err("E:no".into()));
