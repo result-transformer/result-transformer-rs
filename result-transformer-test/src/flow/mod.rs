@@ -1,3 +1,5 @@
+//! Tests for the flow-based APIs.
+
 #[cfg(feature = "flow-sync")]
 mod sync;
 

@@ -1,3 +1,13 @@
+//! sync.rs – Tests for synchronous transformer behavior
+//!
+//! Located at `result-transformer-test/src/core/`.
+//! ────────────────────────────────────────────────────────────────
+//!  HOW TO RUN
+//!  $ cargo test --package result-transformer-test --lib --features core-sync -- core::sync --show-output
+//! ────────────────────────────────────────────────────────────────
+//!
+//! Simple synchronous transformer used in tests.
+
 use result_transformer::sync::{ErrTransformer, OkTransformer, ResultTransformer};
 
 struct SyncTransformer;

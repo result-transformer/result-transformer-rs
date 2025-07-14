@@ -1,3 +1,13 @@
+//! async_.rs – Tests for asynchronous transformer behavior
+//!
+//! Located at `result-transformer-test/src/core/`.
+//! ────────────────────────────────────────────────────────────────
+//!  HOW TO RUN
+//!  $ cargo test --package result-transformer-test --lib --features core-async -- core::async_ --show-output
+//! ────────────────────────────────────────────────────────────────
+//!
+//! Simple asynchronous transformer used in tests.
+
 use result_transformer_dependencies::*;
 
 use result_transformer::async_::{AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer};

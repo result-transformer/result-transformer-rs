@@ -1,3 +1,5 @@
+//! Tests covering the core transformer traits.
+
 #[cfg(feature = "core-sync")]
 mod sync;
 

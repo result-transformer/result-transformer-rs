@@ -1,3 +1,11 @@
+//! impl_transformer_from_flow_test.rs – Async macros for building transformers
+//!
+//! Located at `result-transformer-test/src/flow/macros/async_/`.
+//! ────────────────────────────────────────────────────────────────
+//!  HOW TO RUN
+//!  $ cargo test --package result-transformer-test --lib --features flow-async-macros -- flow::macros::async_::impl_transformer_from_flow_test --show-output
+//! ────────────────────────────────────────────────────────────────
+
 use result_transformer::__internal::*;
 use result_transformer::async_::macros::*;
 use result_transformer::flow::async_::macros::*;
