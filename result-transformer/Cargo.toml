@@ -39,14 +39,14 @@ core-async-macros = ["result-transformer-core/async-macros", "core-async"]
 # Flow
 flow-all = ["flow-sync-all", "flow-async-all"]
 
-flow-sync-all = ["flow-sync", "flow-sync-log-step"]
-flow-async-all = ["flow-async", "flow-async-log-step"]
+flow-sync-all = ["flow-sync", "flow-sync-log-step", "flow-sync-macros"]
+flow-async-all = ["flow-async", "flow-async-log-step", "flow-async-macros"]
 
-flow-sync = ["result-transformer-flow/sync", "core-sync"]
-flow-async = ["result-transformer-flow/async", "core-async"]
+flow-sync = ["result-transformer-flow/sync"]
+flow-async = ["result-transformer-flow/async"]
 
 flow-sync-log-step = ["result-transformer-flow/logging", "flow-sync"]
 flow-async-log-step = ["result-transformer-flow/logging", "flow-async"]
 
-flow-sync-macros = ["result-transformer-flow/sync-macros", "flow-sync"]
-flow-async-macros = ["result-transformer-flow/async-macros", "flow-async"]
+flow-sync-macros = ["result-transformer-flow/sync-macros", "flow-sync", "core-sync"]
+flow-async-macros = ["result-transformer-flow/async-macros", "flow-async", "core-async"]

@@ -1,10 +1,27 @@
 # result-transformer
+[![crates.io](https://img.shields.io/crates/v/result-transformer.svg)](https://crates.io/crates/result-transformer)
+[![docs.rs](https://docs.rs/result-transformer/badge.svg)](https://docs.rs/result-transformer)
 
 > **Composable, type‑safe transforms for `Result<T, E>` – with matching *sync* and *async* APIs.**
 
 `result-transformer` lets you describe how a `Result` should be rewritten **without coupling that logic to your domain
 types or execution model**.
 Implement a tiny trait – or let a one‑line macro do it for you – and drop the transformer anywhere you need it.
+Current version is `0.0.1`. The API is not yet stable and may change.
+
+## Table of contents
+- [Why use result-transformer?](#why-use-result-transformer)
+- [Crate overview](#crate-overview)
+- [Quick start](#quick-start)
+  - [Add the dependency](#1-add-the-dependency)
+  - [A minimal synchronous transformer](#2-a-minimal-synchronous-transformer)
+  - [Async example](#async-example)
+  - [Manual implementation (no macros)](#manual-implementation-no-macros)
+  - [3. (Optional) Build a transformer via a flow](#3-optional-build-a-transformer-via-a-flow)
+- [Feature matrix](#feature-matrix)
+- [Project status](#project-status)
+- [License](#license)
+- [Contributing](#contributing)
 
 ---
 
@@ -78,7 +95,7 @@ Everything above works exactly the same inside `async` contexts – just enable 
 
 #### Manual implementation (no macros)
 
-If you would rather stay macro‑free you can implement the three core traits yourself – it’s only a handful of lines once you know the pattern:
+This approach is handy when macros are unavailable or you need finer-grained control.
 
 ```rust
 use result_transformer::sync::{
@@ -137,14 +154,14 @@ The example below chains two *steps* and then turns the resulting flow into a re
 
 ```rust
 use result_transformer::flow::sync::{
-    step::map::{OkMapStep, ErrMapStep},
+    step::map::ResultMapBothStep,
     macros::impl_result_transformer_via_result_flow,
 };
 
-use result_transformer::flow::sync::ResultMapBothStep; // helper that touches both
-
 // any value implementing `ResultFlow` can be used – a single step is already a valid flow!
-let flow = ResultMapBothStep::new(|ok: i32| ok * 2, |err: &str| format!("E:{err}"));
+let flow = ResultMapBothStep::new(|ok: i32| ok * 2, |err: &str| err.to_owned())
+    // chaining the steps with `.then_result`
+    .then_result(ResultMapBothStep::new(|ok| ok + 1, |err| format!("E:{err}")));
 
 struct ViaFlow;
 
@@ -162,13 +179,47 @@ impl_result_transformer_via_result_flow! {
 
 ## Feature matrix
 
-| feature                                 | effect                              |
-| --------------------------------------- | ----------------------------------- |
-| `core-sync`, `core-async`               | bring in the chosen execution model |
-| `core-sync-macros`, `core-async-macros` | helper macros only                  |
-| `flow-sync`, `flow-async`               | enable the *flow / step* DSL        |
+| feature               | effect |
+| --------------------- | --------------------------------------------------------- |
+| `default`             | enables `core-sync` |
+| `core-sync`           | enables the synchronous core API |
+| `core-sync-macros`    | helper macros for the synchronous model |
+| `core-sync-all`       | `core-sync` + `core-sync-macros` |
+| `core-async`          | enables the asynchronous core API |
+| `core-async-macros`   | helper macros for the asynchronous model |
+| `core-async-all`      | `core-async` + `core-async-macros` |
+| `core-all`            | all features from `result-transformer-core` |
+| `flow-sync`           | enables the synchronous *flow / step* DSL |
+| `flow-sync-macros`    | helper macros for synchronous flows |
+| `flow-sync-log-step`  | adds a logging step for synchronous flows |
+| `flow-sync-all`       | `flow-sync` + `flow-sync-log-step` + `flow-sync-macros` |
+| `flow-async`          | enables the asynchronous *flow / step* DSL |
+| `flow-async-macros`   | helper macros for asynchronous flows |
+| `flow-async-log-step` | adds a logging step for asynchronous flows |
+| `flow-async-all`      | `flow-async` + `flow-async-log-step` + `flow-async-macros` |
+| `flow-all`            | all features from `result-transformer-flow` |
+| `sync-all`            | `core-sync-all` + `flow-sync-all` |
+| `async-all`           | `core-async-all` + `flow-async-all` |
+| `all`                 | every feature in this crate |
 
 Pick exactly what you need and keep compile times down.
+Only `core-sync` is enabled by default. Combine features as needed.
+
+> Some features automatically enable their dependencies.
+> For example, `flow-async-macros` will automatically enable `flow-async` and `core-async`.
+> You can still list them explicitly if you want to be more precise.
+
+Example: enabling the async execution model, flow DSL, and flow macros:
+
+```toml
+result-transformer = { version = "0.0.1", features = ["flow-async-macros"] }
+```
+
+Or, if you prefer to list everything explicitly:
+
+```toml
+result-transformer = { version = "0.0.1", features = ["core-async", "flow-async", "flow-async-macros"] }
+```
 
 ---
 
@@ -187,5 +238,15 @@ Licensed under either of
 * **Apache‑2.0** license *(LICENSE-APACHE)*
 
 at your option.
+
+---
+
+## Contributing
+
+Bug reports, feature requests, and pull requests are always welcome.
+
+> I'm still new to GitHub and not very confident in English.
+> For now, I'm doing my best with the help of ChatGPT,
+> so I might misunderstand something. Thanks for your understanding!
 
 ---
