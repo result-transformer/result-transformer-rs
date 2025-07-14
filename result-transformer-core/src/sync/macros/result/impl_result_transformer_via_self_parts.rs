@@ -7,7 +7,7 @@
 /// # Example
 ///
 /// ```rust
-/// impl_result_transformer_from_parts! {
+/// impl_result_transformer_via_self_parts! {
 ///     impl_for = MyTransformer,
 ///     input_ok = Success,
 ///     input_err = Failure,
