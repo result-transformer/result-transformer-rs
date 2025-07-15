@@ -2,17 +2,17 @@ use std::marker::PhantomData;
 
 /// Step that inspects the entire `Result` without modifying it.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultInspectStep<InspectorFn, InputOk, InputErr>
+pub struct ResultInspectStep<OkType, ErrType, InspectorFn>
 where
-    InspectorFn: Fn(&Result<InputOk, InputErr>),
+    InspectorFn: Fn(&Result<OkType, ErrType>),
 {
     inspector: InspectorFn,
-    _phantom: PhantomData<(InputOk, InputErr)>,
+    _phantom: PhantomData<(OkType, ErrType)>,
 }
 
-impl<InspectorFn, InputOk, InputErr> ResultInspectStep<InspectorFn, InputOk, InputErr>
+impl<OkType, ErrType, InspectorFn> ResultInspectStep<OkType, ErrType, InspectorFn>
 where
-    InspectorFn: Fn(&Result<InputOk, InputErr>),
+    InspectorFn: Fn(&Result<OkType, ErrType>),
 {
     /// Creates a new [`ResultInspectStep`].
     ///
@@ -24,10 +24,7 @@ where
         }
     }
 
-    pub(crate) fn apply(
-        &self,
-        input_result: Result<InputOk, InputErr>,
-    ) -> Result<InputOk, InputErr> {
+    pub(crate) fn apply(&self, input_result: Result<OkType, ErrType>) -> Result<OkType, ErrType> {
         (self.inspector)(&input_result);
         input_result
     }

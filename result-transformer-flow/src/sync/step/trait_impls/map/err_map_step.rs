@@ -2,7 +2,7 @@ use crate::sync::flow::ErrFlow;
 
 use crate::__internal::shared_step::ErrMapStep;
 
-impl<MapperFn, InputErr, OutputErr> ErrFlow<InputErr> for ErrMapStep<MapperFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, MapperFn> ErrFlow<InputErr> for ErrMapStep<InputErr, OutputErr, MapperFn>
 where
     MapperFn: Fn(InputErr) -> OutputErr,
 {

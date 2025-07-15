@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that passes the entire `Result` to a closure and returns its result.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultTapStep<TapFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultTapStep<InputOk, InputErr, OutputOk, OutputErr, TapFn>
 where
     TapFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,
 {
@@ -10,8 +10,8 @@ where
     _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
 }
 
-impl<TapFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultTapStep<TapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, TapFn>
+    ResultTapStep<InputOk, InputErr, OutputOk, OutputErr, TapFn>
 where
     TapFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,
 {

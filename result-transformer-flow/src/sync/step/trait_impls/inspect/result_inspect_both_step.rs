@@ -2,8 +2,8 @@ use crate::sync::flow::ResultFlow;
 
 use crate::__internal::shared_step::ResultInspectBothStep;
 
-impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType> ResultFlow<OkType, ErrType>
-    for ResultInspectBothStep<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
+impl<OkType, ErrType, OkInspectorFn, ErrInspectorFn> ResultFlow<OkType, ErrType>
+    for ResultInspectBothStep<OkType, ErrType, OkInspectorFn, ErrInspectorFn>
 where
     OkInspectorFn: Fn(&OkType),
     ErrInspectorFn: Fn(&ErrType),

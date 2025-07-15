@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that maps the error value using a provided function.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrMapStep<MapperFn, InputErr, OutputErr>
+pub struct ErrMapStep<InputErr, OutputErr, MapperFn>
 where
     MapperFn: Fn(InputErr) -> OutputErr,
 {
@@ -10,7 +10,7 @@ where
     _phantom: PhantomData<(InputErr, OutputErr)>,
 }
 
-impl<MapperFn, InputErr, OutputErr> ErrMapStep<MapperFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, MapperFn> ErrMapStep<InputErr, OutputErr, MapperFn>
 where
     MapperFn: Fn(InputErr) -> OutputErr,
 {
@@ -23,7 +23,7 @@ where
             _phantom: PhantomData,
         }
     }
-    
+
     pub(crate) fn apply(&self, input_err: InputErr) -> OutputErr {
         (self.mapper)(input_err)
     }

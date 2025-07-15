@@ -2,8 +2,8 @@ use crate::sync::flow::ResultFlow;
 
 use crate::__internal::shared_step::ResultMapBothStep;
 
-impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr> ResultFlow<InputOk, InputErr>
-    for ResultMapBothStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn> ResultFlow<InputOk, InputErr>
+    for ResultMapBothStep<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
 where
     OkMapperFn: Fn(InputOk) -> OutputOk,
     ErrMapperFn: Fn(InputErr) -> OutputErr,

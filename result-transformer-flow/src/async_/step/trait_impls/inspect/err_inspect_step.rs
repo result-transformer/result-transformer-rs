@@ -3,10 +3,10 @@
 use crate::__internal::shared_step::ErrInspectStep;
 use crate::async_::AsyncErrFlow;
 
-impl<InspectorFn, ErrType> AsyncErrFlow<ErrType> for ErrInspectStep<InspectorFn, ErrType>
+impl<ErrType, InspectorFn> AsyncErrFlow<ErrType> for ErrInspectStep<ErrType, InspectorFn>
 where
-    InspectorFn: Fn(&ErrType) + Send + Sync,
     ErrType: Send + Sync,
+    InspectorFn: Fn(&ErrType) + Send + Sync,
 {
     type OutputErr = ErrType;
 

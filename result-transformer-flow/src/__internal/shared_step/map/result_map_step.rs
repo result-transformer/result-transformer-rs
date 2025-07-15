@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that maps the entire `Result` using a single function.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultMapStep<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultMapStep<InputOk, InputErr, OutputOk, OutputErr, MapperFn>
 where
     MapperFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,
 {
@@ -10,8 +10,8 @@ where
     _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
 }
 
-impl<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultMapStep<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, MapperFn>
+    ResultMapStep<InputOk, InputErr, OutputOk, OutputErr, MapperFn>
 where
     MapperFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,
 {

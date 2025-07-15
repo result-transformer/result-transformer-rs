@@ -2,8 +2,8 @@ use crate::sync::flow::ResultFlow;
 
 use crate::__internal::shared_step::ResultTapBothBindStep;
 
-impl<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr> ResultFlow<InputOk, InputErr>
-    for ResultTapBothBindStep<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn> ResultFlow<InputOk, InputErr>
+    for ResultTapBothBindStep<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn>
 where
     OkTapFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
     ErrTapFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,

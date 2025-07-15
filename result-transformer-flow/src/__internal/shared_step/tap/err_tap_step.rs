@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that passes the error value to a closure and returns its result.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrTapStep<TapFn, InputErr, OutputErr>
+pub struct ErrTapStep<InputErr, OutputErr, TapFn>
 where
     TapFn: Fn(InputErr) -> OutputErr,
 {
@@ -10,7 +10,7 @@ where
     _phantom: PhantomData<(InputErr, OutputErr)>,
 }
 
-impl<TapFn, InputErr, OutputErr> ErrTapStep<TapFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, TapFn> ErrTapStep<InputErr, OutputErr, TapFn>
 where
     TapFn: Fn(InputErr) -> OutputErr,
 {

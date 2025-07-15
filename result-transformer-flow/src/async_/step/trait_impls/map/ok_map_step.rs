@@ -3,11 +3,11 @@
 use crate::__internal::shared_step::OkMapStep;
 use crate::async_::AsyncOkFlow;
 
-impl<MapperFn, InputOk, OutputOk> AsyncOkFlow<InputOk> for OkMapStep<MapperFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, MapperFn> AsyncOkFlow<InputOk> for OkMapStep<InputOk, OutputOk, MapperFn>
 where
-    MapperFn: Fn(InputOk) -> OutputOk + Send + Sync,
     InputOk: Send + Sync,
     OutputOk: Send + Sync,
+    MapperFn: Fn(InputOk) -> OutputOk + Send + Sync,
 {
     type OutputOk = OutputOk;
 

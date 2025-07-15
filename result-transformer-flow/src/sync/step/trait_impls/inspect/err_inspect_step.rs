@@ -2,7 +2,7 @@ use crate::sync::flow::ErrFlow;
 
 use crate::__internal::shared_step::ErrInspectStep;
 
-impl<InspectorFn, ErrType> ErrFlow<ErrType> for ErrInspectStep<InspectorFn, ErrType>
+impl<InspectorFn, ErrType> ErrFlow<ErrType> for ErrInspectStep<ErrType, InspectorFn>
 where
     InspectorFn: Fn(&ErrType),
 {

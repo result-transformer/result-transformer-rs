@@ -3,16 +3,16 @@
 use crate::__internal::shared_step::ResultMapBothBindStep;
 use crate::async_::AsyncResultFlow;
 
-impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
     AsyncResultFlow<InputOk, InputErr>
-    for ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+    for ResultMapBothBindStep<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
 where
-    OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr> + Send + Sync,
-    ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr> + Send + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr> + Send + Sync,
+    ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr> + Send + Sync,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;

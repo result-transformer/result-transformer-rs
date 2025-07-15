@@ -3,11 +3,11 @@
 use crate::__internal::shared_step::ErrTapStep;
 use crate::async_::AsyncErrFlow;
 
-impl<TapFn, InputErr, OutputErr> AsyncErrFlow<InputErr> for ErrTapStep<TapFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, TapFn> AsyncErrFlow<InputErr> for ErrTapStep<InputErr, OutputErr, TapFn>
 where
-    TapFn: Fn(InputErr) -> OutputErr + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    TapFn: Fn(InputErr) -> OutputErr + Send + Sync,
 {
     type OutputErr = OutputErr;
 

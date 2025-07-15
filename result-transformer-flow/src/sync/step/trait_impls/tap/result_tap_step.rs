@@ -2,8 +2,8 @@ use crate::sync::flow::ResultFlow;
 
 use crate::__internal::shared_step::ResultTapStep;
 
-impl<TapFn, InputOk, InputErr, OutputOk, OutputErr> ResultFlow<InputOk, InputErr>
-    for ResultTapStep<TapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, TapFn> ResultFlow<InputOk, InputErr>
+    for ResultTapStep<InputOk, InputErr, OutputOk, OutputErr, TapFn>
 where
     TapFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr>,
 {

@@ -3,12 +3,12 @@
 use crate::__internal::shared_step::ResultInspectStep;
 use crate::async_::AsyncResultFlow;
 
-impl<InspectorFn, OkType, ErrType> AsyncResultFlow<OkType, ErrType>
-    for ResultInspectStep<InspectorFn, OkType, ErrType>
+impl<OkType, ErrType, InspectorFn> AsyncResultFlow<OkType, ErrType>
+    for ResultInspectStep<OkType, ErrType, InspectorFn>
 where
-    InspectorFn: Fn(&Result<OkType, ErrType>) + Send + Sync,
     OkType: Send + Sync,
     ErrType: Send + Sync,
+    InspectorFn: Fn(&Result<OkType, ErrType>) + Send + Sync,
 {
     type OutputOk = OkType;
     type OutputErr = ErrType;

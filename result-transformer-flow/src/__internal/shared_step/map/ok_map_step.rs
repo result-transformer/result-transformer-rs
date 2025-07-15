@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that maps the success value using a provided function.
 #[derive(Debug, Clone, Copy)]
-pub struct OkMapStep<MapperFn, InputOk, OutputOk>
+pub struct OkMapStep<InputOk, OutputOk, MapperFn>
 where
     MapperFn: Fn(InputOk) -> OutputOk,
 {
@@ -10,7 +10,7 @@ where
     _phantom: PhantomData<(InputOk, OutputOk)>,
 }
 
-impl<MapperFn, InputOk, OutputOk> OkMapStep<MapperFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, MapperFn> OkMapStep<InputOk, OutputOk, MapperFn>
 where
     MapperFn: Fn(InputOk) -> OutputOk,
 {

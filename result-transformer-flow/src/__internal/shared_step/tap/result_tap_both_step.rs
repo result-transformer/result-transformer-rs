@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that applies separate closures to the success and error values.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultTapBothStep<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultTapBothStep<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn>
 where
     OkTapFn: Fn(InputOk) -> OutputOk,
     ErrTapFn: Fn(InputErr) -> OutputErr,
@@ -12,8 +12,8 @@ where
     _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
 }
 
-impl<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultTapBothStep<OkTapFn, ErrTapFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn>
+    ResultTapBothStep<InputOk, InputErr, OutputOk, OutputErr, OkTapFn, ErrTapFn>
 where
     OkTapFn: Fn(InputOk) -> OutputOk,
     ErrTapFn: Fn(InputErr) -> OutputErr,
@@ -30,7 +30,10 @@ where
         }
     }
 
-    pub(crate) fn apply(&self, input_result: Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> {
+    pub(crate) fn apply(
+        &self,
+        input_result: Result<InputOk, InputErr>,
+    ) -> Result<OutputOk, OutputErr> {
         match input_result {
             Ok(ok) => Ok((self.ok_tap)(ok)),
             Err(err) => Err((self.err_tap)(err)),

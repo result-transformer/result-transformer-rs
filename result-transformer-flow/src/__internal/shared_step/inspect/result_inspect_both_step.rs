@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that inspects both the success and error values without modifying them.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultInspectBothStep<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
+pub struct ResultInspectBothStep<OkType, ErrType, OkInspectorFn, ErrInspectorFn>
 where
     OkInspectorFn: Fn(&OkType),
     ErrInspectorFn: Fn(&ErrType),
@@ -12,8 +12,8 @@ where
     _phantom: PhantomData<(OkType, ErrType)>,
 }
 
-impl<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
-    ResultInspectBothStep<OkInspectorFn, ErrInspectorFn, OkType, ErrType>
+impl<OkType, ErrType, OkInspectorFn, ErrInspectorFn>
+    ResultInspectBothStep<OkType, ErrType, OkInspectorFn, ErrInspectorFn>
 where
     OkInspectorFn: Fn(&OkType),
     ErrInspectorFn: Fn(&ErrType),

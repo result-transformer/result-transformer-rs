@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that passes the error to an inspector and returns it unchanged.
 #[derive(Debug, Clone, Copy)]
-pub struct ErrInspectStep<InspectorFn, ErrType>
+pub struct ErrInspectStep<ErrType, InspectorFn>
 where
     InspectorFn: Fn(&ErrType),
 {
@@ -10,7 +10,7 @@ where
     _phantom: PhantomData<ErrType>,
 }
 
-impl<InspectorFn, ErrType> ErrInspectStep<InspectorFn, ErrType>
+impl<ErrType, InspectorFn> ErrInspectStep<ErrType, InspectorFn>
 where
     InspectorFn: Fn(&ErrType),
 {

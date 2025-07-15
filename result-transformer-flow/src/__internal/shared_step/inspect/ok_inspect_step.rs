@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that passes the success value to an inspector and returns it.
 #[derive(Debug, Clone, Copy)]
-pub struct OkInspectStep<InspectorFn, OkType>
+pub struct OkInspectStep<OkType, InspectorFn>
 where
     InspectorFn: Fn(&OkType),
 {
@@ -10,7 +10,7 @@ where
     _phantom: PhantomData<OkType>,
 }
 
-impl<InspectorFn, OkType> OkInspectStep<InspectorFn, OkType>
+impl<InspectorFn, OkType> OkInspectStep<OkType, InspectorFn>
 where
     InspectorFn: Fn(&OkType),
 {

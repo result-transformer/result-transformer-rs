@@ -3,12 +3,12 @@
 use crate::__internal::shared_step::ErrMapStep;
 use crate::async_::AsyncErrFlow;
 
-impl<MapperFn, InputErr, OutputErr> AsyncErrFlow<InputErr>
-    for ErrMapStep<MapperFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, MapperFn> AsyncErrFlow<InputErr>
+    for ErrMapStep<InputErr, OutputErr, MapperFn>
 where
-    MapperFn: Fn(InputErr) -> OutputErr + Send + Sync,
     InputErr: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(InputErr) -> OutputErr + Send + Sync,
 {
     type OutputErr = OutputErr;
 

@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that maps success and error values using functions returning a `Result`.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultMapBothBindStep<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
 where
     OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
     ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,
@@ -12,8 +12,8 @@ where
     _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
 }
 
-impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultMapBothBindStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
+    ResultMapBothBindStep<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
 where
     OkMapperFn: Fn(InputOk) -> Result<OutputOk, OutputErr>,
     ErrMapperFn: Fn(InputErr) -> Result<OutputOk, OutputErr>,
@@ -30,7 +30,10 @@ where
         }
     }
 
-    pub(crate) fn apply(&self, input_result: Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> {
+    pub(crate) fn apply(
+        &self,
+        input_result: Result<InputOk, InputErr>,
+    ) -> Result<OutputOk, OutputErr> {
         match input_result {
             Ok(ok) => (self.ok_mapper)(ok),
             Err(err) => (self.err_mapper)(err),

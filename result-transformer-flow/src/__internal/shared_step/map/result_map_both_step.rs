@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that maps success and error values using separate functions.
 #[derive(Debug, Clone, Copy)]
-pub struct ResultMapBothStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+pub struct ResultMapBothStep<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
 where
     OkMapperFn: Fn(InputOk) -> OutputOk,
     ErrMapperFn: Fn(InputErr) -> OutputErr,
@@ -12,8 +12,8 @@ where
     _phantom: PhantomData<(InputOk, InputErr, OutputOk, OutputErr)>,
 }
 
-impl<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
-    ResultMapBothStep<OkMapperFn, ErrMapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
+    ResultMapBothStep<InputOk, InputErr, OutputOk, OutputErr, OkMapperFn, ErrMapperFn>
 where
     OkMapperFn: Fn(InputOk) -> OutputOk,
     ErrMapperFn: Fn(InputErr) -> OutputErr,
@@ -30,7 +30,10 @@ where
         }
     }
 
-    pub(crate) fn apply(&self, input_result: Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> {
+    pub(crate) fn apply(
+        &self,
+        input_result: Result<InputOk, InputErr>,
+    ) -> Result<OutputOk, OutputErr> {
         match input_result {
             Ok(ok) => Ok((self.ok_mapper)(ok)),
             Err(err) => Err((self.err_mapper)(err)),

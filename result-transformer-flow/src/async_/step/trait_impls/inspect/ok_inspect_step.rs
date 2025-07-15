@@ -3,10 +3,10 @@
 use crate::__internal::shared_step::OkInspectStep;
 use crate::async_::AsyncOkFlow;
 
-impl<InspectorFn, OkType> AsyncOkFlow<OkType> for OkInspectStep<InspectorFn, OkType>
+impl<OkType, InspectorFn> AsyncOkFlow<OkType> for OkInspectStep<OkType, InspectorFn>
 where
-    InspectorFn: Fn(&OkType) + Send + Sync,
     OkType: Send + Sync,
+    InspectorFn: Fn(&OkType) + Send + Sync,
 {
     type OutputOk = OkType;
 

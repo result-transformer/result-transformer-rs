@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 /// Step that passes the success value to a closure and returns its result.
 #[derive(Debug, Clone, Copy)]
-pub struct OkTapStep<TapFn, InputOk, OutputOk>
+pub struct OkTapStep<InputOk, OutputOk, TapFn>
 where
     TapFn: Fn(InputOk) -> OutputOk,
 {
@@ -10,7 +10,7 @@ where
     _phantom: PhantomData<(InputOk, OutputOk)>,
 }
 
-impl<TapFn, InputOk, OutputOk> OkTapStep<TapFn, InputOk, OutputOk>
+impl<TapFn, InputOk, OutputOk> OkTapStep<InputOk, OutputOk, TapFn>
 where
     TapFn: Fn(InputOk) -> OutputOk,
 {

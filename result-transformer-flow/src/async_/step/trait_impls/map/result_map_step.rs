@@ -3,14 +3,14 @@
 use crate::__internal::shared_step::ResultMapStep;
 use crate::async_::AsyncResultFlow;
 
-impl<MapperFn, InputOk, InputErr, OutputOk, OutputErr> AsyncResultFlow<InputOk, InputErr>
-    for ResultMapStep<MapperFn, InputOk, InputErr, OutputOk, OutputErr>
+impl<InputOk, InputErr, OutputOk, OutputErr, MapperFn> AsyncResultFlow<InputOk, InputErr>
+    for ResultMapStep<InputOk, InputErr, OutputOk, OutputErr, MapperFn>
 where
-    MapperFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> + Send + Sync,
     InputOk: Send + Sync,
     InputErr: Send + Sync,
     OutputOk: Send + Sync,
     OutputErr: Send + Sync,
+    MapperFn: Fn(Result<InputOk, InputErr>) -> Result<OutputOk, OutputErr> + Send + Sync,
 {
     type OutputOk = OutputOk;
     type OutputErr = OutputErr;

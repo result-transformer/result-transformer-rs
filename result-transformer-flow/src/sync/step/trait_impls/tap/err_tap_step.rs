@@ -2,7 +2,7 @@ use crate::sync::flow::ErrFlow;
 
 use crate::__internal::shared_step::ErrTapStep;
 
-impl<TapFn, InputErr, OutputErr> ErrFlow<InputErr> for ErrTapStep<TapFn, InputErr, OutputErr>
+impl<InputErr, OutputErr, TapFn> ErrFlow<InputErr> for ErrTapStep<InputErr, OutputErr, TapFn>
 where
     TapFn: Fn(InputErr) -> OutputErr,
 {

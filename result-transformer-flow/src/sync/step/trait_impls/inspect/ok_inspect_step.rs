@@ -2,7 +2,7 @@ use crate::sync::flow::OkFlow;
 
 use crate::__internal::shared_step::OkInspectStep;
 
-impl<InspectorFn, OkType> OkFlow<OkType> for OkInspectStep<InspectorFn, OkType>
+impl<OkType, InspectorFn> OkFlow<OkType> for OkInspectStep<OkType, InspectorFn>
 where
     InspectorFn: Fn(&OkType),
 {

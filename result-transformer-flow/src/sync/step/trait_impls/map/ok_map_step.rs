@@ -2,7 +2,7 @@ use crate::sync::flow::OkFlow;
 
 use crate::__internal::shared_step::OkMapStep;
 
-impl<MapperFn, InputOk, OutputOk> OkFlow<InputOk> for OkMapStep<MapperFn, InputOk, OutputOk>
+impl<InputOk, OutputOk, MapperFn> OkFlow<InputOk> for OkMapStep<InputOk, OutputOk, MapperFn>
 where
     MapperFn: Fn(InputOk) -> OutputOk,
 {
