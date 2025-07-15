@@ -24,7 +24,7 @@ where
     /// Creates a new [`ErrInspectStepAsync`].
     ///
     /// * `inspector` - function that receives a reference to the error value
-    pub fn new(inspector: InspectorFn) -> Self {
+    pub const fn new(inspector: InspectorFn) -> Self {
         Self {
             inspector,
             _phantom: PhantomData,

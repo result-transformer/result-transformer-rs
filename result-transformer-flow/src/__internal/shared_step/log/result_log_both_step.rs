@@ -18,7 +18,7 @@ impl<OkType, ErrType> ResultLogTapBothStep<OkType, ErrType> {
     /// * `ok_log_format` - function that converts the success value into a log message
     /// * `err_log_level` - log level used for the error value
     /// * `err_log_format` - function that converts the error value into a log message
-    pub fn new(
+    pub const fn new(
         ok_log_level: log::Level,
         ok_log_format: fn(&OkType) -> String,
         err_log_level: log::Level,
@@ -34,7 +34,7 @@ impl<OkType, ErrType> ResultLogTapBothStep<OkType, ErrType> {
     ///
     /// * `ok_log_config` - log settings for the success value
     /// * `err_log_config` - log settings for the error value
-    pub fn with_log_config(
+    pub const fn with_log_config(
         ok_log_config: LogConfig<OkType>,
         err_log_config: LogConfig<ErrType>,
     ) -> Self {

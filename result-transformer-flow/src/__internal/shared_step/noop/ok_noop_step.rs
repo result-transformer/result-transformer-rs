@@ -8,7 +8,7 @@ pub struct OkNoopStep<OkType> {
 
 impl<OkType> OkNoopStep<OkType> {
     /// Creates a new [`OkNoopStep`].
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             _phantom: PhantomData,
         }

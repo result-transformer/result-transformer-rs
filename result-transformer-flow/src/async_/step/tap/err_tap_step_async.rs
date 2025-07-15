@@ -26,7 +26,7 @@ where
     /// Creates a new [`ErrTapStepAsync`].
     ///
     /// * `func` - closure that processes the error value
-    pub fn new(func: TapFn) -> Self {
+    pub const fn new(func: TapFn) -> Self {
         Self {
             tap: func,
             _phantom: PhantomData,

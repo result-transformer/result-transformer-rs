@@ -27,7 +27,7 @@ where
     /// Creates a new [`ErrMapStepAsync`].
     ///
     /// * `mapper` - function converting the error value to another type
-    pub fn new(mapper: MapperFn) -> Self {
+    pub const fn new(mapper: MapperFn) -> Self {
         Self {
             mapper,
             _phantom: PhantomData,

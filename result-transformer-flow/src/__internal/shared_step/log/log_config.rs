@@ -12,7 +12,7 @@ impl<T> LogConfig<T> {
     ///
     /// * `log_level` - log level to emit
     /// * `log_format` - function that formats the value into a log string
-    pub fn new(log_level: log::Level, log_format: fn(&T) -> String) -> Self {
+    pub const fn new(log_level: log::Level, log_format: fn(&T) -> String) -> Self {
         Self {
             log_level,
             log_format,

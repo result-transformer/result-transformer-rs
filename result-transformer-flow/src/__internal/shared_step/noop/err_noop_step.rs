@@ -8,7 +8,7 @@ pub struct ErrNoopStep<ErrType> {
 
 impl<ErrType> ErrNoopStep<ErrType> {
     /// Creates a new [`ErrNoopStep`].
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             _phantom: PhantomData,
         }

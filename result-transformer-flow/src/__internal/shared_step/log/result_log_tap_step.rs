@@ -16,7 +16,7 @@ impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
     ///
     /// * `log_level` - log level used for output
     /// * `log_format` - function that converts the `Result` value into a log message
-    pub fn new(log_level: log::Level, log_format: fn(&Result<OkType, ErrType>) -> String) -> Self {
+    pub const fn new(log_level: log::Level, log_format: fn(&Result<OkType, ErrType>) -> String) -> Self {
         Self::with_log_config(LogConfig::new(log_level, log_format))
     }
 
@@ -24,7 +24,7 @@ impl<OkType, ErrType> ResultLogTapStep<OkType, ErrType> {
     ///
     /// * `log_config` - Holds the log level for output and the function
     ///   that converts the `Result` value into a log message
-    pub fn with_log_config(log_config: LogConfig<Result<OkType, ErrType>>) -> Self {
+    pub const fn with_log_config(log_config: LogConfig<Result<OkType, ErrType>>) -> Self {
         Self {
             log_config,
             _phantom: PhantomData,

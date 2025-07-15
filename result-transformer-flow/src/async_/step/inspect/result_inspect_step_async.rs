@@ -27,7 +27,7 @@ where
     /// Creates a new [`ResultInspectStepAsync`].
     ///
     /// * `inspector` - function receiving a reference to the `Result`
-    pub fn new(inspector: InspectorFn) -> Self {
+    pub const fn new(inspector: InspectorFn) -> Self {
         Self {
             inspector,
             _phantom: PhantomData,

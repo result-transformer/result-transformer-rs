@@ -35,7 +35,7 @@ where
     /// * `condition` - predicate that evaluates the successful value
     /// * `then_flow` - flow run when the predicate returns `true`
     /// * `else_flow` - flow run when the predicate returns `false`
-    pub fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
+    pub const fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
         Self {
             condition,
             then_flow,

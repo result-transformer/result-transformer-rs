@@ -8,7 +8,7 @@ pub struct ResultNoopStep<OkType, ErrType> {
 
 impl<OkType, ErrType> ResultNoopStep<OkType, ErrType> {
     /// Creates a new [`ResultNoopStep`].
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             _phantom: PhantomData,
         }

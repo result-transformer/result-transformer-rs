@@ -46,7 +46,7 @@ where
     ///
     /// * `ok_fn` - inspector for the success value
     /// * `err_fn` - inspector for the error value
-    pub fn new(ok_fn: OkInspectorFn, err_fn: ErrInspectorFn) -> Self {
+    pub const fn new(ok_fn: OkInspectorFn, err_fn: ErrInspectorFn) -> Self {
         Self {
             ok_inspector: ok_fn,
             err_inspector: err_fn,

@@ -22,7 +22,7 @@ where
     ///
     /// * `ok_fn` - function to transform the success value
     /// * `err_fn` - function to transform the error value
-    pub fn new(ok_fn: OkMapperFn, err_fn: ErrMapperFn) -> Self {
+    pub const fn new(ok_fn: OkMapperFn, err_fn: ErrMapperFn) -> Self {
         Self {
             ok_mapper: ok_fn,
             err_mapper: err_fn,

@@ -23,7 +23,7 @@ where
     /// * `condition` - function that inspects the entire `Result`
     /// * `then_flow` - flow executed when the predicate returns `true`
     /// * `else_flow` - flow executed when the predicate returns `false`
-    pub fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
+    pub const fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
         Self {
             condition,
             then_flow,

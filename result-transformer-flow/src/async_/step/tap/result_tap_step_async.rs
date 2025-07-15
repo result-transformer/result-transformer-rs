@@ -31,7 +31,7 @@ where
     /// Creates a new [`ResultTapStepAsync`].
     ///
     /// * `tap` - closure that processes the entire `Result`
-    pub fn new(tap: TapFn) -> Self {
+    pub const fn new(tap: TapFn) -> Self {
         Self {
             tap,
             _phantom: PhantomData,

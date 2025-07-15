@@ -25,7 +25,7 @@ where
     /// * `condition` - predicate that evaluates the error value
     /// * `then_flow` - flow executed when the predicate is `true`
     /// * `else_flow` - flow executed when the predicate is `false`
-    pub fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
+    pub const fn new(condition: ConditionFn, then_flow: ThenFlow, else_flow: ElseFlow) -> Self {
         Self {
             condition,
             then_flow,

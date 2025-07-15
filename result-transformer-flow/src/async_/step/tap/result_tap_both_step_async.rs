@@ -54,7 +54,7 @@ where
     ///
     /// * `ok_fn` - closure for processing the success value
     /// * `err_fn` - closure for processing the error value
-    pub fn new(ok_fn: OkTapFn, err_fn: ErrTapFn) -> Self {
+    pub const fn new(ok_fn: OkTapFn, err_fn: ErrTapFn) -> Self {
         Self {
             ok_tap: ok_fn,
             err_tap: err_fn,

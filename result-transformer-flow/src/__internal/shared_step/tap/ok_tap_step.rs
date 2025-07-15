@@ -17,7 +17,7 @@ where
     /// Creates a new [`OkTapStep`].
     ///
     /// * `tap` - closure that processes the success value
-    pub fn new(tap: TapFn) -> Self {
+    pub const fn new(tap: TapFn) -> Self {
         Self {
             tap,
             _phantom: PhantomData,

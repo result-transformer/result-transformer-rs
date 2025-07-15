@@ -31,7 +31,7 @@ where
     /// Creates a new [`ResultMapStepAsync`].
     ///
     /// * `mapper` - function converting a `Result` into another `Result`
-    pub fn new(mapper: MapperFn) -> Self {
+    pub const fn new(mapper: MapperFn) -> Self {
         Self {
             mapper,
             _phantom: PhantomData,

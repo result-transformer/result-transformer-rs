@@ -26,7 +26,7 @@ where
     /// Creates a new [`OkMapStepAsync`].
     ///
     /// * `mapper` - function converting the success value to another type
-    pub fn new(mapper: MapperFn) -> Self {
+    pub const fn new(mapper: MapperFn) -> Self {
         Self {
             mapper,
             _phantom: PhantomData,
