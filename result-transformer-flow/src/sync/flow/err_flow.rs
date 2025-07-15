@@ -17,10 +17,10 @@ pub trait ErrFlow<InputErr> {
     /// Chain another [`ErrFlow`] after this one.
     ///
     /// The output of the current flow becomes the input of `next`.
-    fn then_err<NextFlow>(self, next: NextFlow) -> ErrFlowChain<Self, NextFlow, InputErr>
+    fn then_err<Next>(self, next: Next) -> ErrFlowChain<Self, Next, InputErr>
     where
         Self: Sized,
-        NextFlow: ErrFlow<Self::OutputErr>,
+        Next: ErrFlow<Self::OutputErr>,
     {
         ErrFlowChain {
             head: self,
@@ -31,29 +31,52 @@ pub trait ErrFlow<InputErr> {
 }
 
 /// Flow that chains two [`ErrFlow`] implementations.
-pub struct ErrFlowChain<FirstFlow, NextFlow, InputErr>
+pub struct ErrFlowChain<Head, Next, InputErr>
 where
-    FirstFlow: ErrFlow<InputErr>,
-    NextFlow: ErrFlow<FirstFlow::OutputErr>,
+    Head: ErrFlow<InputErr>,
+    Next: ErrFlow<Head::OutputErr>,
 {
     /// The first flow in the chain.
-    head: FirstFlow,
+    head: Head,
     /// The flow executed after `head`.
-    next: NextFlow,
+    next: Next,
     /// Marker to keep the `InputErr` type parameter.
     _phantom: PhantomData<InputErr>,
 }
 
-impl<FirstFlow, NextFlow, InputErr> ErrFlow<InputErr>
-    for ErrFlowChain<FirstFlow, NextFlow, InputErr>
+impl<Head, Next, InputErr> ErrFlow<InputErr>
+    for ErrFlowChain<Head, Next, InputErr>
 where
-    FirstFlow: ErrFlow<InputErr>,
-    NextFlow: ErrFlow<FirstFlow::OutputErr>,
+    Head: ErrFlow<InputErr>,
+    Next: ErrFlow<Head::OutputErr>,
 {
-    type OutputErr = NextFlow::OutputErr;
+    type OutputErr = Next::OutputErr;
 
     fn apply_err(&self, input_err: InputErr) -> Self::OutputErr {
         let result = self.head.apply_err(input_err);
         self.next.apply_err(result)
     }
+}
+
+// `Clone` implementation when both flows are cloneable
+impl<Head, Next, InputErr> Clone for ErrFlowChain<Head, Next, InputErr>
+where
+    Head: ErrFlow<InputErr> + Clone,
+    Next: ErrFlow<Head::OutputErr> + Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            head: self.head.clone(),
+            next: self.next.clone(),
+            _phantom: PhantomData,
+        }
+    }
+}
+
+// Optional `Copy` implementation when both flows are copyable
+impl<FirstFlow, NextFlow, InputErr> Copy for ErrFlowChain<FirstFlow, NextFlow, InputErr>
+where
+    FirstFlow: ErrFlow<InputErr> + Copy,
+    NextFlow: ErrFlow<FirstFlow::OutputErr> + Copy,
+{
 }

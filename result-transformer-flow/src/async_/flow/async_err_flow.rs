@@ -17,10 +17,10 @@ pub trait AsyncErrFlow<InputErr> {
     ) -> impl Future<Output = Self::OutputErr> + Send + 'a;
 
     /// Chain another [`AsyncErrFlow`] to process the output of this one.
-    fn then_async_err<NextFlow>(self, next: NextFlow) -> AsyncErrFlowChain<Self, NextFlow, InputErr>
+    fn then_async_err<Next>(self, next: Next) -> AsyncErrFlowChain<Self, Next, InputErr>
     where
         Self: Sized,
-        NextFlow: AsyncErrFlow<Self::OutputErr>,
+        Next: AsyncErrFlow<Self::OutputErr>,
     {
         AsyncErrFlowChain {
             head: self,
@@ -58,4 +58,27 @@ where
             self.next.apply_err_async(intermediate).await
         }
     }
+}
+
+// `Clone` implementation when both flows are cloneable
+impl<Head, Next, InputErr> Clone for AsyncErrFlowChain<Head, Next, InputErr>
+where
+    Head: AsyncErrFlow<InputErr> + Clone,
+    Next: AsyncErrFlow<Head::OutputErr> + Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            head: self.head.clone(),
+            next: self.next.clone(),
+            _phantom: PhantomData,
+        }
+    }
+}
+
+// Optional `Copy` implementation when both flows are copyable
+impl<Head, Next, InputErr> Copy for AsyncErrFlowChain<Head, Next, InputErr>
+where
+    Head: AsyncErrFlow<InputErr> + Copy,
+    Next: AsyncErrFlow<Head::OutputErr> + Copy,
+{
 }

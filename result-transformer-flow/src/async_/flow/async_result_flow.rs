@@ -20,13 +20,13 @@ pub trait AsyncResultFlow<InputOk, InputErr> {
     ) -> impl Future<Output = Result<Self::OutputOk, Self::OutputErr>> + Send + 'a;
 
     /// Chain another [`AsyncResultFlow`] after this one.
-    fn then_async_result<NextFlow>(
+    fn then_async_result<Next>(
         self,
-        next: NextFlow,
-    ) -> AsyncResultFlowChain<Self, NextFlow, InputOk, InputErr>
+        next: Next,
+    ) -> AsyncResultFlowChain<Self, Next, InputOk, InputErr>
     where
         Self: Sized,
-        NextFlow: AsyncResultFlow<Self::OutputOk, Self::OutputErr>,
+        Next: AsyncResultFlow<Self::OutputOk, Self::OutputErr>,
     {
         AsyncResultFlowChain {
             head: self,
@@ -67,4 +67,27 @@ where
             self.next.apply_result_async(intermediate).await
         }
     }
+}
+
+// `Clone` implementation when both flows are cloneable
+impl<Head, Next, InputOk, InputErr> Clone for AsyncResultFlowChain<Head, Next, InputOk, InputErr>
+where
+    Head: AsyncResultFlow<InputOk, InputErr> + Clone,
+    Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr> + Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            head: self.head.clone(),
+            next: self.next.clone(),
+            _phantom: PhantomData,
+        }
+    }
+}
+
+// Optional `Copy` implementation when both flows are copyable
+impl<Head, Next, InputOk, InputErr> Copy for AsyncResultFlowChain<Head, Next, InputOk, InputErr>
+where
+    Head: AsyncResultFlow<InputOk, InputErr> + Copy,
+    Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr> + Copy,
+{
 }

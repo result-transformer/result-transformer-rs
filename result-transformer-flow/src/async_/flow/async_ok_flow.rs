@@ -17,10 +17,10 @@ pub trait AsyncOkFlow<InputOk> {
     ) -> impl Future<Output = Self::OutputOk> + Send + 'a;
 
     /// Chain another [`AsyncOkFlow`] to be executed after this one.
-    fn then_async_ok<NextFlow>(self, next: NextFlow) -> AsyncOkFlowChain<Self, NextFlow, InputOk>
+    fn then_async_ok<Next>(self, next: Next) -> AsyncOkFlowChain<Self, Next, InputOk>
     where
         Self: Sized,
-        NextFlow: AsyncOkFlow<Self::OutputOk>,
+        Next: AsyncOkFlow<Self::OutputOk>,
     {
         AsyncOkFlowChain {
             head: self,
@@ -58,4 +58,27 @@ where
             self.next.apply_ok_async(intermediate).await
         }
     }
+}
+
+// `Clone` implementation when both flows are cloneable
+impl<Head, Next, InputOk> Clone for AsyncOkFlowChain<Head, Next, InputOk>
+where
+    Head: AsyncOkFlow<InputOk> + Clone,
+    Next: AsyncOkFlow<Head::OutputOk> + Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            head: self.head.clone(),
+            next: self.next.clone(),
+            _phantom: PhantomData,
+        }
+    }
+}
+
+// Optional `Copy` implementation when both flows are copyable
+impl<Head, Next, InputOk> Copy for AsyncOkFlowChain<Head, Next, InputOk>
+where
+    Head: AsyncOkFlow<InputOk> + Copy,
+    Next: AsyncOkFlow<Head::OutputOk> + Copy,
+{
 }

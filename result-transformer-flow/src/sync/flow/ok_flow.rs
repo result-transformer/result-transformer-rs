@@ -17,10 +17,10 @@ pub trait OkFlow<InputOk> {
     /// Chain another [`OkFlow`] after this one.
     ///
     /// The output of the current flow is used as the input of `next`.
-    fn then_ok<NextFlow>(self, next: NextFlow) -> OkFlowChain<Self, NextFlow, InputOk>
+    fn then_ok<Next>(self, next: Next) -> OkFlowChain<Self, Next, InputOk>
     where
         Self: Sized,
-        NextFlow: OkFlow<Self::OutputOk>,
+        Next: OkFlow<Self::OutputOk>,
     {
         OkFlowChain {
             head: self,
@@ -31,28 +31,51 @@ pub trait OkFlow<InputOk> {
 }
 
 /// Flow that chains two [`OkFlow`] implementations.
-pub struct OkFlowChain<FirstFlow, NextFlow, InputOk>
+pub struct OkFlowChain<Head, Next, InputOk>
 where
-    FirstFlow: OkFlow<InputOk>,
-    NextFlow: OkFlow<FirstFlow::OutputOk>,
+    Head: OkFlow<InputOk>,
+    Next: OkFlow<Head::OutputOk>,
 {
     /// The first flow in the chain.
-    head: FirstFlow,
+    head: Head,
     /// The flow executed after `head`.
-    next: NextFlow,
+    next: Next,
     /// Marker to keep the `InputOk` type parameter.
     _phantom: PhantomData<InputOk>,
 }
 
-impl<FirstFlow, NextFlow, InputOk> OkFlow<InputOk> for OkFlowChain<FirstFlow, NextFlow, InputOk>
+impl<Head, Next, InputOk> OkFlow<InputOk> for OkFlowChain<Head, Next, InputOk>
 where
-    FirstFlow: OkFlow<InputOk>,
-    NextFlow: OkFlow<FirstFlow::OutputOk>,
+    Head: OkFlow<InputOk>,
+    Next: OkFlow<Head::OutputOk>,
 {
-    type OutputOk = NextFlow::OutputOk;
+    type OutputOk = Next::OutputOk;
 
     fn apply_ok(&self, input_ok: InputOk) -> Self::OutputOk {
         let result = self.head.apply_ok(input_ok);
         self.next.apply_ok(result)
     }
+}
+
+// `Clone` implementation when both flows are cloneable
+impl<Head, Next, InputOk> Clone for OkFlowChain<Head, Next, InputOk>
+where
+    Head: OkFlow<InputOk> + Clone,
+    Next: OkFlow<Head::OutputOk> + Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            head: self.head.clone(),
+            next: self.next.clone(),
+            _phantom: PhantomData,
+        }
+    }
+}
+
+// Optional `Copy` implementation when both flows are copyable
+impl<Head, Next, InputOk> Copy for OkFlowChain<Head, Next, InputOk>
+where
+    Head: OkFlow<InputOk> + Copy,
+    Next: OkFlow<Head::OutputOk> + Copy,
+{
 }
