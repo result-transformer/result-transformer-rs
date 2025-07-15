@@ -29,7 +29,7 @@ Current version is `0.0.1`. The API is not yet stable and may change.
 
 * **Decoupled by design** – success (`OkTransformer`) and error (`ErrTransformer`) paths are isolated, keeping concerns
   clear and testable.
-* **Symmetric sync / async** – every concept exists in twin flavours so you can switch models with zero friction.
+* **Symmetric sync / async** – every concept exists in twin flavours. You can reuse the same design, but switching to `async` requires the corresponding `_async` traits and macros.
 * **Macro‑assisted ergonomics** – declarative `impl_*_transformer!` and `impl_*_transformer_via_*_flow!`
   macros generate the boring glue while you focus on behaviour.
 * **Optional “flow / step” DSL** – chain lightweight *steps* into a *flow* when you want a quick inline pipeline.
@@ -40,13 +40,14 @@ Current version is `0.0.1`. The API is not yet stable and may change.
 
 ## Crate overview
 
-| crate                               | role                                                                           | key features                       |
-| ----------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------- |
-| **result‑transformer‑core**         | foundational traits & “raw” macros                                             | `sync`, `async`, `*_macros`        |
-| **result‑transformer‑flow**         | *optional* DSL made of *steps* that can be turned into transformers via macros | logging, map / tap / inspect steps |
-| **result‑transformer‑macros**       | reserved placeholder for future procedural macros                              | –                                  |
-| **result‑transformer‑dependencies** | consolidates external crates behind feature‑flags (`tokio`, `log`, …)         | –                                  |
-| **result‑transformer‑test**         | integration & doc‑tests you can read as real‑world recipes                     | –                                  |
+| crate                                | purpose                                                              | notes                                        |
+| ------------------------------------ | -------------------------------------------------------------------- | -------------------------------------------- |
+| **result-transformer**              | facade crate reexporting the individual components                  | enable only the features you need            |
+| **result-transformer-core**         | foundational traits and "raw" implementation macros                 | provides synchronous and asynchronous APIs   |
+| **result-transformer-flow**         | *optional* step-based DSL used to compose transformers via macros   | map/tap/inspect steps, optional logging      |
+| **result-transformer-macros**       | reserved placeholder for future procedural macros                   | not used yet                                 |
+| **result-transformer-dependencies** | consolidates external crates behind feature flags (`tokio`, `log`, …) | internal helper crate                        |
+| **result-transformer-test**         | integration tests and doc examples that serve as real-world recipes | not intended for production                  |
 
 ---
 
