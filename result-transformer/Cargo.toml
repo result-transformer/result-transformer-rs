@@ -9,11 +9,11 @@ description.workspace = true
 readme.workspace = true
 
 [dependencies]
-result-transformer-dependencies = { path = "../result-transformer-dependencies"}
+result-transformer-dependencies = { workspace = true }
 
-result-transformer-core = { path = "../result-transformer-core", optional = true }
-result-transformer-flow = { path = "../result-transformer-flow", optional = true  }
-result-transformer-macros = { path = "../result-transformer-macros", optional = true }
+result-transformer-core = { workspace = true, optional = true }
+result-transformer-flow = { workspace = true, optional = true  }
+result-transformer-macros = { workspace = true, optional = true }
 
 [features]
 
