@@ -13,10 +13,13 @@ result-transformer-dependencies = { path = "../result-transformer-dependencies" 
 
 [features]
 
-sync = []
-async = []
+sync = ["_internal_shared_step"]
+async = ["_internal_shared_step"]
 
 sync-macros = []
 async-macros = []
 
 logging = ["result-transformer-dependencies/log"]
+
+#internal
+_internal_shared_step = []
