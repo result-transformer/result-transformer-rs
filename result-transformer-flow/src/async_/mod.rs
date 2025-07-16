@@ -11,8 +11,8 @@
 #[cfg(feature = "async-macros")]
 pub mod macros;
 
-mod flow;
-mod step;
+pub mod flow;
+pub mod step;
 
 pub use flow::*;
 pub use step::*;
