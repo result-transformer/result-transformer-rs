@@ -1,6 +1,8 @@
 /// Implements [`ErrTransformer`] using [`From`] to convert between the
 /// specified input and output error types.
 ///
+/// Shorthand syntax: `($impl_for, [$input_err => $output_err])`.
+///
 /// # Parameters
 /// - `impl_for` - Type receiving the trait implementation.
 /// - `input_err` - Error type accepted by the transformer.
@@ -28,6 +30,17 @@ macro_rules! impl_err_transformer_via_output_from {
                 <$output_err as From<$input_err>>::from(err)
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_err:ty => $output_err:ty $(,)?]
+    ) => {
+        result_transformer::core::sync::macros::impl_err_transformer_via_output_from!(
+            impl_for = $impl_for,
+            input_err = $input_err,
+            output_err = $output_err
+        );
     };
 }
 pub use impl_err_transformer_via_output_from;

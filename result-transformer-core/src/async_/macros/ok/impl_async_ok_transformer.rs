@@ -1,4 +1,6 @@
-/// Defines an asynchronous [`AsyncOkTransformer`] implementation.
+/// Implements [`AsyncOkTransformer`] using a custom asynchronous function.
+///
+/// Shorthand syntax: `($ty, [$input_ok => $output_ok], $transform_ok)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type on which to implement the trait.
@@ -32,6 +34,19 @@ macro_rules! impl_async_ok_transformer {
                 ($transform_ok)(ok)
             }
         }
+    };
+
+    (
+        $ty:ty,
+        [$input_ok:ty => $output_ok:ty $(,)?],
+        $transform_ok:expr $(,)?
+    ) => {
+        result_transformer::core::async_::macros::impl_async_ok_transformer!(
+            impl_for = $ty,
+            input_ok = $input_ok,
+            output_ok = $output_ok,
+            transform_ok = $transform_ok
+        );
     };
 }
 pub use impl_async_ok_transformer;

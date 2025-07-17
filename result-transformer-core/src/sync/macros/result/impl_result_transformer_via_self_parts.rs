@@ -1,6 +1,8 @@
 /// Implements [`ResultTransformer`] for a given type that already implements both
 /// [`OkTransformer`] and [`ErrTransformer`] for the same input types.
 ///
+/// Shorthand syntax: `($impl_for, [$input_ok, $input_err])`.
+///
 /// This macro is intended for simple cases where a single type is responsible for
 /// transforming both `Ok` and `Err` values of a [`Result`].
 ///
@@ -52,45 +54,53 @@
 #[macro_export]
 macro_rules! impl_result_transformer_via_self_parts {
     (
-        impl_for = $ty:ty,
-        input_ok = $ok:ty,
-        input_err = $err:ty $(,)?
+        impl_for = $impl_for:ty,
+        input_ok = $input_ok:ty,
+        input_err = $input_err:ty $(,)?
     ) => {
         const _: fn() = || {
             fn assert_bounds<
-                T: result_transformer::sync::OkTransformer<$ok>
-                    + result_transformer::sync::ErrTransformer<$err>,
+                T: result_transformer::sync::OkTransformer<$input_ok>
+                    + result_transformer::sync::ErrTransformer<$input_err>,
             >() {
             }
-            assert_bounds::<$ty>();
+            assert_bounds::<$impl_for>();
         };
 
-        impl result_transformer::sync::ResultTransformer<$ok, $err> for $ty
+        impl result_transformer::sync::ResultTransformer<$input_ok, $input_err> for $impl_for
         where
-            $ty: result_transformer::sync::OkTransformer<$ok>
-                + result_transformer::sync::ErrTransformer<$err>,
+            $impl_for: result_transformer::sync::OkTransformer<$input_ok>
+                + result_transformer::sync::ErrTransformer<$input_err>,
         {
-            type OutputOk = <Self as result_transformer::sync::OkTransformer<$ok>>::OutputOk;
-            type OutputErr = <Self as result_transformer::sync::ErrTransformer<$err>>::OutputErr;
+            type OutputOk = <Self as result_transformer::sync::OkTransformer<$input_ok>>::OutputOk;
+            type OutputErr =
+                <Self as result_transformer::sync::ErrTransformer<$input_err>>::OutputErr;
 
             fn transform(
                 &self,
-                result: Result<$ok, $err>,
+                result: Result<$input_ok, $input_err>,
             ) -> Result<Self::OutputOk, Self::OutputErr> {
                 match result {
-                    Ok(o) => Ok(
-                        <Self as result_transformer::sync::OkTransformer<$ok>>::transform_ok(
-                            self, o,
-                        ),
-                    ),
-                    Err(e) => Err(
-                        <Self as result_transformer::sync::ErrTransformer<$err>>::transform_err(
-                            self, e,
-                        ),
-                    ),
+                    Ok(o) => Ok(<Self as result_transformer::sync::OkTransformer<
+                        $input_ok,
+                    >>::transform_ok(self, o)),
+                    Err(e) => Err(<Self as result_transformer::sync::ErrTransformer<
+                        $input_err,
+                    >>::transform_err(self, e)),
                 }
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty, $input_err:ty $(,)?]
+    ) => {
+        result_transformer::core::sync::macros::impl_result_transformer_via_self_parts!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            input_err = $input_err
+        );
     };
 }
 pub use impl_result_transformer_via_self_parts;

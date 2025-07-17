@@ -1,3 +1,7 @@
+/// Implements [`AsyncErrTransformer`] by delegating to an existing
+/// [`ErrTransformer`] implementation.
+///
+/// Shorthand syntax: `($ty, $impl_via, $input_err)`.
 #[macro_export]
 macro_rules! impl_async_err_transformer_via_self_err_transformer {
     (
@@ -22,6 +26,18 @@ macro_rules! impl_async_err_transformer_via_self_err_transformer {
                 }
             }
         }
+    };
+
+    (
+        $ty:ty,
+        $impl_via:ty,
+        $input_err:ty $(,)?
+    ) => {
+        result_transformer::core::async_::macros::impl_async_err_transformer_via_self_err_transformer!(
+            impl_for = $ty,
+            impl_via = $impl_via,
+            input_err = $input_err
+        );
     };
 }
 pub use impl_async_err_transformer_via_self_err_transformer;

@@ -1,5 +1,6 @@
-/// Helper macro for implementing [`ResultTransformer`] when only the error path
-/// needs mapping.
+/// Implements [`ResultTransformer`] when only the error path needs mapping.
+///
+/// Shorthand syntax: `($impl_for, [$input_ok, $input_err => $output_ok, $output_err], $transform_err)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type on which to implement the trait.
@@ -9,7 +10,7 @@
 #[macro_export]
 macro_rules! impl_result_transformer_via_err_transform_fn {
     (
-        impl_for = $type:ty,
+        impl_for = $impl_for:ty,
         input_ok = $input_ok:ty,
         input_err = $input_err:ty,
         output_ok = $output_ok:ty,
@@ -22,7 +23,7 @@ macro_rules! impl_result_transformer_via_err_transform_fn {
         };
 
         result_transformer::core::sync::macros::impl_result_transformer! {
-            impl_for = $type,
+            impl_for = $impl_for,
             input_ok = $input_ok,
             input_err = $input_err,
             output_ok = $output_ok,
@@ -34,6 +35,21 @@ macro_rules! impl_result_transformer_via_err_transform_fn {
                 }
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty, $input_err:ty => $output_ok:ty, $output_err:ty $(,)?],
+        $transform_err:expr $(,)?
+    ) => {
+        result_transformer::core::sync::macros::impl_result_transformer_via_err_transform_fn!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            input_err = $input_err,
+            output_ok = $output_ok,
+            output_err = $output_err,
+            transform_err = $transform_err
+        );
     };
 }
 pub use impl_result_transformer_via_err_transform_fn;

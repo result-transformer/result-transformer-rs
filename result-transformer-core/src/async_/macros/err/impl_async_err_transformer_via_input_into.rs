@@ -1,6 +1,8 @@
 /// Implements [`AsyncErrTransformer`] using [`Into`] to convert from the
 /// specified input error type to the output error type.
 ///
+/// Shorthand syntax: `($impl_for, [$input_err => $output_err])`.
+///
 /// # Parameters
 /// - `impl_for` - The type that receives the trait implementation.
 /// - `input_err` - Error type accepted by the transformer. Must implement
@@ -31,6 +33,17 @@ macro_rules! impl_async_err_transformer_via_input_into {
                 async move { <$input_err as Into<$output_err>>::into(err) }
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_err:ty => $output_err:ty $(,)?]
+    ) => {
+        result_transformer::core::async_::macros::impl_async_err_transformer_via_input_into!(
+            impl_for = $impl_for,
+            input_err = $input_err,
+            output_err = $output_err
+        );
     };
 }
 pub use impl_async_err_transformer_via_input_into;

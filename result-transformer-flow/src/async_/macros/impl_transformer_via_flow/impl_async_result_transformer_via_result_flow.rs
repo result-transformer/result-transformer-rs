@@ -1,4 +1,6 @@
-/// Creates an [`AsyncResultTransformer`] from an [`AsyncResultFlow`].
+/// Implements [`AsyncResultTransformer`] using an [`AsyncResultFlow`].
+///
+/// Shorthand syntax: `($impl_for, [$input_ok, $input_err => $output_ok, $output_err], $flow)`.
 ///
 /// # Parameters
 /// - `impl_for` - Target type for the implementation.
@@ -6,7 +8,7 @@
 /// - `output_ok` / `output_err` - Output types produced by the flow.
 /// - `flow` - Expression yielding the flow instance.
 #[macro_export]
-macro_rules! impl_async_result_transformer_via_result_flow {
+macro_rules! impl_async_result_transformer_via_async_result_flow {
     (
         impl_for = $impl_for:ty,
         input_ok = $input_ok:ty,
@@ -42,5 +44,20 @@ macro_rules! impl_async_result_transformer_via_result_flow {
             }
         }
     };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty, $input_err:ty => $output_ok:ty, $output_err:ty $(,)?],
+        $flow:expr $(,)?
+    ) => {
+        result_transformer::flow::async_::macros::impl_async_result_transformer_via_result_flow!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            input_err = $input_err,
+            output_ok = $output_ok,
+            output_err = $output_err,
+            flow = $flow
+        );
+    };
 }
-pub use impl_async_result_transformer_via_result_flow;
+pub use impl_async_result_transformer_via_async_result_flow;

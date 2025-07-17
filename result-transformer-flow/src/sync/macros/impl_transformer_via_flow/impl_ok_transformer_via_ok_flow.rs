@@ -1,4 +1,6 @@
-/// Generates an [`OkTransformer`] implementation from an [`OkFlow`].
+/// Implements [`OkTransformer`] using an [`OkFlow`].
+///
+/// Shorthand syntax: `($impl_for, [$input_ok => $output_ok], $flow)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type on which to implement the trait.
@@ -30,6 +32,19 @@ macro_rules! impl_ok_transformer_via_ok_flow {
                 result_transformer::flow::sync::OkFlow::apply_ok(&$flow, ok)
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty => $output_ok:ty $(,)?],
+        $flow:expr $(,)?
+    ) => {
+        result_transformer::flow::sync::macros::impl_ok_transformer_via_ok_flow!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            output_ok = $output_ok,
+            flow = $flow
+        );
     };
 }
 pub use impl_ok_transformer_via_ok_flow;

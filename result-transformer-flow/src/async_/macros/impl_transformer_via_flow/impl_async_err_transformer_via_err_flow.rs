@@ -1,4 +1,6 @@
-/// Creates an [`AsyncErrTransformer`] from an [`AsyncErrFlow`].
+/// Implements [`AsyncErrTransformer`] using an [`AsyncErrFlow`].
+///
+/// Shorthand syntax: `($impl_for, [$input_err => $output_err], $flow)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type that will receive the generated implementation.
@@ -6,7 +8,7 @@
 /// - `output_err` - Error type produced by the flow and transformer.
 /// - `flow` - Expression evaluating to the flow instance.
 #[macro_export]
-macro_rules! impl_async_err_transformer_via_err_flow {
+macro_rules! impl_async_err_transformer_via_async_err_flow {
     (
         impl_for = $impl_for:ty,
         input_err = $input_err:ty,
@@ -36,5 +38,18 @@ macro_rules! impl_async_err_transformer_via_err_flow {
             }
         }
     };
+
+    (
+        $impl_for:ty,
+        [$input_err:ty => $output_err:ty $(,)?],
+        $flow:expr $(,)?
+    ) => {
+        result_transformer::flow::async_::macros::impl_async_err_transformer_via_err_flow!(
+            impl_for = $impl_for,
+            input_err = $input_err,
+            output_err = $output_err,
+            flow = $flow
+        );
+    };
 }
-pub use impl_async_err_transformer_via_err_flow;
+pub use impl_async_err_transformer_via_async_err_flow;

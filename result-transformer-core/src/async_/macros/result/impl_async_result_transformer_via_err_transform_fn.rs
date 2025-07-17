@@ -1,9 +1,10 @@
-/// Helper macro for implementing [`AsyncResultTransformer`] when only the error
-/// branch requires mapping.
+/// Implements [`AsyncResultTransformer`] when only the error branch requires mapping.
+///
+/// Shorthand syntax: `($impl_for, [$input_ok, $input_err => $output_ok, $output_err], $transform_err)`.
 #[macro_export]
 macro_rules! impl_async_result_transformer_via_err_transform_fn {
     (
-        impl_for = $type:ty,
+        impl_for = $impl_for:ty,
         input_ok = $input_ok:ty,
         input_err = $input_err:ty,
         output_ok = $output_ok:ty,
@@ -21,7 +22,7 @@ macro_rules! impl_async_result_transformer_via_err_transform_fn {
         };
 
         result_transformer::core::async_::macros::impl_async_result_transformer! {
-            impl_for = $type,
+            impl_for = $impl_for,
             input_ok = $input_ok,
             input_err = $input_err,
             output_ok = $output_ok,
@@ -35,6 +36,21 @@ macro_rules! impl_async_result_transformer_via_err_transform_fn {
                 }
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty, $input_err:ty => $output_ok:ty, $output_err:ty $(,)?],
+        $transform_err:expr $(,)?
+    ) => {
+        result_transformer::core::async_::macros::impl_async_result_transformer_via_err_transform_fn!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            input_err = $input_err,
+            output_ok = $output_ok,
+            output_err = $output_err,
+            transform_err = $transform_err
+        );
     };
 }
 pub use impl_async_result_transformer_via_err_transform_fn;

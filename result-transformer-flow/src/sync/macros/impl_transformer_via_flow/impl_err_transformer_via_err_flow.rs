@@ -1,4 +1,6 @@
-/// Generates an [`ErrTransformer`] implementation from an [`ErrFlow`].
+/// Implements [`ErrTransformer`] using an [`ErrFlow`].
+///
+/// Shorthand syntax: `($impl_for, [$input_err => $output_err], $flow)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type that will implement the trait.
@@ -30,6 +32,19 @@ macro_rules! impl_err_transformer_via_err_flow {
                 result_transformer::flow::sync::ErrFlow::apply_err(&$flow, err)
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_err:ty => $output_err:ty $(,)?],
+        $flow:expr $(,)?
+    ) => {
+        result_transformer::flow::sync::macros::impl_err_transformer_via_err_flow!(
+            impl_for = $impl_for,
+            input_err = $input_err,
+            output_err = $output_err,
+            flow = $flow
+        );
     };
 }
 pub use impl_err_transformer_via_err_flow;

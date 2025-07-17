@@ -1,6 +1,8 @@
 /// Implements [`OkTransformer`] using [`Into`] to convert from the
 /// specified input type to the output type.
 ///
+/// Shorthand syntax: `($impl_for, [$input_ok => $output_ok])`.
+///
 /// # Parameters
 /// - `impl_for` - Type receiving the trait implementation.
 /// - `input_ok` - Success type accepted by the transformer. Must implement
@@ -28,6 +30,17 @@ macro_rules! impl_ok_transformer_via_input_into {
                 <$input_ok as Into<$output_ok>>::into(ok)
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty => $output_ok:ty $(,)?]
+    ) => {
+        result_transformer::core::sync::macros::impl_ok_transformer_via_input_into!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            output_ok = $output_ok
+        );
     };
 }
 pub use impl_ok_transformer_via_input_into;

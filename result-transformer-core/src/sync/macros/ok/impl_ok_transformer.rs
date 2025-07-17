@@ -1,4 +1,6 @@
-/// Defines a synchronous [`OkTransformer`] implementation.
+/// Implements [`OkTransformer`] using a custom function.
+///
+/// Shorthand syntax: `($impl_for, [$input_ok => $output_ok], $transform_ok)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type on which to implement the trait.
@@ -8,7 +10,7 @@
 #[macro_export]
 macro_rules! impl_ok_transformer {
     (
-        impl_for = $ty:ty,
+        impl_for = $impl_for:ty,
         input_ok = $input_ok:ty,
         output_ok = $output_ok:ty,
         transform_ok = $transform_ok:expr $(,)?
@@ -18,12 +20,25 @@ macro_rules! impl_ok_transformer {
             _type_check($transform_ok);
         };
 
-        impl result_transformer::sync::OkTransformer<$input_ok> for $ty {
+        impl result_transformer::sync::OkTransformer<$input_ok> for $impl_for {
             type OutputOk = $output_ok;
             fn transform_ok(&self, ok: $input_ok) -> Self::OutputOk {
                 ($transform_ok)(ok)
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty => $output_ok:ty $(,)?],
+        $transform_ok:expr $(,)?
+    ) => {
+        result_transformer::core::sync::macros::impl_ok_transformer!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            output_ok = $output_ok,
+            transform_ok = $transform_ok
+        );
     };
 }
 pub use impl_ok_transformer;

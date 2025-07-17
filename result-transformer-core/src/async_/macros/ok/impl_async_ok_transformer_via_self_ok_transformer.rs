@@ -1,3 +1,7 @@
+/// Implements [`AsyncOkTransformer`] by delegating to an existing
+/// [`OkTransformer`] implementation.
+///
+/// Shorthand syntax: `($ty, $impl_via, $input_ok)`.
 #[macro_export]
 macro_rules! impl_async_ok_transformer_via_self_ok_transformer {
     (
@@ -25,6 +29,18 @@ macro_rules! impl_async_ok_transformer_via_self_ok_transformer {
                 }
             }
         }
+    };
+
+    (
+        $ty:ty,
+        $impl_via:ty,
+        $input_ok:ty $(,)?
+    ) => {
+        result_transformer::core::async_::macros::impl_async_ok_transformer_via_self_ok_transformer!(
+            impl_for = $ty,
+            impl_via = $impl_via,
+            input_ok = $input_ok
+        );
     };
 }
 pub use impl_async_ok_transformer_via_self_ok_transformer;

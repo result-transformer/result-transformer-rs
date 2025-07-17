@@ -13,14 +13,14 @@ use result_transformer::flow::async_::{ErrMapStepAsync, OkMapStepAsync, ResultMa
 
 struct FlowPartsTransformer;
 
-impl_async_ok_transformer_via_ok_flow!(
+impl_async_ok_transformer_via_async_ok_flow!(
     impl_for = FlowPartsTransformer,
     input_ok = i32,
     output_ok = i32,
     flow = OkMapStepAsync::new(|x| Box::pin(async move { x + 1 })),
 );
 
-impl_async_err_transformer_via_err_flow!(
+impl_async_err_transformer_via_async_err_flow!(
     impl_for = FlowPartsTransformer,
     input_err = &'static str,
     output_err = String,
@@ -32,7 +32,7 @@ impl_async_result_transformer_via_self_parts!(impl_for = FlowPartsTransformer, i
 #[allow(unused)]
 struct ResultFlowTransformer;
 
-impl_async_result_transformer_via_result_flow!(
+impl_async_result_transformer_via_async_result_flow!(
     impl_for = ResultFlowTransformer,
     input_ok = i32,
     input_err = i32,

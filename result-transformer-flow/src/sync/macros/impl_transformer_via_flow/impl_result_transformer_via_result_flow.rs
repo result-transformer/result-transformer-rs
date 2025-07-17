@@ -1,4 +1,6 @@
-/// Generates a [`ResultTransformer`] from a [`ResultFlow`].
+/// Implements [`ResultTransformer`] using a [`ResultFlow`].
+///
+/// Shorthand syntax: `($impl_for, [$input_ok, $input_err => $output_ok, $output_err], $flow)`.
 ///
 /// # Parameters
 /// - `impl_for` - Type on which to implement the trait.
@@ -39,6 +41,21 @@ macro_rules! impl_result_transformer_via_result_flow {
                 result_transformer::flow::sync::ResultFlow::apply_result(&$flow, result)
             }
         }
+    };
+
+    (
+        $impl_for:ty,
+        [$input_ok:ty, $input_err:ty => $output_ok:ty, $output_err:ty $(,)?],
+        $flow:expr $(,)?
+    ) => {
+        result_transformer::flow::sync::macros::impl_result_transformer_via_result_flow!(
+            impl_for = $impl_for,
+            input_ok = $input_ok,
+            input_err = $input_err,
+            output_ok = $output_ok,
+            output_err = $output_err,
+            flow = $flow
+        );
     };
 }
 pub use impl_result_transformer_via_result_flow;
