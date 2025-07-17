@@ -13,8 +13,8 @@ result-transformer-dependencies = { workspace = true, optional = true}
 
 [features]
 
-sync = ["_internal_shared_step"]
-async = ["_internal_shared_step"]
+sync = ["_internal_shared_step", "_internal_shared_macros"]
+async = ["_internal_shared_step", "_internal_shared_macros"]
 
 sync-macros = []
 async-macros = []
@@ -23,3 +23,4 @@ logging = ["result-transformer-dependencies/log"]
 
 #internal
 _internal_shared_step = []
+_internal_shared_macros =[]

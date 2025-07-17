@@ -48,29 +48,29 @@ define_const_result_inspect_both_step_async!(RESULT_INSPECT_BOTH_STEP_ASYNC,
 );
 
 // Noop steps
-define_const_ok_noop_step_async!(OK_NOOP_STEP_ASYNC, i32);
-define_const_err_noop_step_async!(ERR_NOOP_STEP_ASYNC, &'static str);
-define_const_result_noop_step_async!(RESULT_NOOP_STEP_ASYNC, [i32, &'static str]);
+define_const_ok_noop_step!(OK_NOOP_STEP_ASYNC, i32);
+define_const_err_noop_step!(ERR_NOOP_STEP_ASYNC, &'static str);
+define_const_result_noop_step!(RESULT_NOOP_STEP_ASYNC, [i32, &'static str]);
 
 // Logging steps
 #[cfg(feature = "flow-async-log-step")]
-define_const_ok_log_tap_step_async!(
+define_const_ok_log_tap_step!(
     OK_LOG_STEP_ASYNC,
     i32,
     deps::log::Level::Info,
     |v: &i32| format!("{v}")
 );
 #[cfg(feature = "flow-async-log-step")]
-define_const_err_log_tap_step_async!(
+define_const_err_log_tap_step!(
     ERR_LOG_STEP_ASYNC,
     &'static str,
     deps::log::Level::Warn,
     |e: &&'static str| format!("{e}")
 );
 #[cfg(feature = "flow-async-log-step")]
-define_const_result_log_tap_step_async!(RESULT_LOG_STEP_ASYNC, [i32, &'static str], deps::log::Level::Info, |r: &Result<i32,&'static str>| format!("{:?}", r));
+define_const_result_log_tap_step!(RESULT_LOG_STEP_ASYNC, [i32, &'static str], deps::log::Level::Info, |r: &Result<i32,&'static str>| format!("{:?}", r));
 #[cfg(feature = "flow-async-log-step")]
-define_const_result_log_tap_both_step_async!(RESULT_LOG_BOTH_STEP_ASYNC, [i32, &'static str],
+define_const_result_log_tap_both_step!(RESULT_LOG_BOTH_STEP_ASYNC, [i32, &'static str],
     deps::log::Level::Info, |v: &i32| format!("ok={v}"),
     deps::log::Level::Warn, |e: &&'static str| format!("err={e}"),
 );
