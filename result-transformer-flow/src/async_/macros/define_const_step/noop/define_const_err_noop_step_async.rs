@@ -1,3 +1,10 @@
+/// Defines a const [`ErrNoopStep`].
+///
+/// Shorthand syntax: `($name, $err_type)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `err_type` - Error type handled by the step.
 #[macro_export]
 macro_rules! define_const_err_noop_step_async {
     (

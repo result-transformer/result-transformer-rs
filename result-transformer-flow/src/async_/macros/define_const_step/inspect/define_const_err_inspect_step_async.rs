@@ -1,3 +1,11 @@
+/// Defines a const [`ErrInspectStepAsync`].
+///
+/// Shorthand syntax: `($name, $err_type, $inspector)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `err_type` - Error type inspected by the asynchronous function.
+/// - `inspector` - Asynchronous function receiving a reference to the error value.
 #[macro_export]
 macro_rules! define_const_err_inspect_step_async {
     (

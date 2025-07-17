@@ -11,6 +11,6 @@ pub use noop::*;
 pub use tap::*;
 
 #[cfg(feature = "logging")]
-mod log_tap;
+mod log;
 #[cfg(feature = "logging")]
-pub use log_tap::*;
+pub use log::*;

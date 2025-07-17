@@ -1,4 +1,13 @@
-#[cfg(feature = "logging")]
+/// Defines a const [`ResultLogTapStep`].
+///
+/// Shorthand syntax: `($name, [$ok_type, $err_type], $log_level, $log_format)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type logged by the step.
+/// - `err_type` - Error type logged by the step.
+/// - `log_level` - Log level used when logging.
+/// - `log_format` - Format string for the log entry.
 #[macro_export]
 macro_rules! define_const_result_log_tap_step {
     (
@@ -27,5 +36,4 @@ macro_rules! define_const_result_log_tap_step {
         );
     };
 }
-#[cfg(feature = "logging")]
 pub use define_const_result_log_tap_step;

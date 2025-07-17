@@ -1,3 +1,12 @@
+/// Defines a const [`OkTapStepAsync`].
+///
+/// Shorthand syntax: `($name, [$input_ok => $output_ok], $tap)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type consumed by the async tap function.
+/// - `output_ok` - Success type returned by the async tap function.
+/// - `tap` - Asynchronous function called with the success value.
 #[macro_export]
 macro_rules! define_const_ok_tap_step_async {
     (

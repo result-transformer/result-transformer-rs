@@ -1,3 +1,13 @@
+/// Defines a const [`ResultInspectBothStepAsync`].
+///
+/// Shorthand syntax: `($name, [$ok_type, $err_type], $ok_inspector, $err_inspector)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type inspected by `ok_inspector`.
+/// - `err_type` - Error type inspected by `err_inspector`.
+/// - `ok_inspector` - Async function inspecting the success value.
+/// - `err_inspector` - Async function inspecting the error value.
 #[macro_export]
 macro_rules! define_const_result_inspect_both_step_async {
     (

@@ -1,3 +1,12 @@
+/// Defines a const [`OkMapStepAsync`].
+///
+/// Shorthand syntax: `($name, [$input_ok => $output_ok], $mapper)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type accepted by the async mapper.
+/// - `output_ok` - Success type produced by the async mapper.
+/// - `mapper` - Asynchronous function converting the success value.
 #[macro_export]
 macro_rules! define_const_ok_map_step_async {
     (

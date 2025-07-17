@@ -1,4 +1,15 @@
-#[cfg(feature = "logging")]
+/// Defines a const [`ResultLogTapBothStep`].
+///
+/// Shorthand syntax: `($name, [$ok_type, $err_type], $ok_log_level, $ok_log_format, $err_log_level, $err_log_format)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type logged by the step.
+/// - `err_type` - Error type logged by the step.
+/// - `ok_log_level` - Log level for success values.
+/// - `ok_log_format` - Format string for success logs.
+/// - `err_log_level` - Log level for error values.
+/// - `err_log_format` - Format string for error logs.
 #[macro_export]
 macro_rules! define_const_result_log_tap_both_step {
     (
@@ -40,5 +51,4 @@ macro_rules! define_const_result_log_tap_both_step {
         );
     };
 }
-#[cfg(feature = "logging")]
 pub use define_const_result_log_tap_both_step;

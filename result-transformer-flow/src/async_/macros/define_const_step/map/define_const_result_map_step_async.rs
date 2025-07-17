@@ -1,3 +1,14 @@
+/// Defines a const [`ResultMapStepAsync`].
+///
+/// Shorthand syntax: `($name, [$input_ok, $input_err => $output_ok, $output_err], $mapper)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type accepted by the async mapper.
+/// - `input_err` - Error type accepted by the async mapper.
+/// - `output_ok` - Success type produced by the async mapper.
+/// - `output_err` - Error type produced by the async mapper.
+/// - `mapper` - Asynchronous function mapping the result value.
 #[macro_export]
 macro_rules! define_const_result_map_step_async {
     (

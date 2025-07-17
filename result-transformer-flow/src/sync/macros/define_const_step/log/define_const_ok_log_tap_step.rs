@@ -1,4 +1,12 @@
-#[cfg(feature = "logging")]
+/// Defines a const [`OkLogTapStep`].
+///
+/// Shorthand syntax: `($name, $ok_type, $log_level, $log_format)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type handled by the step.
+/// - `log_level` - Log level used when logging.
+/// - `log_format` - Format string for the log entry.
 #[macro_export]
 macro_rules! define_const_ok_log_tap_step {
     (
@@ -25,5 +33,4 @@ macro_rules! define_const_ok_log_tap_step {
         );
     };
 }
-#[cfg(feature = "logging")]
 pub use define_const_ok_log_tap_step;

@@ -1,3 +1,12 @@
+/// Defines a const [`ErrMapStepAsync`].
+///
+/// Shorthand syntax: `($name, [$input_err => $output_err], $mapper)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_err` - Error type accepted by the async mapper.
+/// - `output_err` - Error type produced by the async mapper.
+/// - `mapper` - Asynchronous function converting the error value.
 #[macro_export]
 macro_rules! define_const_err_map_step_async {
     (

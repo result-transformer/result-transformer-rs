@@ -1,3 +1,12 @@
+/// Defines a const [`OkTapStep`].
+///
+/// Shorthand syntax: `($name, [$input_ok => $output_ok], $tap)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type consumed by the tap function.
+/// - `output_ok` - Success type returned by the tap function.
+/// - `tap` - Function called with the success value.
 #[macro_export]
 macro_rules! define_const_ok_tap_step {
     (

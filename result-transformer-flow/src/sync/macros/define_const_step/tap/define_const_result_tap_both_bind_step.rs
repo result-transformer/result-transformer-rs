@@ -1,3 +1,15 @@
+/// Defines a const [`ResultTapBothBindStep`].
+///
+/// Shorthand syntax: `($name, [$input_ok, $input_err => $output_ok, $output_err], $ok_tap, $err_tap)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type consumed by `ok_tap`.
+/// - `input_err` - Error type consumed by `err_tap`.
+/// - `output_ok` - Success type returned by `ok_tap`.
+/// - `output_err` - Error type returned by `err_tap`.
+/// - `ok_tap` - Function called with the success value returning `Result`.
+/// - `err_tap` - Function called with the error value returning `Result`.
 #[macro_export]
 macro_rules! define_const_result_tap_both_bind_step {
     (

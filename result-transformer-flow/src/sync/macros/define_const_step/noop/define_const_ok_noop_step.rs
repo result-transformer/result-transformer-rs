@@ -1,3 +1,10 @@
+/// Defines a const [`OkNoopStep`].
+///
+/// Shorthand syntax: `($name, $ok_type)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type handled by the step.
 #[macro_export]
 macro_rules! define_const_ok_noop_step {
     (

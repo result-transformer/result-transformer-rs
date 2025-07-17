@@ -1,3 +1,11 @@
+/// Defines a const [`OkInspectStepAsync`].
+///
+/// Shorthand syntax: `($name, $ok_type, $inspector)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type inspected by the asynchronous function.
+/// - `inspector` - Asynchronous function receiving a reference to the success value.
 #[macro_export]
 macro_rules! define_const_ok_inspect_step_async {
     (

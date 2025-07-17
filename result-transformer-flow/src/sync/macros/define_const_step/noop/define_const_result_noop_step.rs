@@ -1,3 +1,11 @@
+/// Defines a const [`ResultNoopStep`].
+///
+/// Shorthand syntax: `($name, [$ok_type, $err_type])`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type handled by the step.
+/// - `err_type` - Error type handled by the step.
 #[macro_export]
 macro_rules! define_const_result_noop_step {
     (

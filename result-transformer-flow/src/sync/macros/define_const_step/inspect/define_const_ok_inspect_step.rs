@@ -1,3 +1,11 @@
+/// Defines a const [`OkInspectStep`].
+///
+/// Shorthand syntax: `($name, $ok_type, $inspector)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `ok_type` - Success type inspected by the step.
+/// - `inspector` - Function receiving a reference to the success value.
 #[macro_export]
 macro_rules! define_const_ok_inspect_step {
     (

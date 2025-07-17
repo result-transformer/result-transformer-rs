@@ -1,3 +1,14 @@
+/// Defines a const [`ResultMapStep`].
+///
+/// Shorthand syntax: `($name, [$input_ok, $input_err => $output_ok, $output_err], $mapper)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type accepted by the mapper.
+/// - `input_err` - Error type accepted by the mapper.
+/// - `output_ok` - Success type returned by the mapper.
+/// - `output_err` - Error type returned by the mapper.
+/// - `mapper` - Function mapping the result value.
 #[macro_export]
 macro_rules! define_const_result_map_step {
     (

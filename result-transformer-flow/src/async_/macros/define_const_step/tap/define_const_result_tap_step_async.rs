@@ -1,3 +1,14 @@
+/// Defines a const [`ResultTapStepAsync`].
+///
+/// Shorthand syntax: `($name, [$input_ok, $input_err => $output_ok, $output_err], $tap)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type consumed by the async tap function.
+/// - `input_err` - Error type consumed by the async tap function.
+/// - `output_ok` - Success type returned by the async tap function.
+/// - `output_err` - Error type returned by the async tap function.
+/// - `tap` - Asynchronous function called with the [`Result`] value.
 #[macro_export]
 macro_rules! define_const_result_tap_step_async {
     (

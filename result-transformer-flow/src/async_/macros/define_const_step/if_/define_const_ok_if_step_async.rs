@@ -1,3 +1,16 @@
+/// Defines a const [`OkIfStepAsync`].
+///
+/// Shorthand syntax: `($name, [$input_ok => $output_ok], $condition, $then_flow, $else_flow, $then_ty, $else_ty)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Success type accepted by the flows.
+/// - `output_ok` - Success type returned by the flows.
+/// - `condition` - Async predicate evaluated on the success value.
+/// - `then_flow` - Flow executed when the predicate is `true`.
+/// - `else_flow` - Flow executed when the predicate is `false`.
+/// - `then_flow_ty` - Type of `then_flow`.
+/// - `else_flow_ty` - Type of `else_flow`.
 #[macro_export]
 macro_rules! define_const_ok_if_step_async {
     (

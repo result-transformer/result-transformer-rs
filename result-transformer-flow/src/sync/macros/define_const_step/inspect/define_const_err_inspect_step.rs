@@ -1,3 +1,11 @@
+/// Defines a const [`ErrInspectStep`].
+///
+/// Shorthand syntax: `($name, $err_type, $inspector)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `err_type` - Error type inspected by the step.
+/// - `inspector` - Function receiving a reference to the error value.
 #[macro_export]
 macro_rules! define_const_err_inspect_step {
     (

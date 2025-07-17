@@ -1,3 +1,12 @@
+/// Defines a const [`OkMapStep`].
+///
+/// Shorthand syntax: `($name, [$input_ok => $output_ok], $mapper)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_ok` - Input success type for the mapping function.
+/// - `output_ok` - Output success type produced by the mapping function.
+/// - `mapper` - Function converting the success value.
 #[macro_export]
 macro_rules! define_const_ok_map_step {
     (

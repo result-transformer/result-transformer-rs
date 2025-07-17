@@ -1,3 +1,12 @@
+/// Defines a const [`ErrMapStep`].
+///
+/// Shorthand syntax: `($name, [$input_err => $output_err], $mapper)`.
+///
+/// # Parameters
+/// - `name` - Identifier for the constant.
+/// - `input_err` - Input error type for the mapping function.
+/// - `output_err` - Output error type produced by the mapping function.
+/// - `mapper` - Function converting the error value.
 #[macro_export]
 macro_rules! define_const_err_map_step {
     (
