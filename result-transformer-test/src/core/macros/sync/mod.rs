@@ -1,1 +1,2 @@
+mod alias_transformer_macros_test;
 mod impl_transformer_macros_test;

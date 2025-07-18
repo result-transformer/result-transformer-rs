@@ -9,11 +9,12 @@ description.workspace = true
 readme.workspace = true
 
 [dependencies]
-result-transformer-dependencies = { workspace = true, optional = true}
+result-transformer-dependencies = { workspace = true, optional = true }
+result-transformer-macros = { workspace = true, optional = true }
 
 [features]
 sync = []
 async = []
 
-sync-macros = []
-async-macros = []
+sync-macros = ["result-transformer-macros/core-sync"]
+async-macros = ["result-transformer-macros/core-async"]

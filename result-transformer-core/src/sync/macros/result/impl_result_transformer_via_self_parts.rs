@@ -8,7 +8,7 @@
 ///
 /// # Example
 ///
-/// ```rust
+/// ```ignore
 /// impl_result_transformer_via_self_parts! {
 ///     impl_for = MyTransformer,
 ///     input_ok = Success,
@@ -18,7 +18,7 @@
 ///
 /// The macro generates an implementation like the following:
 ///
-/// ```rust
+/// ```ignore
 /// impl ResultTransformer<Success, Failure> for MyTransformer {
 ///     type OutputOk = ...;
 ///     type OutputErr = ...;

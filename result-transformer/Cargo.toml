@@ -13,7 +13,6 @@ result-transformer-dependencies = { workspace = true }
 
 result-transformer-core = { workspace = true, optional = true }
 result-transformer-flow = { workspace = true, optional = true  }
-result-transformer-macros = { workspace = true, optional = true }
 
 [features]
 

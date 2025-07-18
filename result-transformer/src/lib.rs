@@ -19,12 +19,7 @@ pub use result_transformer_core as core;
 pub use core::sync::{self, ErrTransformer, OkTransformer, ResultTransformer};
 
 #[cfg(feature = "core-async")]
-pub use core::async_::{
-    self, AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer,
-};
+pub use core::async_::{self, AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer};
 
 #[cfg(feature = "result-transformer-flow")]
 pub use result_transformer_flow as flow;
-
-#[cfg(feature = "result-transformer-macros")]
-pub use result_transformer_macros as macros;

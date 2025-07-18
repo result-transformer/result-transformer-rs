@@ -15,3 +15,10 @@ proc-macro = true
 syn = "2"
 quote = "1"
 proc-macro2 = "1"
+
+[features]
+core-sync = []
+core-async = []
+
+flow-sync = []
+flow-async = []
