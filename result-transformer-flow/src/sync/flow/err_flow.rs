@@ -44,6 +44,30 @@ where
     _phantom: PhantomData<InputErr>,
 }
 
+impl<Head, Next, InputErr> ErrFlowChain<Head, Next, InputErr>
+where
+    Head: ErrFlow<InputErr>,
+    Next: ErrFlow<Head::OutputErr>,
+{
+    /// Creates a new [`ErrFlowChain`].
+    pub fn new(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+
+    /// Creates a new [`ErrFlowChain`] usable in const contexts.
+    pub const fn new_const(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+}
+
 impl<Head, Next, InputErr> ErrFlow<InputErr>
     for ErrFlowChain<Head, Next, InputErr>
 where

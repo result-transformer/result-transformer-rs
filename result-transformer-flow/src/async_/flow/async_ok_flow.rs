@@ -41,6 +41,30 @@ where
     _phantom: PhantomData<InputOk>,
 }
 
+impl<Head, Next, InputOk> AsyncOkFlowChain<Head, Next, InputOk>
+where
+    Head: AsyncOkFlow<InputOk>,
+    Next: AsyncOkFlow<Head::OutputOk>,
+{
+    /// Creates a new [`AsyncOkFlowChain`].
+    pub fn new(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+
+    /// Creates a new [`AsyncOkFlowChain`] usable in const contexts.
+    pub const fn new_const(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+}
+
 impl<Head, Next, InputOk> AsyncOkFlow<InputOk> for AsyncOkFlowChain<Head, Next, InputOk>
 where
     Head: AsyncOkFlow<InputOk> + Send + Sync,

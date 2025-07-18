@@ -44,6 +44,30 @@ where
     _phantom: PhantomData<InputOk>,
 }
 
+impl<Head, Next, InputOk> OkFlowChain<Head, Next, InputOk>
+where
+    Head: OkFlow<InputOk>,
+    Next: OkFlow<Head::OutputOk>,
+{
+    /// Creates a new [`OkFlowChain`].
+    pub fn new(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+
+    /// Creates a new [`OkFlowChain`] usable in const contexts.
+    pub const fn new_const(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+}
+
 impl<Head, Next, InputOk> OkFlow<InputOk> for OkFlowChain<Head, Next, InputOk>
 where
     Head: OkFlow<InputOk>,

@@ -53,6 +53,30 @@ where
     _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
+impl<Head, Next, InputOk, InputErr> ResultFlowChain<Head, Next, InputOk, InputErr>
+where
+    Head: ResultFlow<InputOk, InputErr>,
+    Next: ResultFlow<Head::OutputOk, Head::OutputErr>,
+{
+    /// Creates a new [`ResultFlowChain`].
+    pub fn new(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+
+    /// Creates a new [`ResultFlowChain`] usable in const contexts.
+    pub const fn new_const(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+}
+
 impl<Head, Next, InputOk, InputErr> ResultFlow<InputOk, InputErr>
     for ResultFlowChain<Head, Next, InputOk, InputErr>
 where

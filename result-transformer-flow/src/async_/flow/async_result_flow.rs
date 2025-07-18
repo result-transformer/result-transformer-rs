@@ -47,6 +47,30 @@ where
     _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
+impl<Head, Next, InputOk, InputErr> AsyncResultFlowChain<Head, Next, InputOk, InputErr>
+where
+    Head: AsyncResultFlow<InputOk, InputErr>,
+    Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr>,
+{
+    /// Creates a new [`AsyncResultFlowChain`].
+    pub fn new(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+
+    /// Creates a new [`AsyncResultFlowChain`] usable in const contexts.
+    pub const fn new_const(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+}
+
 impl<Head, Next, InputOk, InputErr> AsyncResultFlow<InputOk, InputErr>
     for AsyncResultFlowChain<Head, Next, InputOk, InputErr>
 where

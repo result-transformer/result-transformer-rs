@@ -41,6 +41,30 @@ where
     _phantom: PhantomData<InputErr>,
 }
 
+impl<Head, Next, InputErr> AsyncErrFlowChain<Head, Next, InputErr>
+where
+    Head: AsyncErrFlow<InputErr>,
+    Next: AsyncErrFlow<Head::OutputErr>,
+{
+    /// Creates a new [`AsyncErrFlowChain`].
+    pub fn new(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+
+    /// Creates a new [`AsyncErrFlowChain`] usable in const contexts.
+    pub const fn new_const(head: Head, next: Next) -> Self {
+        Self {
+            head,
+            next,
+            _phantom: PhantomData,
+        }
+    }
+}
+
 impl<Head, Next, InputErr> AsyncErrFlow<InputErr> for AsyncErrFlowChain<Head, Next, InputErr>
 where
     Head: AsyncErrFlow<InputErr> + Send + Sync,
