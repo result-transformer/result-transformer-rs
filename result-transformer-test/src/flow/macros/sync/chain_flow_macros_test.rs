@@ -21,9 +21,9 @@ fn ok_flow_const_chain_macro() {
     }
 
     const FLOW: OkFlowChain<
-        OkMapStep<i32, i32, fn(i32) -> i32>,
-        OkMapStep<i32, i32, fn(i32) -> i32>,
         i32,
+        OkMapStep<i32, i32, fn(i32) -> i32>,
+        OkMapStep<i32, i32, fn(i32) -> i32>,
     > = chain_ok_flow!(
         OkMapStep::new(inc as fn(i32) -> i32),
         OkMapStep::new(dbl as fn(i32) -> i32),
@@ -42,9 +42,9 @@ fn err_flow_const_chain_macro() {
     }
 
     const FLOW: ErrFlowChain<
-        ErrMapStep<i32, i32, fn(i32) -> i32>,
-        ErrMapStep<i32, i32, fn(i32) -> i32>,
         i32,
+        ErrMapStep<i32, i32, fn(i32) -> i32>,
+        ErrMapStep<i32, i32, fn(i32) -> i32>,
     > = chain_err_flow!(
         ErrMapStep::new(inc as fn(i32) -> i32),
         ErrMapStep::new(dbl as fn(i32) -> i32),
@@ -63,10 +63,10 @@ fn result_flow_const_chain_macro() {
     }
 
     const FLOW: ResultFlowChain<
-        ResultMapStep<i32, &str, i32, &str, fn(Result<i32, &str>) -> Result<i32, &str>>,
-        ResultMapStep<i32, &str, i32, String, fn(Result<i32, &str>) -> Result<i32, String>>,
         i32,
         &str,
+        ResultMapStep<i32, &str, i32, &str, fn(Result<i32, &str>) -> Result<i32, &str>>,
+        ResultMapStep<i32, &str, i32, String, fn(Result<i32, &str>) -> Result<i32, String>>,
     > = chain_result_flow!(
         ResultMapStep::new(inc_map as fn(Result<i32, &str>) -> Result<i32, &str>),
         ResultMapStep::new(dbl_map as fn(Result<i32, &str>) -> Result<i32, String>),

@@ -19,12 +19,12 @@ macro_rules! chain_ok_flow_type {
         steps = [$first:ty, $($rest:ty),+ $(,)?]
     ) => {
         result_transformer::flow::sync::OkFlowChain<
+            $input_ok,
             $first,
             result_transformer::flow::sync::macros::chain_ok_flow_type!(
                 input_ok = $input_ok,
                 steps = [$($rest),+]
             ),
-            $input_ok,
         >
     };
 

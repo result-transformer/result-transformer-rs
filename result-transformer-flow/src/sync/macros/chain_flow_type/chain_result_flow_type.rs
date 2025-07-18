@@ -22,14 +22,14 @@ macro_rules! chain_result_flow_type {
         steps = [$first:ty, $($rest:ty),+ $(,)?]
     ) => {
         result_transformer::flow::sync::ResultFlowChain<
+            $input_ok,
+            $input_err,
             $first,
             result_transformer::flow::sync::macros::chain_result_flow_type!(
                 input_ok = $input_ok,
                 input_err = $input_err,
                 steps = [$($rest),+]
             ),
-            $input_ok,
-            $input_err,
         >
     };
 

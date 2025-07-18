@@ -17,7 +17,7 @@ pub trait ErrFlow<InputErr> {
     /// Chain another [`ErrFlow`] after this one.
     ///
     /// The output of the current flow becomes the input of `next`.
-    fn then_err<Next>(self, next: Next) -> ErrFlowChain<Self, Next, InputErr>
+    fn then_err<Next>(self, next: Next) -> ErrFlowChain<InputErr, Self, Next>
     where
         Self: Sized,
         Next: ErrFlow<Self::OutputErr>,
@@ -31,7 +31,8 @@ pub trait ErrFlow<InputErr> {
 }
 
 /// Flow that chains two [`ErrFlow`] implementations.
-pub struct ErrFlowChain<Head, Next, InputErr>
+#[derive(Debug, Copy, Clone)]
+pub struct ErrFlowChain<InputErr, Head, Next>
 where
     Head: ErrFlow<InputErr>,
     Next: ErrFlow<Head::OutputErr>,
@@ -44,7 +45,7 @@ where
     _phantom: PhantomData<InputErr>,
 }
 
-impl<Head, Next, InputErr> ErrFlowChain<Head, Next, InputErr>
+impl<InputErr, Head, Next> ErrFlowChain<InputErr, Head, Next>
 where
     Head: ErrFlow<InputErr>,
     Next: ErrFlow<Head::OutputErr>,
@@ -68,8 +69,7 @@ where
     }
 }
 
-impl<Head, Next, InputErr> ErrFlow<InputErr>
-    for ErrFlowChain<Head, Next, InputErr>
+impl<InputErr, Head, Next> ErrFlow<InputErr> for ErrFlowChain<InputErr, Head, Next>
 where
     Head: ErrFlow<InputErr>,
     Next: ErrFlow<Head::OutputErr>,
@@ -80,27 +80,4 @@ where
         let result = self.head.apply_err(input_err);
         self.next.apply_err(result)
     }
-}
-
-// `Clone` implementation when both flows are cloneable
-impl<Head, Next, InputErr> Clone for ErrFlowChain<Head, Next, InputErr>
-where
-    Head: ErrFlow<InputErr> + Clone,
-    Next: ErrFlow<Head::OutputErr> + Clone,
-{
-    fn clone(&self) -> Self {
-        Self {
-            head: self.head.clone(),
-            next: self.next.clone(),
-            _phantom: PhantomData,
-        }
-    }
-}
-
-// Optional `Copy` implementation when both flows are copyable
-impl<FirstFlow, NextFlow, InputErr> Copy for ErrFlowChain<FirstFlow, NextFlow, InputErr>
-where
-    FirstFlow: ErrFlow<InputErr> + Copy,
-    NextFlow: ErrFlow<FirstFlow::OutputErr> + Copy,
-{
 }

@@ -22,10 +22,7 @@ pub trait ResultFlow<InputOk, InputErr> {
 
     /// Chains this flow with another `ResultFlow`, passing the result of this
     /// flow as input to the next.
-    fn then_result<Next>(
-        self,
-        next: Next,
-    ) -> ResultFlowChain<Self, Next, InputOk, InputErr>
+    fn then_result<Next>(self, next: Next) -> ResultFlowChain<InputOk, InputErr, Self, Next>
     where
         Self: Sized,
         Next: ResultFlow<Self::OutputOk, Self::OutputErr>,
@@ -40,7 +37,8 @@ pub trait ResultFlow<InputOk, InputErr> {
 
 /// A chained composition of two [`ResultFlow`]s.
 /// The output of `head` becomes the input of `next`.
-pub struct ResultFlowChain<Head, Next, InputOk, InputErr>
+#[derive(Debug, Copy, Clone)]
+pub struct ResultFlowChain<InputOk, InputErr, Head, Next>
 where
     Head: ResultFlow<InputOk, InputErr>,
     Next: ResultFlow<Head::OutputOk, Head::OutputErr>,
@@ -53,7 +51,7 @@ where
     _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<Head, Next, InputOk, InputErr> ResultFlowChain<Head, Next, InputOk, InputErr>
+impl<InputOk, InputErr, Head, Next> ResultFlowChain<InputOk, InputErr, Head, Next>
 where
     Head: ResultFlow<InputOk, InputErr>,
     Next: ResultFlow<Head::OutputOk, Head::OutputErr>,
@@ -77,8 +75,8 @@ where
     }
 }
 
-impl<Head, Next, InputOk, InputErr> ResultFlow<InputOk, InputErr>
-    for ResultFlowChain<Head, Next, InputOk, InputErr>
+impl<InputOk, InputErr, Head, Next> ResultFlow<InputOk, InputErr>
+    for ResultFlowChain<InputOk, InputErr, Head, Next>
 where
     Head: ResultFlow<InputOk, InputErr>,
     Next: ResultFlow<Head::OutputOk, Head::OutputErr>,
@@ -93,27 +91,4 @@ where
         let intermediate = self.head.apply_result(input_result);
         self.next.apply_result(intermediate)
     }
-}
-
-// `Clone` implementation when both flows are cloneable
-impl<Head, Next, InputOk, InputErr> Clone for ResultFlowChain<Head, Next, InputOk, InputErr>
-where
-    Head: ResultFlow<InputOk, InputErr> + Clone,
-    Next: ResultFlow<Head::OutputOk, Head::OutputErr> + Clone,
-{
-    fn clone(&self) -> Self {
-        Self {
-            head: self.head.clone(),
-            next: self.next.clone(),
-            _phantom: PhantomData,
-        }
-    }
-}
-
-// Optional `Copy` implementation when both flows are copyable
-impl<Head, Next, InputOk, InputErr> Copy for ResultFlowChain<Head, Next, InputOk, InputErr>
-where
-    Head: ResultFlow<InputOk, InputErr> + Copy,
-    Next: ResultFlow<Head::OutputOk, Head::OutputErr> + Copy,
-{
 }

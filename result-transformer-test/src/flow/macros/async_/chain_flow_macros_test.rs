@@ -25,19 +25,19 @@ async fn async_ok_flow_const_chain_macro() {
     }
 
     const FLOW: AsyncOkFlowChain<
-        OkMapStepAsync<
-            i32,
-            i32,
-            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-        >,
-        OkMapStepAsync<
-            i32,
-            i32,
-            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-        >,
         i32,
+        OkMapStepAsync<
+            i32,
+            i32,
+            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+        >,
+        OkMapStepAsync<
+            i32,
+            i32,
+            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+        >,
     > = chain_async_ok_flow!(
         OkMapStepAsync::new(
             inc as fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>
@@ -60,19 +60,19 @@ async fn async_err_flow_const_chain_macro() {
     }
 
     const FLOW: AsyncErrFlowChain<
-        ErrMapStepAsync<
-            i32,
-            i32,
-            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-        >,
-        ErrMapStepAsync<
-            i32,
-            i32,
-            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
-        >,
         i32,
+        ErrMapStepAsync<
+            i32,
+            i32,
+            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+        >,
+        ErrMapStepAsync<
+            i32,
+            i32,
+            fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+            std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>,
+        >,
     > = chain_async_err_flow!(
         ErrMapStepAsync::new(
             inc as fn(i32) -> std::pin::Pin<Box<dyn core::future::Future<Output = i32> + Send>>
@@ -100,6 +100,8 @@ async fn async_result_flow_const_chain_macro() {
     }
 
     const FLOW: AsyncResultFlowChain<
+        i32,
+        &str,
         ResultMapStepAsync<
             i32,
             &'static str,
@@ -123,8 +125,6 @@ async fn async_result_flow_const_chain_macro() {
                 -> std::pin::Pin<Box<dyn core::future::Future<Output = Result<i32, String>> + Send>>,
             std::pin::Pin<Box<dyn core::future::Future<Output = Result<i32, String>> + Send>>,
         >,
-        i32,
-        &str,
     > = chain_async_result_flow!(
         ResultMapStepAsync::new(
             inc_map

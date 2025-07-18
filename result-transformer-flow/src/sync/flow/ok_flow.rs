@@ -17,7 +17,7 @@ pub trait OkFlow<InputOk> {
     /// Chain another [`OkFlow`] after this one.
     ///
     /// The output of the current flow is used as the input of `next`.
-    fn then_ok<Next>(self, next: Next) -> OkFlowChain<Self, Next, InputOk>
+    fn then_ok<Next>(self, next: Next) -> OkFlowChain<InputOk, Self, Next>
     where
         Self: Sized,
         Next: OkFlow<Self::OutputOk>,
@@ -31,7 +31,8 @@ pub trait OkFlow<InputOk> {
 }
 
 /// Flow that chains two [`OkFlow`] implementations.
-pub struct OkFlowChain<Head, Next, InputOk>
+#[derive(Debug, Copy, Clone)]
+pub struct OkFlowChain<InputOk, Head, Next>
 where
     Head: OkFlow<InputOk>,
     Next: OkFlow<Head::OutputOk>,
@@ -44,7 +45,7 @@ where
     _phantom: PhantomData<InputOk>,
 }
 
-impl<Head, Next, InputOk> OkFlowChain<Head, Next, InputOk>
+impl<InputOk, Head, Next> OkFlowChain<InputOk, Head, Next>
 where
     Head: OkFlow<InputOk>,
     Next: OkFlow<Head::OutputOk>,
@@ -68,7 +69,7 @@ where
     }
 }
 
-impl<Head, Next, InputOk> OkFlow<InputOk> for OkFlowChain<Head, Next, InputOk>
+impl<InputOk, Head, Next> OkFlow<InputOk> for OkFlowChain<InputOk, Head, Next>
 where
     Head: OkFlow<InputOk>,
     Next: OkFlow<Head::OutputOk>,
@@ -79,27 +80,4 @@ where
         let result = self.head.apply_ok(input_ok);
         self.next.apply_ok(result)
     }
-}
-
-// `Clone` implementation when both flows are cloneable
-impl<Head, Next, InputOk> Clone for OkFlowChain<Head, Next, InputOk>
-where
-    Head: OkFlow<InputOk> + Clone,
-    Next: OkFlow<Head::OutputOk> + Clone,
-{
-    fn clone(&self) -> Self {
-        Self {
-            head: self.head.clone(),
-            next: self.next.clone(),
-            _phantom: PhantomData,
-        }
-    }
-}
-
-// Optional `Copy` implementation when both flows are copyable
-impl<Head, Next, InputOk> Copy for OkFlowChain<Head, Next, InputOk>
-where
-    Head: OkFlow<InputOk> + Copy,
-    Next: OkFlow<Head::OutputOk> + Copy,
-{
 }

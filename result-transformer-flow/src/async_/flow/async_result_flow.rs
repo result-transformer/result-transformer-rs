@@ -23,7 +23,7 @@ pub trait AsyncResultFlow<InputOk, InputErr> {
     fn then_async_result<Next>(
         self,
         next: Next,
-    ) -> AsyncResultFlowChain<Self, Next, InputOk, InputErr>
+    ) -> AsyncResultFlowChain<InputOk, InputErr, Self, Next>
     where
         Self: Sized,
         Next: AsyncResultFlow<Self::OutputOk, Self::OutputErr>,
@@ -37,7 +37,8 @@ pub trait AsyncResultFlow<InputOk, InputErr> {
 }
 
 /// Composition of two [`AsyncResultFlow`] implementations.
-pub struct AsyncResultFlowChain<Head, Next, InputOk, InputErr>
+#[derive(Debug, Copy, Clone)]
+pub struct AsyncResultFlowChain<InputOk, InputErr, Head, Next>
 where
     Head: AsyncResultFlow<InputOk, InputErr>,
     Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr>,
@@ -47,7 +48,7 @@ where
     _phantom: PhantomData<(InputOk, InputErr)>,
 }
 
-impl<Head, Next, InputOk, InputErr> AsyncResultFlowChain<Head, Next, InputOk, InputErr>
+impl<InputOk, InputErr, Head, Next> AsyncResultFlowChain<InputOk, InputErr, Head, Next>
 where
     Head: AsyncResultFlow<InputOk, InputErr>,
     Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr>,
@@ -71,8 +72,8 @@ where
     }
 }
 
-impl<Head, Next, InputOk, InputErr> AsyncResultFlow<InputOk, InputErr>
-    for AsyncResultFlowChain<Head, Next, InputOk, InputErr>
+impl<InputOk, InputErr, Head, Next> AsyncResultFlow<InputOk, InputErr>
+    for AsyncResultFlowChain<InputOk, InputErr, Head, Next>
 where
     Head: AsyncResultFlow<InputOk, InputErr> + Send + Sync,
     Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr> + Send + Sync,
@@ -91,27 +92,4 @@ where
             self.next.apply_result_async(intermediate).await
         }
     }
-}
-
-// `Clone` implementation when both flows are cloneable
-impl<Head, Next, InputOk, InputErr> Clone for AsyncResultFlowChain<Head, Next, InputOk, InputErr>
-where
-    Head: AsyncResultFlow<InputOk, InputErr> + Clone,
-    Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr> + Clone,
-{
-    fn clone(&self) -> Self {
-        Self {
-            head: self.head.clone(),
-            next: self.next.clone(),
-            _phantom: PhantomData,
-        }
-    }
-}
-
-// Optional `Copy` implementation when both flows are copyable
-impl<Head, Next, InputOk, InputErr> Copy for AsyncResultFlowChain<Head, Next, InputOk, InputErr>
-where
-    Head: AsyncResultFlow<InputOk, InputErr> + Copy,
-    Next: AsyncResultFlow<Head::OutputOk, Head::OutputErr> + Copy,
-{
 }

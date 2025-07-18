@@ -17,7 +17,7 @@ pub trait AsyncOkFlow<InputOk> {
     ) -> impl Future<Output = Self::OutputOk> + Send + 'a;
 
     /// Chain another [`AsyncOkFlow`] to be executed after this one.
-    fn then_async_ok<Next>(self, next: Next) -> AsyncOkFlowChain<Self, Next, InputOk>
+    fn then_async_ok<Next>(self, next: Next) -> AsyncOkFlowChain<InputOk, Self, Next>
     where
         Self: Sized,
         Next: AsyncOkFlow<Self::OutputOk>,
@@ -31,7 +31,8 @@ pub trait AsyncOkFlow<InputOk> {
 }
 
 /// Composition of two [`AsyncOkFlow`] implementations.
-pub struct AsyncOkFlowChain<Head, Next, InputOk>
+#[derive(Debug, Copy, Clone)]
+pub struct AsyncOkFlowChain<InputOk, Head, Next>
 where
     Head: AsyncOkFlow<InputOk>,
     Next: AsyncOkFlow<Head::OutputOk>,
@@ -41,7 +42,7 @@ where
     _phantom: PhantomData<InputOk>,
 }
 
-impl<Head, Next, InputOk> AsyncOkFlowChain<Head, Next, InputOk>
+impl<InputOk, Head, Next> AsyncOkFlowChain<InputOk, Head, Next>
 where
     Head: AsyncOkFlow<InputOk>,
     Next: AsyncOkFlow<Head::OutputOk>,
@@ -65,7 +66,7 @@ where
     }
 }
 
-impl<Head, Next, InputOk> AsyncOkFlow<InputOk> for AsyncOkFlowChain<Head, Next, InputOk>
+impl<InputOk, Head, Next> AsyncOkFlow<InputOk> for AsyncOkFlowChain<InputOk, Head, Next>
 where
     Head: AsyncOkFlow<InputOk> + Send + Sync,
     Next: AsyncOkFlow<Head::OutputOk> + Send + Sync,
@@ -82,27 +83,4 @@ where
             self.next.apply_ok_async(intermediate).await
         }
     }
-}
-
-// `Clone` implementation when both flows are cloneable
-impl<Head, Next, InputOk> Clone for AsyncOkFlowChain<Head, Next, InputOk>
-where
-    Head: AsyncOkFlow<InputOk> + Clone,
-    Next: AsyncOkFlow<Head::OutputOk> + Clone,
-{
-    fn clone(&self) -> Self {
-        Self {
-            head: self.head.clone(),
-            next: self.next.clone(),
-            _phantom: PhantomData,
-        }
-    }
-}
-
-// Optional `Copy` implementation when both flows are copyable
-impl<Head, Next, InputOk> Copy for AsyncOkFlowChain<Head, Next, InputOk>
-where
-    Head: AsyncOkFlow<InputOk> + Copy,
-    Next: AsyncOkFlow<Head::OutputOk> + Copy,
-{
 }

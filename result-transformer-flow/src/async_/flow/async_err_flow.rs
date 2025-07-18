@@ -17,7 +17,7 @@ pub trait AsyncErrFlow<InputErr> {
     ) -> impl Future<Output = Self::OutputErr> + Send + 'a;
 
     /// Chain another [`AsyncErrFlow`] to process the output of this one.
-    fn then_async_err<Next>(self, next: Next) -> AsyncErrFlowChain<Self, Next, InputErr>
+    fn then_async_err<Next>(self, next: Next) -> AsyncErrFlowChain<InputErr, Self, Next>
     where
         Self: Sized,
         Next: AsyncErrFlow<Self::OutputErr>,
@@ -31,7 +31,8 @@ pub trait AsyncErrFlow<InputErr> {
 }
 
 /// Composition of two [`AsyncErrFlow`] implementations.
-pub struct AsyncErrFlowChain<Head, Next, InputErr>
+#[derive(Debug, Copy, Clone)]
+pub struct AsyncErrFlowChain<InputErr, Head, Next>
 where
     Head: AsyncErrFlow<InputErr>,
     Next: AsyncErrFlow<Head::OutputErr>,
@@ -41,7 +42,7 @@ where
     _phantom: PhantomData<InputErr>,
 }
 
-impl<Head, Next, InputErr> AsyncErrFlowChain<Head, Next, InputErr>
+impl<InputErr, Head, Next> AsyncErrFlowChain<InputErr, Head, Next>
 where
     Head: AsyncErrFlow<InputErr>,
     Next: AsyncErrFlow<Head::OutputErr>,
@@ -65,7 +66,7 @@ where
     }
 }
 
-impl<Head, Next, InputErr> AsyncErrFlow<InputErr> for AsyncErrFlowChain<Head, Next, InputErr>
+impl<InputErr, Head, Next> AsyncErrFlow<InputErr> for AsyncErrFlowChain<InputErr, Head, Next>
 where
     Head: AsyncErrFlow<InputErr> + Send + Sync,
     Next: AsyncErrFlow<Head::OutputErr> + Send + Sync,
@@ -82,27 +83,4 @@ where
             self.next.apply_err_async(intermediate).await
         }
     }
-}
-
-// `Clone` implementation when both flows are cloneable
-impl<Head, Next, InputErr> Clone for AsyncErrFlowChain<Head, Next, InputErr>
-where
-    Head: AsyncErrFlow<InputErr> + Clone,
-    Next: AsyncErrFlow<Head::OutputErr> + Clone,
-{
-    fn clone(&self) -> Self {
-        Self {
-            head: self.head.clone(),
-            next: self.next.clone(),
-            _phantom: PhantomData,
-        }
-    }
-}
-
-// Optional `Copy` implementation when both flows are copyable
-impl<Head, Next, InputErr> Copy for AsyncErrFlowChain<Head, Next, InputErr>
-where
-    Head: AsyncErrFlow<InputErr> + Copy,
-    Next: AsyncErrFlow<Head::OutputErr> + Copy,
-{
 }

@@ -19,12 +19,12 @@ macro_rules! chain_err_flow_type {
         steps = [$first:ty, $($rest:ty),+ $(,)?]
     ) => {
         result_transformer::flow::sync::ErrFlowChain<
+            $input_err,
             $first,
             result_transformer::flow::sync::macros::chain_err_flow_type!(
                 input_err = $input_err,
                 steps = [$($rest),+]
             ),
-            $input_err,
         >
     };
 

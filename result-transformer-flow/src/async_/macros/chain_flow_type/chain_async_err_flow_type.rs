@@ -19,12 +19,12 @@ macro_rules! chain_async_err_flow_type {
         steps = [$first:ty, $($rest:ty),+ $(,)?]
     ) => {
         result_transformer::flow::async_::AsyncErrFlowChain<
+            $input_err,
             $first,
             result_transformer::flow::async_::macros::chain_async_err_flow_type!(
                 input_err = $input_err,
                 steps = [$($rest),+]
             ),
-            $input_err,
         >
     };
 
