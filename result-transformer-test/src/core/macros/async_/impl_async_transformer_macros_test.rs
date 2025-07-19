@@ -6,7 +6,6 @@
 //!  $ cargo test --package result-transformer-test --lib --features core-async-macros -- core::macros::async_::impl_async_transformer_macros_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
-use result_transformer::__internal::*;
 use result_transformer::async_::macros::*;
 use result_transformer::sync::macros::*;
 

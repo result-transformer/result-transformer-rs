@@ -8,8 +8,6 @@
 //!
 //! Simple asynchronous transformer used in tests.
 
-use result_transformer_dependencies::*;
-
 use result_transformer::async_::{AsyncErrTransformer, AsyncOkTransformer, AsyncResultTransformer};
 
 struct AsyncTransformer;

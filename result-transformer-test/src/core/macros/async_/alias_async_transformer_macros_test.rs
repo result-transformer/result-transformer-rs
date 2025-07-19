@@ -1,4 +1,3 @@
-use result_transformer::__internal::*;
 use result_transformer::async_::macros::*;
 #[allow(unused)]
 use result_transformer::async_::{

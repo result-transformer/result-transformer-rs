@@ -109,7 +109,6 @@ define_const_result_if_step_async!(RESULT_IF_STEP_ASYNC, [i32, &'static str => i
     ResultNoopStep<i32, &'static str>,
 );
 
-use deps::tokio;
 #[allow(unused)]
 use result_transformer::flow::async_::{AsyncErrFlow, AsyncOkFlow, AsyncResultFlow};
 

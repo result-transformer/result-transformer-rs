@@ -6,7 +6,6 @@
 //!  $ cargo test --package result-transformer-test --lib --features flow-async -- flow::async_::result::result_async_flow_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
-use result_transformer::__internal::*;
 #[allow(unused_imports)]
 use result_transformer::flow::async_::*;
 #[allow(unused_imports)]

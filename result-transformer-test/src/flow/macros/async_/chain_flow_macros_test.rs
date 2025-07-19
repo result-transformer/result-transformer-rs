@@ -6,14 +6,10 @@
 //!  $ cargo test --package result-transformer-test --lib --features flow-async-macros,flow-sync-macros -- flow::macros::async_::chain_flow_macros_test --show-output
 //! ────────────────────────────────────────────────────────────────
 
-use result_transformer::__internal as deps;
-
 #[allow(unused)]
 use result_transformer::flow::async_::macros::*;
 #[allow(unused)]
 use result_transformer::flow::async_::*;
-
-use deps::tokio;
 
 #[tokio::test]
 async fn async_ok_flow_const_chain_macro() {
