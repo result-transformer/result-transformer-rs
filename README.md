@@ -18,6 +18,7 @@ Current version is `0.0.1`. The API is not yet stable and may change.
   - [Async example](#async-example)
   - [Manual implementation (no macros)](#manual-implementation-no-macros)
   - [3. (Optional) Build a transformer via a flow](#3-optional-build-a-transformer-via-a-flow)
+  - [Macro reference](#macro-reference)
 - [Feature matrix](#feature-matrix)
 - [Project status](#project-status)
 - [License](#license)
@@ -192,6 +193,46 @@ impl_result_transformer_via_result_flow! {
     flow       = flow
 }
 ```
+
+---
+
+## Macro reference
+
+The crates expose a variety of helper macros. Each synchronous macro has an
+asynchronous counterpart prefixed with `async_`.
+
+### Implementation macros
+
+- `impl_ok_transformer!` / `impl_async_ok_transformer!` – implement
+  `OkTransformer` or `AsyncOkTransformer` using a custom function.
+- `impl_err_transformer!` / `impl_async_err_transformer!` – implement
+  `ErrTransformer` or `AsyncErrTransformer` using a custom function.
+- `impl_result_transformer!` / `impl_async_result_transformer!` – provide a
+  function transforming the entire `Result`.
+- `impl_ok_transformer_via_input_into!`, `impl_ok_transformer_via_output_from!`
+  and their `err` equivalents – derive implementations via `Into`/`From`.
+- `impl_result_transformer_via_ok_transform_fn!` and
+  `impl_result_transformer_via_err_transform_fn!` – combine existing
+  single-sided transforms.
+- `impl_result_transformer_via_self_parts!` – reuse `OkTransformer` and
+  `ErrTransformer` implementations from the same type.
+
+### Flow macros
+
+- `impl_result_transformer_via_result_flow!` – build a transformer from a flow.
+- `impl_ok_transformer_via_ok_flow!` and `impl_err_transformer_via_err_flow!` –
+  the same idea for single-sided traits.
+- `chain_result_flow!`, `chain_ok_flow!`, `chain_err_flow!` – chain flows at
+  compile time.
+- `define_const_*_step!` – create reusable const steps for the flow DSL.
+
+### Alias macros
+
+Procedural macros generate trait aliases:
+
+- `alias_ok_transformer!`, `alias_err_transformer!`, `alias_result_transformer!`
+- `alias_async_ok_transformer!`, `alias_async_err_transformer!`,
+  `alias_async_result_transformer!`
 
 ---
 
