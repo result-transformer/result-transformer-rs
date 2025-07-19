@@ -1,6 +1,7 @@
 # result-transformer
 [![crates.io](https://img.shields.io/crates/v/result-transformer.svg)](https://crates.io/crates/result-transformer)
 [![docs.rs](https://docs.rs/result-transformer/badge.svg)](https://docs.rs/result-transformer)
+[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/result-transformer/result-transformer-rs)
 
 > **Composable, type‑safe transforms for `Result<T, E>` – with matching *sync* and *async* APIs.**
 
@@ -41,14 +42,16 @@ Current version is `0.0.1`. The API is not yet stable and may change.
 
 ## Crate overview
 
-| crate                                | purpose                                                              | notes                                        |
-| ------------------------------------ | -------------------------------------------------------------------- | -------------------------------------------- |
-| **result-transformer**              | facade crate reexporting the individual components                  | enable only the features you need            |
-| **result-transformer-core**         | foundational traits and "raw" implementation macros                 | provides synchronous and asynchronous APIs   |
-| **result-transformer-flow**         | *optional* step-based DSL used to compose transformers via macros   | map/tap/inspect steps, optional logging      |
-| **result-transformer-macros**       | reserved placeholder for future procedural macros                   | not used yet                                 |
-| **result-transformer-dependencies** | consolidates external crates behind feature flags (`tokio`, `log`, …) | internal helper crate                        |
-| **result-transformer-test**         | integration tests and doc examples that serve as real-world recipes | not intended for production                  |
+| crate                                | purpose                                                                | notes                                        |
+| ------------------------------------ | ---------------------------------------------------------------------- | -------------------------------------------- |
+| **result-transformer**               | facade crate reexporting the individual components                     | enable only the features you need            |
+| **result-transformer-core**          | foundational traits and "raw" implementation macros                    | provides synchronous and asynchronous APIs   |
+| **result-transformer-flow**          | *optional* step-based DSL used to compose transformers via macros      | map/tap/inspect steps, optional logging      |
+| **result-transformer-macros**        | procedural macros providing trait aliases and helpers                  | enabled via `*-macros` features              |
+| **result-transformer-dependencies**  | consolidates external crates behind feature flags                      | internal helper crate                        |
+| **result-transformer-test**          | integration tests and doc examples that serve as real-world recipes    | not intended for production                  |
+
+`result-transformer-macros` is typically pulled in automatically when you enable one of the public `*-macros` features. You rarely need to depend on it directly.
 
 ---
 
