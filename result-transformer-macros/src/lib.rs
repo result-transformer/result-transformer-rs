@@ -1,5 +1,6 @@
 //! Procedural macros for the `result-transformer` crates.
 
+#[cfg(any(feature = "core-sync", feature = "core-async"))]
 use proc_macro::TokenStream;
 
 //core
