@@ -10,7 +10,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.0.2"
 edition = "2024"
 
 authors = ["Mikou"]
@@ -26,7 +26,7 @@ keywords = ["result", "transform", "pipeline", "async", "error"]
 categories = ["error-handling", "asynchronous"]
 
 [workspace.dependencies]
-result-transformer-core = { version = "0.0.1", path = "result-transformer-core" }
-result-transformer-flow = { version = "0.0.1", path = "result-transformer-flow" }
-result-transformer-macros = { version = "0.0.1", path = "result-transformer-macros" }
-result-transformer-dependencies = { version = "0.0.1", path = "result-transformer-dependencies" }
+result-transformer-core = { version = "0.0.2", path = "result-transformer-core" }
+result-transformer-flow = { version = "0.0.2", path = "result-transformer-flow" }
+result-transformer-macros = { version = "0.0.2", path = "result-transformer-macros" }
+result-transformer-dependencies = { version = "0.0.2", path = "result-transformer-dependencies" }

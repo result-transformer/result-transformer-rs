@@ -8,7 +8,7 @@
 `result-transformer` lets you describe how a `Result` should be rewritten **without coupling that logic to your domain
 types or execution model**.
 Implement a tiny trait – or let a one‑line macro do it for you – and drop the transformer anywhere you need it.
-Current version is `0.0.1`. The API is not yet stable and may change.
+Current version is `0.0.2`. The API is not yet stable and may change.
 
 ## Table of contents
 - [Why use result-transformer?](#why-use-result-transformer)
@@ -61,7 +61,7 @@ Current version is `0.0.1`. The API is not yet stable and may change.
 
 ```toml
 # Cargo.toml
-result-transformer = { version = "0.0.1", features = ["core-sync", "core-sync-macros"] }
+result-transformer = { version = "0.0.2", features = ["core-sync", "core-sync-macros"] }
 ```
 
 ### 2. A minimal synchronous transformer
@@ -274,20 +274,20 @@ Only `core-sync` is enabled by default. Combine features as needed.
 Example: enabling the async execution model, flow DSL, and flow macros:
 
 ```toml
-result-transformer = { version = "0.0.1", features = ["flow-async-macros"] }
+result-transformer = { version = "0.0.2", features = ["flow-async-macros"] }
 ```
 
 Or, if you prefer to list everything explicitly:
 
 ```toml
-result-transformer = { version = "0.0.1", features = ["core-async", "flow-async", "flow-async-macros"] }
+result-transformer = { version = "0.0.2", features = ["core-async", "flow-async", "flow-async-macros"] }
 ```
 
 ---
 
 ## Project status
 
-This project is currently in early development (`0.0.1`) and **not yet stable**.
+This project is currently in early development (`0.0.2`) and **not yet stable**.
 APIs — especially in the `flow` crate — are subject to change.
 
 ---

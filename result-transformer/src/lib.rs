@@ -6,7 +6,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! result-transformer = { version = "0.0.1", features = ["core-sync", "core-sync-macros"] }
+//! result-transformer = { version = "0.0.2", features = ["core-sync", "core-sync-macros"] }
 //! ```
 
 #[doc(hidden)]
