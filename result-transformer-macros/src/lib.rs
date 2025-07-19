@@ -28,7 +28,7 @@ pub fn alias_ok_transformer(item: TokenStream) -> TokenStream {
 #[cfg(feature = "core-sync")]
 /// Creates a trait alias for [`ResultTransformer`].
 ///
-/// Use the syntax `(pub trait AliasName: [InOk, InErr => OutOk, OutErr])`.
+/// Use the syntax `(pub trait AliasName: [InputOk, InputErr => OutputOk, OutputErr])`.
 /// Type positions may use `_` to insert generic parameters.
 #[proc_macro]
 pub fn alias_result_transformer(item: TokenStream) -> TokenStream {
@@ -57,7 +57,7 @@ pub fn alias_async_ok_transformer(item: TokenStream) -> TokenStream {
 #[cfg(feature = "core-async")]
 /// Creates a trait alias for [`AsyncResultTransformer`].
 ///
-/// Use the syntax `(pub trait AliasName: [InOk, InErr => OutOk, OutErr])`.
+/// Use the syntax `(pub trait AliasName: [InputOk, InputErr => OutputOk, OutputErr])`.
 /// Type positions may use `_` to insert generic parameters.
 #[proc_macro]
 pub fn alias_async_result_transformer(item: TokenStream) -> TokenStream {
